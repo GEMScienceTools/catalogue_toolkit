@@ -24,7 +24,7 @@ from collections import OrderedDict
 from scipy.misc import derivative
 from datetime import date
 from math import exp, sqrt, sin, cos, atan2, pi
-from utils import haversine
+from eqcat.utils import haversine
 
 
 def is_GCMTMw(magnitude):

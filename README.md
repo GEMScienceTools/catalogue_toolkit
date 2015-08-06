@@ -1,5 +1,77 @@
-# Catalogue Toolkit
-Open source toolkit for the compilation and harmonisation of earthquake catalogues
+# CATALOGUE TOOLKIT
+
+The Catalogue Toolkit is an open-source set of Python tools for the compilation
+and harmonisation of earthquake catalogues.
+
+## FEATURES
+
+Within the toolkit it is possible to do the following:
+
+* Read/Write Earthquake Catalogues from common format (ISC (ISF), GCMT, csv)
+* Search for duplicate events from multiple catalogues
+* Using Pandas, query database for events reported in common magnitude scales
+* Apply orthogonal regression techniques to compare magnitude scales within
+  a database
+* Homogenise a catalogue into a common magnitude scale by applying a user-
+  defined hierarchy of conversion models
+
+## DEPENDENCIES
+
+The Catalogue toolkit requires the following dependencies:
+1. [NumPy/Scipy](http://www.scipy.org/)
+2. [h5py](http://www.h5py.org)
+3. [PyTables] (http://www.pytables.org/)
+4. [Pandas](http://pandas.pydata.org/)
+5. [Matplotlib](http://matplotlib.org/)
+6. [Basemap](http://matplotlib.org/basemap/)
+
+
+## INSTALLATION
+
+### WINDOWS (Vista/7/8)
+
+The simplest process is to use the PythonXY distribution, which will
+install all of the above dependences (except Basemap). This can be downloaded
+from here: https://code.google.com/p/pythonxy/
+
+The Basemap package will need to be installed separately. We recommend using
+the Windows Binary installers here: http://sourceforge.net/projects/matplotlib/files/matplotlib-toolkits/
+
+To install the catalogue toolkit simply download the zipped folder from
+the main repository (or clone if you have Github installed) and unzip. 
+Then add these manually to the Python Path by navigating to:
+
+* Control Panel -> System -> Advanced System Settings -> Environment Variables
+
+If no pythonpath exists create a new pythonpath and add:
+
+> c:\path\to\catalogue_toolkit_unzipped\
+
+otherwise append the above statement to an existing python path
+
+### OSX/LINUX
+
+The most universal approach to install the dependencies is via the python
+package index (pip) (or the package manager of your preferred distro). Follow
+the instructions given in the dependency links above.
+
+N.B. Install h5py and PyTables before installing Pandas
+
+Alternatively, [Anaconda](http://docs.continuum.io/anaconda/index) might prove
+simpler if the above packages are not already installed on your system.
+
+To download the toolkit simply open the terminal, navigate to a directory of
+your choosing and clone the current repository:
+
+> git clone https://github.com/GEMScienceTools/catalogue_toolkit.git
+
+To install, simply add the folder to the pythonpath. Open your profile file
+(~/.profile or ~/.bash_profile) and add the following line to the bottom:
+
+> export PYTHONPATH=/full/path/to/catalogue/toolkit/folder/:$PYTHONPATH 
+
+Then restart or source the terminal to complete installation
+
 
 # LICENSE
 
