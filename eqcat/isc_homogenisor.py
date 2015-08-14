@@ -317,7 +317,7 @@ class Homogenisor(object):
                                                            mag_rule.scale])
         return None, None, None
 
-    def export_homogenised_to_csv(self, filename, verbose=False):
+    def export_homogenised_to_csv(self, filename):
         """
 
         """
@@ -336,7 +336,6 @@ class Homogenisor(object):
         print >> fid, ",".join(name_list)
         for event in self.catalogue.events:
             if hasattr(event, "preferred") and event.preferred is not None:
-                print event.id
                 eqk = event.preferred
                 second = round(float(eqk.time.second) + \
                                float(eqk.time.microsecond) / 1.0E6, 2)

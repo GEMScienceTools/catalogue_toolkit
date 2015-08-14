@@ -23,7 +23,7 @@ GCMT catalogue format
 import csv
 import datetime
 import numpy as np
-import gcmt_utils as utils
+import eqcat.gcmt_utils as utils
 from math import floor
 from eqcat.parsers.generic_catalogue import GeneralCsvCatalogue
 from eqcat.isf_catalogue import (ISFCatalogue, Magnitude,

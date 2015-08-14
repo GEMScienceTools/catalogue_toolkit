@@ -689,7 +689,7 @@ def sample_agency_magnitude_pairs(data, xbins, ybins, number_samples=1):
     n_data = len(data[keys[0]])
     if not number_samples or (number_samples == 1):
         # Only one sample, return simple histogram
-        print xbins, ybins
+        #print xbins, ybins
         return np.histogram2d(np.around(data[keys[0]], 2),
                               np.around(data[keys[2]], 2),
                               bins=[xbins, ybins])[0]
