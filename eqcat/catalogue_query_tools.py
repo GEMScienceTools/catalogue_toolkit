@@ -1,5 +1,20 @@
-#!/usr/bin/env/python
 # -*- coding: utf-8 -*-
+# vim: tabstop=4 shiftwidth=4 softtabstop=4
+
+#
+# LICENSE
+#
+# Copyright (c) 2015 GEM Foundation
+#
+# The Catalogue Toolkit is free software: you can redistribute 
+# it and/or modify it under the terms of the GNU Affero General Public 
+# License as published by the Free Software Foundation, either version 
+# 3 of the License, or (at your option) any later version.
+#
+# You should have received a copy of the GNU Affero General Public License
+# with this download. If not, see <http://www.gnu.org/licenses/>
+
+#!/usr/bin/env/python
 """
 Collection of Catalogue Database Query Tools
 """
@@ -674,7 +689,7 @@ def sample_agency_magnitude_pairs(data, xbins, ybins, number_samples=1):
     n_data = len(data[keys[0]])
     if not number_samples or (number_samples == 1):
         # Only one sample, return simple histogram
-        print xbins, ybins
+        #print xbins, ybins
         return np.histogram2d(np.around(data[keys[0]], 2),
                               np.around(data[keys[2]], 2),
                               bins=[xbins, ybins])[0]

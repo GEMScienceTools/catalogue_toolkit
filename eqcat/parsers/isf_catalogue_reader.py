@@ -24,7 +24,7 @@ import datetime
 import numpy as np
 from math import floor, ceil, fabs
 from eqcat.parsers.base import (BaseCatalogueDatabaseReader,
-                                _to_int, _to_string, _to_float)
+                                _to_int, _to_str, _to_float)
 from eqcat.isf_catalogue import (Magnitude,
                                  Location,
                                  Origin,

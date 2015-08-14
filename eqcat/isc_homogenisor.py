@@ -1,3 +1,19 @@
+# -*- coding: utf-8 -*-
+# vim: tabstop=4 shiftwidth=4 softtabstop=4
+
+#
+# LICENSE
+#
+# Copyright (c) 2015 GEM Foundation
+#
+# The Catalogue Toolkit is free software: you can redistribute 
+# it and/or modify it under the terms of the GNU Affero General Public 
+# License as published by the Free Software Foundation, either version 
+# 3 of the License, or (at your option) any later version.
+#
+# You should have received a copy of the GNU Affero General Public License
+# with this download. If not, see <http://www.gnu.org/licenses/>
+
 #!/usr/bin/env/python
 
 '''
@@ -269,14 +285,6 @@ class Homogenisor(object):
                 event.preferred = pref_origin
         return self.catalogue
 
-#    def _check_rules(self, magnitude_rules, origin_rules):
-#        """
-#
-#        """
-#        self.mag_rules = magnitude_rules
-#        self.orig_rules = origin_rules
-
-
     def _apply_origin_selection(self, event):
         '''
         Checks each agency to see if it is found in the event, returning the 
@@ -308,20 +316,8 @@ class Homogenisor(object):
                     return mag_value, mag_sigma, "-".join([mag_rule.author,
                                                            mag_rule.scale])
         return None, None, None
-#            if (mag_rule.author in mag_agencies) and \
-#                (mag_rule.scale.upper() in mag_scales):
-#                idx = [i for i, x in enumerate(mag_agencies) 
-#                       if (x == mag_rule.author) and 
-#                       (mag_scales[i] == mag_rule.scale.upper())]
-#                #print event.get_origin_mag_vals(), mag_rule.__dict__, idx
-#                mag_value, mag_sigma = mag_rule.convert_value(
-#                    mag_values[idx[0]], 
-#                    mag_sigmas[idx[0]])
-#                return mag_value, mag_sigma, "-".join([mag_rule.author,
-#                                                       mag_rule.scale])
-#        return None, None, None
 
-    def export_homogenised_to_csv(self, filename, verbose=False):
+    def export_homogenised_to_csv(self, filename):
         """
 
         """
@@ -340,7 +336,6 @@ class Homogenisor(object):
         print >> fid, ",".join(name_list)
         for event in self.catalogue.events:
             if hasattr(event, "preferred") and event.preferred is not None:
-                print event.id
                 eqk = event.preferred
                 second = round(float(eqk.time.second) + \
                                float(eqk.time.microsecond) / 1.0E6, 2)
@@ -367,25 +362,13 @@ class Homogenisor(object):
                 print >> fid, row_str
         fid.close()
 
+
 def _date_from_string(string, delim="/"):
     """
     Return a date object from YYYY-mm-dd delimited by a specified character
     """
     year, month, day = string.split(delim)
     return date(year, month, day)
-
-#MAGNITUDE_RULES = [
-#    MagnitudeConversionRule('ISC-GEM', 'Mw', is_GCMTMw, is_GCMTMw_Sigma),
-#    MagnitudeConversionRule('GCMT', 'Mw', is_GCMTMw, is_GCMTMw_Sigma),
-#    MagnitudeConversionRule('HRVD', 'Mw', is_GCMTMw, is_GCMTMw_Sigma),
-#    MagnitudeConversionRule('NIED', 'Mw', is_GCMTMw, is_GCMTMw_Sigma),
-#    MagnitudeConversionRule('ISC', 'Ms', ISCGORMs_toGCMTMw, ISCGORMs_toGCMTMw_Sigma),
-#    MagnitudeConversionRule('ISC', 'mb', ISCGORmb_toGCMTMw, ISCGORmb_toGCMTMw_Sigma),
-#    MagnitudeConversionRule('PAS', 'Ms', PASMs_toGCMTMw, PASMs_toGCMTMw_Sigma)]
-#
-#
-#ORIGIN_RULES = [
-#    ("1900/01/01 - 2015/12/31", ['ISC-GEM', 'EHB', 'ISC', 'GCMT', 'HRVD', 'GUTE'])]
 
 
 class HomogenisorPreprocessor(object):
@@ -635,13 +618,6 @@ class DynamicHomogenisor(Homogenisor):
         else:
             self.log = None
 
-#    def _check_rules(self, magnitude_rules, origin_rules):
-#        """
-#
-#        """
-#        self.mag_rules = self._build_rule_list(magnitude_rules)
-#        self.orig_rules = self._build_rule_list(origin_rules)
-
     def _apply_origin_selection(self, event):
         '''
         Checks each agency to see if it is found in the event, returning the 
@@ -699,28 +675,6 @@ class DynamicHomogenisor(Homogenisor):
         if self.log is not None:
             self.log.append(["NA", "NA"])
         return None, None, None
-
-#        for mag_rule in event_mag:
-#                #print mag_rule.scale, mag_rule.author
-#                if (mag_rule.author in mag_agencies) and \
-#                    (mag_rule.scale.upper() in mag_scales):
-#                    idx = [i for i, x in enumerate(mag_agencies) 
-#                            if (x == mag_rule.author) and 
-#                            (mag_scales[i] == mag_rule.scale.upper())]
-#                    #print event.get_origin_mag_vals(), mag_rule.__dict__, idx
-#                    mag_value, mag_sigma = mag_rule.convert_value(
-#                        mag_values[idx[0]], 
-#                        mag_sigmas[idx[0]])
-#                    if self.log is not None:
-#                        mag_log =  "|".join(
-#                            [str(mag_rule),
-#                            ";".join([str(rule) for rule in event_mag])]
-#                            )
-#                        self.log[-1][1] = mag_log
-#
-#                    return mag_value, mag_sigma, "-".join([mag_rule.author,
-#                                                           mag_rule.scale])
-
 
     def dump_log(self, filename):
         """

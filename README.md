@@ -19,10 +19,15 @@ Within the toolkit it is possible to do the following:
 
 The Catalogue toolkit requires the following dependencies:
 1. [NumPy/Scipy](http://www.scipy.org/)
+
 2. [h5py](http://www.h5py.org)
+
 3. [PyTables] (http://www.pytables.org/)
+
 4. [Pandas](http://pandas.pydata.org/)
+
 5. [Matplotlib](http://matplotlib.org/)
+
 6. [Basemap](http://matplotlib.org/basemap/)
 
 
