@@ -88,23 +88,24 @@ class GenericCataloguetoISFParser(object):
                 valid_key_list = _header_check(row.keys(), 
                     self.catalogue.TOTAL_ATTRIBUTE_LIST)
             for key in valid_key_list:
-                if key in catalogue.FLOAT_ATTRIBUTE_LIST:
+                if key in self.catalogue.FLOAT_ATTRIBUTE_LIST:
                     self.catalogue.data[key] = _float_check(
                         self.catalogue.data[key], 
                         row[key])
-                elif key in catalogue.INT_ATTRIBUTE_LIST:
+                elif key in self.catalogue.INT_ATTRIBUTE_LIST:
                     self.catalogue.data[key] = _int_check(
                         self.catalogue.data[key],
                         row[key])
                 else:
                     self.catalogue.data[key].append(row[key])
-        self.export(cat_id, cat_name)
+        output_cat = self.export(cat_id, cat_name)
+        return output_cat
 
     def export(self, cat_id=None, cat_name=None):
         """
         Exports the catalogue to ISF Format
         """
-        return self.catalogue.write_to_isf_catalogue()
+        return self.catalogue.write_to_isf_catalogue(cat_id, cat_name)
 
 
 class GenericCataloguetoGCMT(GenericCataloguetoISFParser):
