@@ -353,7 +353,8 @@ class Event(object):
         self.id = identifier
         self.origins = origins
         self.magnitudes = magnitudes
-        self.description=description
+        self.description = description
+        self.comment = ""
 
     def number_origins(self):
         '''

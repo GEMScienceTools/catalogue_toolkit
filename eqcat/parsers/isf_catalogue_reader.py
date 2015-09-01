@@ -20,6 +20,7 @@ Reader for the catalogue in a reduced ISF Format considering only
 headers
 '''
 import os
+import re
 import datetime
 import numpy as np
 from math import floor, ceil, fabs
@@ -143,6 +144,26 @@ class ISFReader(BaseCatalogueDatabaseReader):
     Class to read an ISF formatted earthquake catalogue considering only the
     magnitude agencies and origin agencies defined by the user
     '''
+
+    def __init__(self, filename, selected_origin_agencies=[],
+            selected_magnitude_agencies=[], rejection_keywords=[],
+            lower_magnitude=None, upper_magnitude=None):
+        super(ISFReader, self).__init__(filename, selected_origin_agencies,
+            selected_magnitude_agencies)
+        
+        self.rejected_catalogue = []
+        self.rejection_keywords = rejection_keywords
+        if lower_magnitude and upper_magnitude:
+            assert upper_magnitude > lower_magnitude
+        if lower_magnitude:
+            self.lower_mag = lower_magnitude
+        else:
+            self.lower_mag = -np.inf
+        if upper_magnitude:
+            self.upper_mag = upper_magnitude
+        else:
+            self.upper_mag = np.inf
+
     def read_file(self, identifier, name):
         """
         Reads the catalogue from the file and assigns the identifier and name
@@ -152,10 +173,22 @@ class ISFReader(BaseCatalogueDatabaseReader):
         counter = 0
         is_origin = False
         is_magnitude = False
+        comment_str = ""
         for row in f.readlines():
             if not row.rstrip('\n'):
                 # Ignore empty rows
                 continue
+            elif "DATA_TYPE EVENT IMS1.0" in row:
+                # Ignore header row
+                continue
+            elif "ISC Bulletin" in row:
+                # Yet anothet header row
+                continue
+            elif "STOP" in row:
+                # Footer row
+                continue
+            else:
+                pass
                 
             if '(#PRIME)' in row:
                 # Previous origin block was the prime origin
@@ -169,7 +202,12 @@ class ISFReader(BaseCatalogueDatabaseReader):
                     origins[-1].is_centroid = True
                 continue
 
-            if 'Event' in row:
+            comment_find = re.search("\((.*?)\)", row)
+            if comment_find:
+                comment_find.group(1)
+                comment_str += "{:s}\n".format(comment_find.group(1))
+
+            if 'Event' in row[:5]:
                 # Is an event header row
                 if counter > 0:
                     # Add magnitudes and origins to previous event
@@ -178,10 +216,16 @@ class ISFReader(BaseCatalogueDatabaseReader):
                     Event.magnitudes = magnitudes
                     if len(Event.origins) and len(Event.magnitudes):
                         Event.assign_magnitudes_to_origins()
-                        self.catalogue.events.append(Event)
+                        Event.comment = comment_str
+                        print "%s - %s" % (Event.id, Event.description)
+                        print Event.comment
+                        if self._acceptance(Event):
+                            self.catalogue.events.append(Event)
+
                 
                 # Get a new event
                 Event = get_event_header_row(row.rstrip('\n'))
+                comment_str = ""
                 origins = []
                 magnitudes = []
                 counter += 1
@@ -203,6 +247,7 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 mag = get_event_magnitude(row.strip('\n'),
                                           Event.id,
                                           self.selected_magnitude_agencies)
+
                 if mag:
                     magnitudes.append(mag)
                 continue
@@ -213,5 +258,38 @@ class ISFReader(BaseCatalogueDatabaseReader):
                                             self.selected_origin_agencies)
                 if orig:
                     origins.append(orig)
+
+        if len(self.rejected_catalogue):
+            # Turn list of rejected events into its own instance of
+            # ISFCatalogue
+            self.rejected_catalogue = ISFCatalogue(
+                identifier + "-R",
+                name + " - Rejected",
+                events=self.rejected_catalogue)
         return self.catalogue
+
+    def _acceptance(self, event):
+        """
+        Determines whether to accept the event according to the magnitude
+        and keyword criteria
+        :param event:
+            Event as instance of Event class
+        :returns:
+            True (if event is accepted), False otherwise
+        """
+        # Magnitude rejection - based on an "any" criterion
+        valid_magnitude = False
+        for mag in event.magnitudes:
+            if (mag.value >= self.lower_mag) and (mag.value <= self.upper_mag):
+                valid_magnitude = True
+                break
+        if not valid_magnitude:
+            return False
+        for keyword in self.rejection_keywords:
+            if keyword.lower() in event.comment.lower():
+                print event.comment
+                self.rejected_catalogue.append(event)
+                return False
+        return True
+
 
