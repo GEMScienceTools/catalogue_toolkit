@@ -206,6 +206,7 @@ class ISFReader(BaseCatalogueDatabaseReader):
             if comment_find:
                 comment_find.group(1)
                 comment_str += "{:s}\n".format(comment_find.group(1))
+                continue
 
             if 'Event' in row[:5]:
                 # Is an event header row
