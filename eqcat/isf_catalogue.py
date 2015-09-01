@@ -666,6 +666,12 @@ class ISFCatalogue(object):
         """
         return self.events
 
+    def __len__(self):
+        """
+        For len return number of events
+        """
+        return self.get_number_events()
+
 #    def build_hdf5_database(self, target_file):
 #        """
 #        Parses the catalogue to an hdf5 database
