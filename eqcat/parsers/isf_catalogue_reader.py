@@ -217,8 +217,8 @@ class ISFReader(BaseCatalogueDatabaseReader):
                     if len(Event.origins) and len(Event.magnitudes):
                         Event.assign_magnitudes_to_origins()
                         Event.comment = comment_str
-                        print "%s - %s" % (Event.id, Event.description)
-                        print Event.comment
+                        #print "%s - %s" % (Event.id, Event.description)
+                        #print Event.comment
                         if self._acceptance(Event):
                             self.catalogue.events.append(Event)
 
@@ -287,7 +287,6 @@ class ISFReader(BaseCatalogueDatabaseReader):
             return False
         for keyword in self.rejection_keywords:
             if keyword.lower() in event.comment.lower():
-                print event.comment
                 self.rejected_catalogue.append(event)
                 return False
         return True
