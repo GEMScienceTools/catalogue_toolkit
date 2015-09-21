@@ -221,6 +221,7 @@ class ISFReader(BaseCatalogueDatabaseReader):
                         #print "%s - %s" % (Event.id, Event.description)
                         #print Event.comment
                         if self._acceptance(Event):
+                            Event.comment = ""
                             self.catalogue.events.append(Event)
 
                 

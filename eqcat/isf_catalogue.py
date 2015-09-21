@@ -520,10 +520,11 @@ class ISFCatalogue(object):
         minute = np.zeros(neq, dtype=int)
         second = np.zeros(neq, dtype=float)
         for iloc, event in enumerate(self.events):
+            is_selected = False
             for origin in event.origins:
-                if len(event.origins) > 1 and not origin.is_prime:
+                if is_selected:
                     continue
-                else:
+                if origin.is_prime:
                     year[iloc] = origin.date.year
                     month[iloc] = origin.date.month
                     day[iloc] = origin.date.day
@@ -531,6 +532,16 @@ class ISFCatalogue(object):
                     minute[iloc] = origin.time.minute
                     second[iloc] = float(origin.time.second) + \
                         (float(origin.time.microsecond) / 1.0E6)
+                    is_selected = True
+            if not is_selected:
+                # No prime origins - take the first
+                year[iloc] = event.origins[0].date.year
+                month[iloc] = event.origins[0].date.month
+                day[iloc] = event.origins[0].date.day
+                hour[iloc] = event.origins[0].time.hour
+                minute[iloc] = event.origins[0].time.minute
+                second[iloc] = float(event.origins[0].time.second) + \
+                    (float(event.origins[0].time.microsecond) / 1.0E6)
         return decimal_time(year, month, day, hour, minute, second)
                     
 
