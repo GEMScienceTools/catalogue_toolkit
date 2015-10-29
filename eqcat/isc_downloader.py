@@ -3,9 +3,9 @@
 #
 # Copyright (c) 2015 GEM Foundation
 #
-# The Catalogue Toolkit is free software: you can redistribute 
-# it and/or modify it under the terms of the GNU Affero General Public 
-# License as published by the Free Software Foundation, either version 
+# The Catalogue Toolkit is free software: you can redistribute
+# it and/or modify it under the terms of the GNU Affero General Public
+# License as published by the Free Software Foundation, either version
 # 3 of the License, or (at your option) any later version.
 #
 # You should have received a copy of the GNU Affero General Public License
@@ -14,7 +14,8 @@
 #!/usr/bin/env/python
 
 """
-Utility to download the ISC catalogue from website
+Utility to download the ISC catalogue from website.
+Version 29/10/2015
 """
 
 import urllib2
@@ -63,23 +64,25 @@ class ISCBulletinUrl():
     self.Request["NoMagnitudeEvents"]       = "null_mag=on"
     self.Request["MagnitudeType"]           = "req_mag_type="
     self.Request["MagnitudeAgency"]         = "req_mag_agcy="
+    self.Request["FocalMechanismAgency"]    = "req_fm_agcy=Any"
 
     # Optional Fields
     self.Request["IncludePhases"]           = "include_phases=off"
     self.Request["MinimumPhaseNumber"]      = "min_def="
     self.Request["MaximumPhaseNumber"]      = "max_def="
-    self.Request["NoKNownPhases"]           = "null_phs="
+    self.Request["NoKnownPhases"]           = "null_phs="
+    self.Request["PrimeOnly"]               = "prime_only="
     self.Request["IncludeMagnitudes"]       = "include_magnitudes=on"
     self.Request["IncludeHeaders"]          = "include_headers=on"
     self.Request["IncludeComments"]         = "include_comments=on"
-    self.Request["IncludeLinks"]            = "include_links=off" 
+    self.Request["IncludeLinks"]            = "include_links=off"
 
   #---------------------------------------
 
   def UseMirror(self):
 
     self.BaseServer = "http://isc-mirror.iris.washington.edu/cgi-bin/web-db-v4?"
-    
+
   #---------------------------------------
 
   def ListFields(self):
@@ -115,7 +118,7 @@ class ISCBulletinUrl():
         ParFile.write("\n")
 
     ParFile.close()
-    
+
   #---------------------------------------
 
   def LoadSettings(self,ParamFile):
@@ -163,4 +166,3 @@ class ISCBulletinUrl():
     else:
 
       print "Warning: Cataloge not available"
-        
