@@ -15,7 +15,7 @@
 
 """
 Utility to download the ISC catalogue from website.
-Version 29/10/2015
+Version 30/10/2015
 """
 
 import urllib2
@@ -49,12 +49,12 @@ class ISCBulletinUrl():
     self.Request["GeogrephicRegionNumber"]  = "grn="
     self.Request["PolygonCoordinates"]      = "coordvals="
     self.Request["StartYear"]               = "start_year=2012"
-    self.Request["StartMonth"]              = "start_month=12"
+    self.Request["StartMonth"]              = "start_month=01"
     self.Request["StartDay"]                = "start_day=01"
     self.Request["StartTime"]               = "start_time=00:00:00"
     self.Request["EndYear"]                 = "end_year=2013"
-    self.Request["EndMonth"]                = "end_month=1"
-    self.Request["EndDay"]                  = "end_day=01"
+    self.Request["EndMonth"]                = "end_month=12"
+    self.Request["EndDay"]                  = "end_day=31"
     self.Request["EndTime"]                 = "end_time=00:00:00"
     self.Request["MinimumDepth"]            = "min_dep="
     self.Request["MaximumDepth"]            = "max_dep="
@@ -145,7 +145,7 @@ class ISCBulletinUrl():
 
   #---------------------------------------
 
-  def GetCatalogue(self,OutputFile):
+  def DownloadBlock(self):
 
     UrlString = self.CreateUrl()
 
@@ -158,11 +158,46 @@ class ISCBulletinUrl():
 
     if CatStart > -1 and CatStop > -1:
 
-      CatBlock = Page[CatStart:CatStop]
-      CatFile = open(OutputFile, "w")
-      CatFile.write("%s" % CatBlock)
-      CatFile.close()
+      CatBlock = Page[CatStart:CatStop-1]
 
     else:
 
-      print "Warning: Cataloge not available"
+      CatBlock = ""
+      print "Warning: Cataloge not available for the selected period"
+
+    return CatBlock
+
+  #---------------------------------------
+
+  def GetCatalogue(self,OutputFile,SplitYears=0):
+
+    if not SplitYears:
+
+      CatBlock = self.DownloadBlock()
+
+    else:
+
+      StartYear = int(self.Request["StartYear"].split("=")[1])
+      EndYear = int(self.Request["EndYear"].split("=")[1])
+
+      CatBlock = ""
+
+      for SY in range(StartYear,EndYear,SplitYears):
+
+        EY = min([EndYear,SY+SplitYears])
+        self.SetField("StartYear",SY)
+        self.SetField("EndYear",EY)
+
+        print "Downloading block:",SY,"-",EY
+        Chunk = self.DownloadBlock()
+
+        if SY != StartYear:
+          # Remove header from data blocks
+          Chunk = Chunk.split('\n', 2)[-1]
+
+        CatBlock = CatBlock + Chunk
+
+    CatFile = open(OutputFile, "w")
+    CatFile.write("%s" % CatBlock)
+    CatFile.close()
+
