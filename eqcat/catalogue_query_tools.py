@@ -367,8 +367,8 @@ class CatalogueSelector(object):
         return self.select_within_polygon(bbox[:, 0], bbox[:, 1], select_type)
 
     
-    def select_within_date_range(self, start_year=None, end_year=None,
-            select_type="any"):
+    def select_within_date_range(self, start_date=None, end_date=None,
+                                 select_type="any"):
         """
         Selects within a date[years] range
         """
