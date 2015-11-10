@@ -620,7 +620,7 @@ class ISFCatalogue(object):
                 if orig.location.depthSolution:
                     depthSolution = orig.location.depthSolution
                 else: 
-                    depthSolution = " "               
+                    depthSolution = ""               
 
                 
                 if orig.is_prime:
