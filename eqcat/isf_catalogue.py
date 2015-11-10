@@ -148,6 +148,10 @@ class Location(object):
         Latitude (decimal degrees)
     :param float depth:
         Depth (decimal degrees)
+        :param str DepthSolution:
+        depthSolution (flag) fixed flag (f = fixed depth station, 
+                                         d = depth phases, 
+                                         blank if not a fixed depth)
     :param float semimajor90:
         Semimajor axis of 90 % error ellipse (km)
     :param float semiminor90:
@@ -157,7 +161,8 @@ class Location(object):
     :param float depth_error:
         1 s.d. Error on the depth value (km) 
     '''
-    def __init__(self, origin_id, longitude, latitude, depth, semimajor90=None,
+    def __init__(self, origin_id, longitude, latitude, depth, depthSolution=None,
+                semimajor90=None,
                 semiminor90=None, error_strike=None, depth_error=None):
         '''
         '''
@@ -165,6 +170,7 @@ class Location(object):
         self.longitude = longitude
         self.latitude = latitude
         self.depth=depth
+        self.depthSolution=depthSolution
         self.semimajor90 = semimajor90
         self.semiminor90 = semiminor90
         self.error_strike = error_strike
@@ -610,6 +616,13 @@ class ISFCatalogue(object):
                     depth_error = orig.location.depth_error
                 else: 
                     depth_error = 0.0
+                
+                if orig.location.depthSolution:
+                    depthSolution = orig.location.depthSolution
+                else: 
+                    depthSolution = " "               
+
+                
                 if orig.is_prime:
                     prime = 1
                 else:
@@ -618,7 +631,8 @@ class ISFCatalogue(object):
                     orig.date.year, orig.date.month, orig.date.day,
                     orig.time.hour, orig.time.minute, seconds, time_error,
                     orig.location.longitude, orig.location.latitude, 
-                    orig.location.depth, semimajor90, semiminor90, 
+                    orig.location.depth, orig.location.depthSolution,
+                    semimajor90, semiminor90, 
                     error_strike, depth_error, prime)
                 o_counter += 1
 
