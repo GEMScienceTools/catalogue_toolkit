@@ -60,6 +60,7 @@ def get_time_from_str(row):
     """
     # Get time hh:mm:ss.ss
     hms = row[11:22].split(':')
+    #print "hh:mm:ss:", hms
     hours = int(hms[0])
     minutes = int(hms[1])
     secs = float(hms[2])
@@ -102,6 +103,7 @@ def get_event_origin_row(row, selected_agencies=[]):
         return None
     # Get date yyyy/mm/dd
     ymd = map(int, row[:10].split('/'))
+    #print "YMD",ymd
     date = datetime.date(ymd[0], ymd[1], ymd[2])
     # Get time
     time, time_error, time_rms = get_time_from_str(row)
@@ -113,43 +115,59 @@ def get_event_origin_row(row, selected_agencies=[]):
     semiminor90 = _to_float(row[61:66])
     error_strike = _to_float(row[67:70])
     # Get depths
-    depth = _to_float(row[71:76])
+    #depth = _to_float(row[71:75])
+    depth = _to_float(row[71:75])
+    depthSolution = _to_str(row[76:78])
+    #if depthSolution == "f":
+    #    print "depth= ", depth, "DepthSolution =", depthSolution
     depth_error = _to_float(row[78:82])
     # Create location class
-    location = Location(origin_id, longitude, latitude, depth, semimajor90,
-                        semiminor90, error_strike, depth_error)
+    location = Location(origin_id, longitude, latitude, depth,depthSolution, 
+                        semimajor90,semiminor90, error_strike, depth_error)
     # Get the metadata
     metadata = get_origin_metadata(row)
     return Origin(origin_id, date, time, location, author, 
                   time_error=time_error, time_rms=time_rms, metadata=metadata)
 
-def get_event_magnitude(row, event_id, selected_agencies=[]):
+def get_event_magnitude(row, event_id, 
+                        selected_agencies=[],
+                        selected_types=[]):
     """
     Creates an instance of an isf_catalogue.Magnitude object from the row
     string, or returns None if the author is not one of the selected agencies
+    or magnitude types
     """
     origin_id = _to_str(row[30:])
     author = row[20:29].strip(' ')
-    if len(selected_agencies) and not author in selected_agencies:
-        # Magnitude does not corresond to a selected agency - ignore
+    scale=row[:5].strip(' ')
+    if ((len(selected_agencies) and not author in selected_agencies)\
+        or (len(selected_agencies) and not scale in selected_types)):
+        # Magnitude does not correspond to a selected agency - ignore
         return None
     sigma = _to_float(row[11:14])
     nstations = _to_int(row[15:19])
     return Magnitude(event_id, origin_id, _to_float(row[6:10]), author, 
-                     scale=row[:5].strip(' '), sigma=sigma, stations=nstations) 
+                     scale=scale, sigma=sigma, stations=nstations) 
 
 
 class ISFReader(BaseCatalogueDatabaseReader):
     '''
-    Class to read an ISF formatted earthquake catalogue considering only the
-    magnitude agencies and origin agencies defined by the user
+    Class to read an ISF formatted earthquake catalogue considering only
+    the origin agencies, the magnitude agencies and the magnitude types
+    defined by the user
     '''
 
-    def __init__(self, filename, selected_origin_agencies=[],
-            selected_magnitude_agencies=[], rejection_keywords=[],
-            lower_magnitude=None, upper_magnitude=None):
-        super(ISFReader, self).__init__(filename, selected_origin_agencies,
-            selected_magnitude_agencies)
+    def __init__(self, filename, 
+                 selected_origin_agencies=[],
+                 selected_magnitude_agencies=[],
+                 selected_magnitude_types =[],
+                 rejection_keywords=[],
+                 lower_magnitude=None, upper_magnitude=None):
+        
+        super(ISFReader, self).__init__(filename, 
+                                        selected_origin_agencies,
+                                        selected_magnitude_agencies, 
+                                        selected_magnitude_types)
         
         self.rejected_catalogue = []
         self.rejection_keywords = rejection_keywords
@@ -248,7 +266,8 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 # Is a magnitude row
                 mag = get_event_magnitude(row.strip('\n'),
                                           Event.id,
-                                          self.selected_magnitude_agencies)
+                                          self.selected_magnitude_agencies,
+                                          self.selected_magnitude_types)
 
                 if mag:
                     magnitudes.append(mag)

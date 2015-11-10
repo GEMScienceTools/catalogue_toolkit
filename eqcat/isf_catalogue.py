@@ -30,7 +30,7 @@ from math import fabs
 DATAMAP = [("eventID", "a16"), ("originID", "a16"), ("Agency", "a14"), 
     ("year", "i2"), ("month", "i2"), ("day", "i2"), ("hour", "i2"),
     ("minute", "i2"), ("second", "f2"), ("time_error", "f4"),
-    ("longitude", "f4"), ("latitude", "f4"), ("depth", "f4"), 
+    ("longitude", "f4"), ("latitude", "f4"), ("depth", "f4"),("depthSolution", "a1"), 
     ("semimajor90", "f4"), ("semiminor90", "f4"), ("error_strike", "f2"),
     ("depth_error", "f4"), ("prime", "i1")]
 
