@@ -127,11 +127,12 @@ def get_event_origin_row(row, selected_agencies=[]):
     # Get the metadata
     metadata = get_origin_metadata(row)
     return Origin(origin_id, date, time, location, author, 
-                  time_error=time_error, time_rms=time_rms, metadata=metadata)
+                  time_error=time_error, time_rms=time_rms,
+                  metadata=metadata)
 
 def get_event_magnitude(row, event_id, 
-                        selected_agencies=[],
-                        selected_types=[]):
+                        selected_agencies=[]):
+                        #,selected_types=[]):
     """
     Creates an instance of an isf_catalogue.Magnitude object from the row
     string, or returns None if the author is not one of the selected agencies
@@ -140,8 +141,9 @@ def get_event_magnitude(row, event_id,
     origin_id = _to_str(row[30:])
     author = row[20:29].strip(' ')
     scale=row[:5].strip(' ')
-    if ((len(selected_agencies) and not author in selected_agencies)\
-        or (len(selected_agencies) and not scale in selected_types)):
+    if (len(selected_agencies) and not author in selected_agencies):
+        #\
+        #or (len(selected_agencies) and not scale in selected_types)):
         # Magnitude does not correspond to a selected agency - ignore
         return None
     sigma = _to_float(row[11:14])
@@ -160,14 +162,14 @@ class ISFReader(BaseCatalogueDatabaseReader):
     def __init__(self, filename, 
                  selected_origin_agencies=[],
                  selected_magnitude_agencies=[],
-                 selected_magnitude_types =[],
+                 #selected_magnitude_types =[],
                  rejection_keywords=[],
                  lower_magnitude=None, upper_magnitude=None):
         
         super(ISFReader, self).__init__(filename, 
                                         selected_origin_agencies,
-                                        selected_magnitude_agencies, 
-                                        selected_magnitude_types)
+                                        selected_magnitude_agencies)
+#                                        ,selected_magnitude_types)
         
         self.rejected_catalogue = []
         self.rejection_keywords = rejection_keywords
@@ -266,8 +268,8 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 # Is a magnitude row
                 mag = get_event_magnitude(row.strip('\n'),
                                           Event.id,
-                                          self.selected_magnitude_agencies,
-                                          self.selected_magnitude_types)
+                                          self.selected_magnitude_agencies)
+#                                          ,self.selected_magnitude_types)
 
                 if mag:
                     magnitudes.append(mag)
