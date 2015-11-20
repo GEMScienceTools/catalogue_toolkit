@@ -94,7 +94,7 @@ class Magnitude(object):
         '''
         if (magnitude.origin_id == self.origin_id) and (magnitude.author == 
             self.author) and (magnitude.scale == self.scale):
-            if fabs(magnitude.value - self.value) < 0.005:
+            if fabs(magnitude.value - self.value) > 0.005:
                 print self.__dict__
                 print magnitude.__dict__
                 raise ValueError('Two magnitudes with same metadata contain '
