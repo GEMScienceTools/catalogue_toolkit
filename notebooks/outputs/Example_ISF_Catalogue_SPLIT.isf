@@ -1,0 +1,1021 @@
+DATA_TYPE EVENT IMS1.0
+Reviewed ISC Bulletin
+Event  3254347 Northern India
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2000/12/05 21:47:50.20   3.01 0.900  28.9540   77.4030   9.3   7.7  -1  14.2   8.7        10 188                      NDI        4214847
+2000/12/05 21:47:53.92   1.44 1.703  28.7640   77.2960 14.65 11.19   0  14.2f         6    6 177   0.11   5.50 m i    ISC        4412029
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+MD     2.3          NDI        4214847
+ML     2.5          NDI        4214847
+MW     2.5          NDI        4214847
+
+Event  3264199 Qinghai
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2000/12/07 23:53:36.94   3.66 0.130  34.6313   92.7415 237.0  28.0  72   0.0f         4      187  17.03  80.74     uk IDC        4221686
+2000/12/07 23:53:35.14   1.60 0.723  33.8960   90.0600 74.08 21.42  90  33.0f         5    5 182   8.45  81.91 m i    ISC        4412219
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.6 0.3    3 IDC        4221686
+ML     3.5 0.0    1 IDC        4221686
+mb     3.7        2 ISC        4412219
+
+Event  3254520 Nepal-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2000/12/18 16:45:35.90   3.92 1.700  29.8210   80.1970  12.7  32.5  -1   5.0f              6 234                      NDI        4214956
+
+Magnitude  Err Nsta Author      OrigID
+MD     3.1          NDI        4214956
+
+Event  3265672 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2000/12/28 19:44:09.24   4.78 0.620  30.9443   84.4666 188.0  31.4  69   0.0f         3      228  18.07  72.06     uk IDC        4222892
+2000/12/28 19:44:25.89   2.74 0.753  31.7240   86.7930 26.06 21.53  90 100.4  38.0   10   10 156   3.88  71.16 m i    ISC        4414178
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.4 0.2    2 IDC        4222892
+ML     3.2 0.0    1 IDC        4222892
+mb     3.2        2 ISC        4414178
+
+Event  3254630 Northern India
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2000/12/29 08:40:32.30   5.75 1.900  24.2800   83.1610  11.5  10.4  -1  10.0f             11 125                      NDI        4215043
+
+Magnitude  Err Nsta Author      OrigID
+ML     3.3          NDI        4215043
+
+Event  2413940 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/02 11:00:36.30   3.20 0.900  32.0280   86.7520  32.3  19.9  -1  33.0f              6 228                      NDI        4907953
+2001/12/02 11:00:36.74   0.45 0.770  31.4270   86.4010  18.9   8.8  49  33.0f        12      111  17.19  83.37     se NEIC       4576567
+2001/12/02 11:00:36.90   0.93        31.3800   86.2600  28.4  15.2  33  33.0         11                               MOS        4829738
+2001/12/02 11:00:39.35   5.03 0.480  31.3633   86.3529  26.8  16.7  44  36.7  42.5   13      111  11.29 147.89     uk IDC        4273771
+2001/12/02 11:00:43.90        2.800  32.0600   87.0100                  33.0               5                          BJI        4012247
+2001/12/02 11:00:35.81   2.21 0.917  31.3770   86.3040   7.9 4.644   0  24.3  17.9   34   32  85   4.50 147.85 m i    ISC        5281020
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.4          NEIC       4907953
+mb     4.4        2 NEIC       4576567
+mb     4.2        1 MOS        4829738
+mb     3.7 0.1    9 IDC        4273771
+mb1    4.0 0.1   11 IDC        4273771
+mb1mx  3.8 0.1   19 IDC        4273771
+ML     3.9 0.0    2 IDC        4273771
+MS     3.0 0.2    2 IDC        4273771
+Ms1    3.2 0.2    2 IDC        4273771
+ms1mx  3.1 0.1   12 IDC        4273771
+Ms     4.0          BJI        4012247
+Msz    4.2          BJI        4012247
+mb     4.0        8 ISC        5281020
+
+Event  3338269 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/02 15:56:05.59   0.95 0.470  31.3183   86.0813  64.7  20.2  44   0.0f         7      166  17.30  71.31     uk IDC        4273780
+2001/12/02 15:56:08.61   0.81 0.517  31.3630   86.1140 31.94 32.63  90  33.0f         7    7 164  17.31  71.32 m i    ISC        5281036
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.6 0.1    6 IDC        4273780
+mb1    3.8 0.0    7 IDC        4273780
+mb1mx  3.7 0.0   17 IDC        4273780
+ML     3.7 0.3    1 IDC        4273780
+mb     3.7        6 ISC        5281036
+
+Event  2397590 Sikkim
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/02 22:41:11.10        1.300  27.3500   88.4000                   6.0              53                          BJI        4012254
+2001/12/02 22:41:11.40   0.45 0.580  27.2698   88.2225  17.9  10.9  38   0.0f        27       95  13.20 149.29     uk IDC        4273800
+2001/12/02 22:41:13.79   0.20 0.950  27.1500   88.1710   7.0   4.0  26  33.0f       147       71  13.15 122.70     se NEIC       4576608
+2001/12/02 22:41:14.00   0.98        27.1870   88.2360   9.0   5.1  37  33.0         83                               MOS        4829746
+2001/12/02 22:41:14.56        0.960  27.2830   88.2390   4.4   3.0   9  19.9   3.7  263  226                       ke EHB       11219101
+2001/12/02 22:41:14.80   4.81 1.600  27.1840   88.3280   9.6  10.6  -1  15.0f             33 119                      NDI        4907957
+2001/12/02 22:41:22.40   0.45 0.480  28.5559   87.3745  21.3   7.3 127  33.0                 192   1.38 154.50     ke LDG        4684956
+2001/12/02 22:41:13.06   0.52 1.088  27.2180   88.1790   3.3 2.172   0  24.5   4.1  268  234  28   0.41 149.83 m i    ISC        5281060
+ (#PRIME)
+ (#PARAM pP_DEPTH=27+2)
+
+Magnitude  Err Nsta Author      OrigID
+mb     5.2          BJI        4012254
+mB     5.2          BJI        4012254
+Ms     4.9          BJI        4012254
+Msz    4.7          BJI        4012254
+mb     4.9 0.1   21 IDC        4273800
+mb1    4.9 0.1   23 IDC        4273800
+mb1mx  4.9 0.1   25 IDC        4273800
+ML     4.5 0.1    2 IDC        4273800
+MS     4.3 0.1    7 IDC        4273800
+Ms1    4.3 0.1    7 IDC        4273800
+ms1mx  4.2 0.1   13 IDC        4273800
+mb     5.1       63 NEIC       4576608
+MS     4.2        4 NEIC       4576608
+mb     5.1       32 MOS        4829746
+mb     4.9          NDI        4907957
+ML     4.8          NDI        4907957
+Mb     5.1 0.2   26 LDG        4684956
+Ms     4.1 0.1    8 LDG        4684956
+mb     5.0       79 ISC        5281060
+MS     4.6       20 ISC        5281060
+
+Event  2484005 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/03 06:38:23.70        2.600  30.9400   85.6400                  33.0               5                          BJI        4012255
+2001/12/03 06:38:26.12   0.52 1.010  31.4220   86.2880  21.4  11.6  55  33.0f        12      111  17.25  83.29     se NEIC       4576632
+2001/12/03 06:38:32.01   7.22 0.300  31.4298   86.4179  28.1  16.4  50  72.1  67.1   11      111  17.18  83.38     uk IDC        4273813
+2001/12/03 06:38:36.30   3.16 1.300  31.3160   86.4270  21.6  13.9  -1  33.0f              5 218                      NDI        4907960
+2001/12/03 06:38:29.79   1.28 1.107  31.3370   86.2580   7.4 5.309   0  67.1  13.7   23   19  89   4.53  83.21 m i    ISC        5281092
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+Ms     3.9          BJI        4012255
+mb     4.0        2 NEIC       4576632
+mb     3.6 0.1   10 IDC        4273813
+mb1    3.8 0.1   11 IDC        4273813
+mb1mx  3.8 0.1   19 IDC        4273813
+MS     3.5 0.5    2 IDC        4273813
+Ms1    3.5 0.5    2 IDC        4273813
+ms1mx  3.1 0.2   12 IDC        4273813
+mb     4.0          NEIC       4907960
+mb     3.8       10 ISC        5281092
+
+Event  3338685 Nepal-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/07 04:50:40.68   0.92 0.730  29.5861   80.6690  36.0  17.0  39   0.0f        10      133   7.51 121.26     uk IDC        4274029
+2001/12/07 04:50:43.49   0.63 0.620  29.5470   80.6220  23.1  11.2  39  33.0f         8      134   7.50 121.31     se NEIC       4576921
+2001/12/07 04:50:45.70   4.00 1.400  29.6300   80.9270  11.5  12.0  -1  33.0f             20 160                      NDI        4907982
+2001/12/07 04:50:44.22   0.95 1.088  29.5050   80.8950 6.279   7.0  90  42.6  12.1   36   28 103   0.57 121.33 m i    ISC        5281424
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.8 0.2    6 IDC        4274029
+mb1    4.1 0.1    7 IDC        4274029
+mb1mx  3.8 0.1   18 IDC        4274029
+ML     3.8 0.3    1 IDC        4274029
+MD     3.8          NDI        4907982
+ML     3.8          NDI        4907982
+mb     4.0        5 ISC        5281424
+
+Event  3338694 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/07 06:06:58.10   0.89 0.780  31.8057   83.2284  41.1  18.6  50   0.0f         9      128  19.44  84.01     uk IDC        4274043
+2001/12/07 06:07:00.28   0.72 1.120  31.7690   83.3370  30.2  14.2  51  33.0f         9      131  19.34  70.94     se NEIC       4576925
+2001/12/07 06:07:00.79   0.75 1.293  31.8160   83.2940 20.66 17.98  90  33.0f        10   10 127  19.40  83.98 m i    ISC        5281432
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.0 0.1    8 IDC        4274043
+mb1    4.1 0.1    9 IDC        4274043
+mb1mx  3.9 0.1   17 IDC        4274043
+mb     4.0        8 ISC        5281432
+
+Event  3338919 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/10 01:10:37.37   2.19 1.200  30.0425   88.2716  58.0  43.8 131   0.0f         6      254  13.27 149.52     uk IDC        4274187
+2001/12/10 01:10:41.20   0.95 1.580  30.0540   87.9820 20.66 22.31  90  33.0f         6    7 131   5.65 149.27 m i    ISC        5281745
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.9 0.1    4 IDC        4274187
+mb1    4.1 0.0    5 IDC        4274187
+mb1mx  3.8 0.1   16 IDC        4274187
+ML     3.6 0.3    1 IDC        4274187
+mb     4.0        4 ISC        5281745
+
+Event  3339428 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/15 10:21:23.70   6.73 0.220  33.6780   90.6699 227.0  23.9  73  51.3  79.1    5      198  16.87  72.12     uk IDC        4274496
+2001/12/15 10:21:18.11   0.80 1.139  33.4640   89.8950 12.41   9.5  90  33.0f        14   14 123   6.38  72.57 m i    ISC        5282193
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.2 0.0    4 IDC        4274496
+mb1    3.6 0.1    5 IDC        4274496
+mb1mx  3.3 0.1   17 IDC        4274496
+ML     3.5 0.3    1 IDC        4274496
+mb     3.3        3 ISC        5282193
+
+Event  2428963 Nepal
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/18 02:21:56.20   0.59 0.360  29.6130   81.8103  28.6   6.4 155  10.0f                139   0.55 149.52     ke LDG        4685018
+2001/12/18 02:21:58.80   0.22 0.660  29.5839   81.7784   5.4   2.4 178  25.0f        37   20 211   0.51   5.68     ke DMN        4609108
+2001/12/18 02:21:59.40        1.600  29.5800   81.6600                  26.0              25                          BJI        4012457
+2001/12/18 02:21:59.70   0.80        29.4530   81.7080  11.5   6.2  32  33.0         56                               MOS        4018792
+2001/12/18 02:22:00.07   0.28 0.860  29.6120   81.7800   9.5   5.7  33  33.0f        64       98   8.31 144.83     se NEIC       4577662
+2001/12/18 02:22:00.20   3.86 1.500  29.4350   81.8920   8.3   9.3  -1  15.0f             29 166                      NDI        4908069
+2001/12/18 02:22:02.72        0.850  29.5580   81.7290   4.1   3.0  34  35.0f       166  135                       ke EHB       11219472
+2001/12/18 02:22:03.09   2.32 0.920  29.5361   81.8762  19.3   8.2  37  41.2  22.5   21       98   8.42 149.49     uk IDC        4274618
+2001/12/18 02:22:00.84   0.16 1.130  29.6410   81.7110   2.3 1.929   0  33.0f       168  144  23   0.48 152.76 m i    ISC        5282373
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+Mb     4.9 0.2   29 LDG        4685018
+Ms     3.4        1 LDG        4685018
+Ml     4.8 0.1   10 DMN        4609108
+mb     4.4          BJI        4012457
+mB     5.0          BJI        4012457
+Ms     4.6          BJI        4012457
+Msz    4.1          BJI        4012457
+mb     5.0       30 MOS        4018792
+mb     4.9       34 NEIC       4577662
+MD     4.4          NDI        4908069
+ML     4.6          NDI        4908069
+mb     4.9          NEIC       4908069
+mb     4.1 0.1   16 IDC        4274618
+mb1    4.3 0.1   18 IDC        4274618
+mb1mx  4.2 0.1   23 IDC        4274618
+ML     4.2 0.0    2 IDC        4274618
+MS     3.8 0.2    1 IDC        4274618
+Ms1    3.9 0.2    1 IDC        4274618
+ms1mx  3.4 0.1   10 IDC        4274618
+mb     4.7       46 ISC        5282373
+MS     3.8        1 ISC        5282373
+
+Event  3339796 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/18 23:05:20.04   1.27 0.530  29.9907   88.2360  96.3  23.0  51   0.0f         6      174  15.06  86.03     uk IDC        4274711
+2001/12/18 23:05:22.60   0.71 0.540  29.6470   87.7680  25.0  11.3  37  33.0f         7      177   2.94  86.44     se NEIC       4577784
+2001/12/18 23:05:22.17   0.68 1.321  29.6370   87.5960 17.65 11.67   0  33.0f        10   10 155   3.09  86.48 m i    ISC        5282678
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.8 0.2    5 IDC        4274711
+mb1    4.0 0.1    7 IDC        4274711
+mb1mx  3.8 0.1   21 IDC        4274711
+ML     3.3 0.3    1 IDC        4274711
+MS     3.0 0.2    1 IDC        4274711
+Ms1    3.2 0.2    1 IDC        4274711
+ms1mx  2.7 0.1   14 IDC        4274711
+mb     3.9        5 ISC        5282678
+
+Event  2431052 Bangladesh
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/19 07:54:07.96   0.44 0.750  23.6320   90.3760  11.8   7.4  36  10.0f        13      108   9.51  64.40     de NEIC       4577807
+ (At least 100 people injured and some older buildings damaged [VI] at Dhaka. Felt [IV] at Narayanganj and [III] at Chittagong, Comilla,)
+ ( Gazipur, Laksmipur, Munshiganj, Rajshahi and Rangpur.)
+2001/12/19 07:54:12.00   1.38        23.7440   90.4260  28.6  16.1  28  33.0         10                               MOS        4018818
+2001/12/19 07:54:12.90        1.700  23.6900   90.6300                  21.0              15                          BJI        4012488
+2001/12/19 07:54:15.10   0.60 0.280  23.8147   89.9051  22.3  11.2  48  10.0   0.0   20   11 333   3.79   7.13     ke DMN        4609144
+2001/12/19 07:54:16.19   0.94 0.580  23.7164   90.5588  72.2  14.2  52  49.9   7.2   12      179   9.41  64.41     uk IDC        4274735
+2001/12/19 07:54:13.96   0.77 1.456  23.6400   90.2830   4.8 3.966   0  60.2   9.3   66   51  94   0.92  64.34 m i    ISC        5282745
+ (#PRIME)
+ (#PARAM pP_DEPTH=49+1)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.5        2 NEIC       4577807
+mb     5.2        2 MOS        4018818
+mb     4.4          BJI        4012488
+ML     4.2          BJI        4012488
+Ml     4.8 0.2    8 DMN        4609144
+mb     3.6 0.1    5 IDC        4274735
+mb1    3.9 0.1    6 IDC        4274735
+mb1mx  3.7 0.1   16 IDC        4274735
+MS     3.3 0.2    4 IDC        4274735
+Ms1    3.4 0.2    4 IDC        4274735
+ms1mx  3.2 0.1   14 IDC        4274735
+mb     4.2        7 ISC        5282745
+
+Event  2982671 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/21 09:26:02.70   1.88        32.4290   87.9460  32.4  14.8  29  33.0         11                               MOS        4829841
+2001/12/21 09:26:03.37   1.44 1.220  32.3810   87.9600  18.8   8.9 220  50.8  15.3   16      104   3.83  83.73     se NEIC       4577956
+2001/12/21 09:26:04.62   5.05 0.350  32.2112   88.0286  41.2  20.0  56  50.4  45.3   11      136  12.50 153.19     uk IDC        4274846
+2001/12/21 09:26:02.97   1.46 1.276  32.2780   87.9350 10.79 11.43  90  49.0  16.1   18   20  93   3.77 153.09 m i    ISC        5282985
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.5        5 MOS        4829841
+mb     4.8        1 NEIC       4577956
+mb     3.8 0.1    8 IDC        4274846
+mb1    4.0 0.1   10 IDC        4274846
+mb1mx  3.8 0.1   20 IDC        4274846
+ML     3.9 0.1    2 IDC        4274846
+mb     4.2        8 ISC        5282985
+
+Event  3340093 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/22 14:46:18.63   9.19 0.320  29.9436   88.1556  47.0  29.7  61  56.9  83.4    5      122  15.07  86.09     uk IDC        4274903
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.6 0.2    4 IDC        4274903
+mb1    3.7 0.1    5 IDC        4274903
+mb1mx  3.4 0.1   19 IDC        4274903
+
+Event  4176700 Nepal
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/25 09:59:12.90   3.53 1.100  29.4180   81.6420  16.2  15.5  -1  13.6  11.5         8 266                      NDI        4908132
+2001/12/25 09:59:09.24   1.65 1.475  29.1380   81.7270 8.338   8.8  90  13.6f        16   10 265   1.33   7.03 m i    ISC        5283432
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+MD     3.6          NDI        4908132
+ML     3.3          NDI        4908132
+
+Event  3340561 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2001/12/28 15:05:40.30  12.50 0.470  34.8875   87.1107 290.1  23.5  10  33.0   0.0   11   11 333   7.03   8.00     ke DMN        4608439
+2001/12/28 15:05:53.38   1.41 1.190  33.7817   86.6339  48.5  26.5  57   0.0f         5      132  11.15  82.55     uk IDC        4275197
+2001/12/28 15:05:56.26   0.80 1.149  33.7980   86.5800 12.08   7.2  90  33.0f        16   16 122   5.90  82.54 m i    ISC        5283704
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+Mb     5.0 0.2   11 DMN        4608439
+mb     3.3 0.1    3 IDC        4275197
+mb1    3.7 0.0    5 IDC        4275197
+mb1mx  3.6 0.1   19 IDC        4275197
+ML     3.4 0.1    2 IDC        4275197
+mb     3.2        2 ISC        5283704
+
+Event  6252557 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/04 15:59:25.32   2.04 0.030  29.3186   89.9632 190.0  25.3  57   0.0f         4      190  18.45  67.54     uk IDC        4656399
+2002/12/04 15:59:28.23   1.68 0.071  29.3724   90.0122 130.1 18.54 120  33.0f         7    7 190  18.38  67.54 m i    ISC        6218195
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.9 0.1    3 IDC        4656399
+mb1    4.0 0.2    4 IDC        4656399
+mb1mx  3.8 0.1   15 IDC        4656399
+ML     3.4 0.3    1 IDC        4656399
+mb     4.0        3 ISC        6218195
+
+Event  6252825 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/05 01:41:30.07   6.53 0.700  31.7628   85.5443 300.0  42.5  65   0.0f         3      217  15.22  69.50     uk IDC        4656423
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.9 0.3    1 IDC        4656423
+mb1    3.9 0.2    3 IDC        4656423
+mb1mx  3.7 0.1   16 IDC        4656423
+ML     3.4 0.2    2 IDC        4656423
+MS     2.9 0.2    1 IDC        4656423
+Ms1    3.1 0.2    1 IDC        4656423
+ms1mx  2.8 0.1   14 IDC        4656423
+
+Event  6253077 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/05 12:58:36.75   3.07 0.870  29.7827   90.7375 146.0  27.2  69   0.0f         5      197  13.53  75.70     uk IDC        4656447
+2002/12/05 12:58:40.07   1.19 0.625  29.8375   90.8295 60.53 12.70 142  33.0f         9    9 173   4.36  75.62 m i    ISC        6218268
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.6 0.1    3 IDC        4656447
+mb1    3.7 0.2    5 IDC        4656447
+mb1mx  3.6 0.1   16 IDC        4656447
+ML     3.2 0.2    2 IDC        4656447
+mb     3.5        3 ISC        6218268
+
+Event  6255434 Kashmir-Xizang border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/09 13:53:43.60   1.73 0.700  32.4220   78.9200   8.8  15.9  -1  33.0f              5 289                      NDI        6071815
+
+Magnitude  Err Nsta Author      OrigID
+MD     2.6          NDI        6071815
+
+Event  6258098 Northern India
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/14 12:41:06.40   4.07 1.700  31.6370   77.1620   9.4  12.8  -1  10.0f              9 198                      NDI        6071853
+2002/12/14 12:41:21.92   4.67 0.000  33.2620   77.2270 404.2  46.9  63   0.0          2      136  11.16  11.16     uk NNC        5909788
+ (#PARAM ENERGY_CLASS=8.52)
+2002/12/14 12:41:04.03   1.55 1.318  31.6415   77.3075 12.57 8.422 107   6.2  10.4   16    8 177   0.32  12.65 m i    ISC        6218969
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+MD     2.8          NDI        6071853
+
+Event  6258999 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/16 00:47:40.27   5.02 0.360  29.7890   90.5354 150.0  24.0  69  41.1  46.5    5      198  13.64  75.76     uk IDC        4657105
+2002/12/16 00:47:35.02   1.69 0.847  29.8081   90.5204 16.04 10.63   9  15.1  15.7   14   13  83   0.56  75.75 m i    ISC        6219109
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.8 0.1    3 IDC        4657105
+mb1    3.9 0.2    5 IDC        4657105
+mb1mx  3.6 0.1   18 IDC        4657105
+ML     3.0 0.3    1 IDC        4657105
+mb     4.0        3 ISC        6219109
+
+Event  6259000 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/16 00:48:07.69   1.81 0.550  29.9452   90.8393 130.0  21.8  60   0.0f         6      181  13.61  85.64     uk IDC        4657106
+2002/12/16 00:48:08.00        2.700  29.7000   90.4500                   7.0               8                          BJI        4683758
+2002/12/16 00:48:09.83   0.74 0.380  29.6750   90.3610  30.9   9.0  63  33.0f         8      184  13.64  85.99     se NEIC       5336567
+2002/12/16 00:48:06.42   0.80 0.548  29.7082   90.4408 15.17 7.688  42   7.0f        14   13 183   0.62  85.94 m i se ISC        6219110
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.1 0.2    4 IDC        4657106
+mb1    4.2 0.2    6 IDC        4657106
+mb1mx  4.0 0.1   19 IDC        4657106
+ML     3.8 0.4    2 IDC        4657106
+mb     4.4          BJI        4683758
+mb     3.8        1 NEIC       5336567
+mb     4.1        5 ISC        6219110
+
+Event  6259218 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/16 11:56:55.97   0.81 0.570  29.9015   88.0411  26.5  18.4  51   0.0f        13      128  15.11  86.15     uk IDC        4657133
+2002/12/16 11:56:56.90        2.200  29.5700   88.0500                  21.0              12                          BJI        4683765
+2002/12/16 11:56:58.50   0.96        29.8080   87.9870  26.3  11.1  19  33.0         16                               MOS        6047139
+2002/12/16 11:56:58.57   0.63 1.150  29.7250   87.8220  17.2   9.4  45  33.0f        19      129   2.90  86.35     se NEIC       5336599
+2002/12/16 11:57:00.59        0.660  29.9040   88.0280   6.6   4.4  26  26.5   5.5   59   52                       ke EHB       11225722
+2002/12/16 11:57:01.70   4.56 1.700  29.6720   87.9910  31.6  20.3  -1  10.0f              6 211                      NDI        6071884
+2002/12/16 11:56:59.27   0.37 1.179  29.8684   87.9934 7.871 5.199  55  33.0f        57   53  97   2.75  86.19 m i se ISC        6219144
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.0 0.1   11 IDC        4657133
+mb1    4.2 0.1   13 IDC        4657133
+mb1mx  4.1 0.1   21 IDC        4657133
+ML     3.6 0.2    2 IDC        4657133
+MS     3.1 0.1    3 IDC        4657133
+Ms1    3.2 0.1    3 IDC        4657133
+ms1mx  3.0 0.1   19 IDC        4657133
+mb     4.1          BJI        4683765
+ML     3.4          BJI        4683765
+mb     4.6        4 MOS        6047139
+mb     4.2        3 NEIC       5336599
+mb     4.2          NEIC       6071884
+mb     4.1       13 ISC        6219144
+MS     3.2        2 ISC        6219144
+
+Event  6262099 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/21 22:26:45.72   6.23 0.270  29.6957   90.2755 445.0  37.4  63   0.0f         3      205  18.17  67.62     uk IDC        4657484
+2002/12/21 22:26:49.32   1.25 0.198  29.8829   90.6588 85.96 14.74 141  33.0f         7    6 175   4.43  67.53 m i    ISC        6279871
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.7 0.1    2 IDC        4657484
+mb1    3.8 0.3    3 IDC        4657484
+mb1mx  3.5 0.1   17 IDC        4657484
+ML     2.7 0.3    1 IDC        4657484
+mb     3.7        2 ISC        6279871
+
+Event  6262553 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/22 19:12:55.98   4.82 0.740  29.7200   89.0662  33.7  17.2  54  48.8  46.9    9      126  14.38  86.16     uk IDC        4657532
+2002/12/22 19:12:56.85   1.88 1.010  29.5840   88.9460  23.4  10.3  59  77.3  17.3   14      127   1.92  86.31     se NEIC       5337196
+2002/12/22 19:12:58.30        3.000  29.5600   89.0700                  97.0               6                          BJI        4683834
+2002/12/22 19:13:00.40   0.85 0.320  29.8510   88.4388  34.8  16.8 139  10.0   0.0   10    6 339   2.96   4.36     ke DMN        4893745
+2002/12/22 19:13:03.80   5.29 2.000  29.3580   88.9020  31.9  23.5  -1  66.0f              8 220                      NDI        6071957
+2002/12/22 19:12:59.69   0.54 0.980  29.7840   89.0390 10.92 5.530 151  97.2  7.96   46   37  59   1.84  86.10 m i ke ISC        6219641
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.5 0.1    7 IDC        4657532
+mb1    3.7 0.1    9 IDC        4657532
+mb1mx  3.6 0.1   18 IDC        4657532
+ML     3.5 0.1    2 IDC        4657532
+mb     3.5        1 NEIC       5337196
+mb     4.2          BJI        4683834
+Ml     4.6 0.1    4 DMN        4893745
+ML     3.8          NDI        6071957
+mb     3.5          NEIC       6071957
+mb     3.6        8 ISC        6219641
+
+Event  6262855 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/23 08:59:12.40   2.55 1.100  28.2680   87.5100  55.3  10.3  -1  33.0f              3 240                      NDI        6071968
+
+Magnitude  Err Nsta Author      OrigID
+ML     3.9          NDI        6071968
+
+Event  6263196 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/23 20:36:18.10   2.89 0.150  30.8834   88.8687 138.0  41.2  55   0.0f         4      185  15.38  85.05     uk IDC        4657609
+2002/12/23 20:36:39.60   9.80 0.300  29.2071   86.7678 311.2  26.7  52  50.0f         4    4 319   1.51   2.77     ke DMN        4893752
+2002/12/23 20:36:18.77   0.75 1.022  30.3543   87.9921 13.17 10.53 117  33.0f        12   12  92   2.81  85.71 m i ke ISC        6219744
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.6 0.5    2 IDC        4657609
+mb1    3.6 0.2    4 IDC        4657609
+mb1mx  3.4 0.1   15 IDC        4657609
+ML     3.2 0.1    2 IDC        4657609
+MS     2.5 0.2    1 IDC        4657609
+Ms1    2.7 0.2    1 IDC        4657609
+ms1mx  2.4 0.1   20 IDC        4657609
+mb     3.8        2 ISC        6219744
+
+Event  6263198 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/23 20:40:25.43   2.73 0.760  30.8189   88.9564 124.0  40.2  55   0.0f         4      185  15.28  85.10     uk IDC        4657610
+2002/12/23 20:40:48.20   7.08 0.080  29.2002   86.6052 204.2  23.9  49  33.0   0.0    5    5 315   1.44   2.63     ke DMN        4893753
+2002/12/23 20:40:26.17   0.70 0.647  30.2547   87.9914 11.83 9.492 124  33.0f        15   15  90   2.80  85.81 m i ke ISC        6219745
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.8 0.3    2 IDC        4657610
+mb1    3.7 0.3    4 IDC        4657610
+mb1mx  3.5 0.3   15 IDC        4657610
+ML     3.2 0.2    2 IDC        4657610
+mb     3.9        2 ISC        6219745
+
+Event  6264895 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/27 03:10:37.55   3.11 1.150  29.6828   88.1970  81.1  42.4 117   0.0f         5      254  17.69  86.34     uk IDC        4657865
+2002/12/27 03:10:42.48   0.92 1.071  29.7484   87.8141 37.68 14.78 115  33.0f        10   10 127   5.51  86.33 m i    ISC        6220034
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.7 0.2    4 IDC        4657865
+mb1    3.8 0.1    5 IDC        4657865
+mb1mx  3.6 0.1   16 IDC        4657865
+ML     2.9 0.3    1 IDC        4657865
+mb     3.8        4 ISC        6220034
+
+Event  6264900 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/27 03:28:30.59   1.50 0.880  29.9706   88.0996  38.3  35.3  76   0.0f         8      127  15.13  86.07     uk IDC        4657866
+2002/12/27 03:28:32.59   1.09 1.360  29.6620   87.7250  32.7  12.3  41  33.0f        12      190   2.98  86.43     se NEIC       5337641
+2002/12/27 03:28:35.28   1.37 1.162  29.8930   88.0213 20.79 14.08  65  47.7  17.6   22   22 123   2.73  86.16 m i se ISC        6220035
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.0 0.1    6 IDC        4657866
+mb1    4.0 0.1    8 IDC        4657866
+mb1mx  3.8 0.1   20 IDC        4657866
+ML     3.7 0.1    2 IDC        4657866
+mb     4.2        1 NEIC       5337641
+mb     4.0        6 ISC        6220035
+
+Event  6264956 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/27 06:35:22.34   1.76 0.770  29.8743   88.0703  52.5  37.3  67   0.0f         7      128  15.07  86.17     uk IDC        4657874
+2002/12/27 06:35:25.38   0.76 1.010  29.7570   87.8720  19.6  11.3  38  33.0f         9      129   2.85  86.31     se NEIC       5337670
+2002/12/27 06:35:27.60   1.37 0.839  29.7851   88.0001 18.70 11.18  86  54.2  17.5   18   17 124   2.74  86.27 m i se ISC        6220043
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.8 0.1    5 IDC        4657874
+mb1    3.8 0.1    7 IDC        4657874
+mb1mx  3.7 0.1   18 IDC        4657874
+ML     3.4 0.2    2 IDC        4657874
+mb     3.8        6 ISC        6220043
+
+Event  6266143 India-Bangladesh border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/29 07:05:05.20   3.94 1.500  26.4290   88.9100  54.3  20.6  -1   7.4  63.8         5 154                      NDI        6072017
+2002/12/29 07:05:03.19   2.99 2.275  26.3327   88.9185 26.47 16.25  28   1.3  26.3    6    4 157   0.58   6.49 m i    ISC        6220216
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+MD     2.8          NDI        6072017
+
+Event  6266981 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2002/12/30 16:46:25.10   4.22 1.400  31.0350   86.4150  29.2  15.6  -1  33.0f             18 216                      NDI        6072027
+2002/12/30 16:46:26.93        0.810  30.7280   86.2820   5.2   4.2  24  27.1  11.5   94   87                       ke EHB       11225954
+2002/12/30 16:46:27.57   1.30 1.060  30.7170   86.2720   9.2   7.5  51  51.3  13.8   29       75   4.34 135.69     se NEIC       5338095
+2002/12/30 16:46:27.70        2.000  30.6500   86.4100                  54.0              29                          BJI        4683940
+2002/12/30 16:46:28.00   1.27        30.6660   86.2280  11.8   7.5   7  59.0         29                               MOS        6047310
+2002/12/30 16:46:29.19   4.81 0.460  30.7822   86.4523  28.0  14.0  54  45.3  46.1   16      111  16.31 135.83     uk IDC        4658132
+2002/12/30 16:46:25.56   1.67 1.348  30.6802   86.1217 6.655 4.417 176  32.5  14.0   99   92  56   4.46  85.67 m i se ISC        6220341
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+ML     4.0          NDI        6072027
+MW     4.3          NDI        6072027
+mb     4.2          NEIC       6072027
+mb     4.2        9 NEIC       5338095
+mb     4.1          BJI        4683940
+ML     3.7          BJI        4683940
+Ms     3.9          BJI        4683940
+Msz    3.6          BJI        4683940
+mb     4.5        6 MOS        6047310
+mb     4.2 0.1   12 IDC        4658132
+mb1    4.3 0.1   14 IDC        4658132
+mb1mx  4.1 0.1   17 IDC        4658132
+ML     3.8 0.0    2 IDC        4658132
+MS     3.7 0.2    4 IDC        4658132
+Ms1    3.8 0.2    4 IDC        4658132
+ms1mx  3.4 0.1   20 IDC        4658132
+mb     4.4       17 ISC        6220341
+MS     3.7        4 ISC        6220341
+
+Event  7196418 Kashmir-Xizang border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/01 16:35:34.80   2.37 1.100  32.0040   78.2790  10.9  20.0  -1  10.0f              3 302                      NDI        6593748
+2003/12/01 16:35:32.01   3.16 0.674  32.0471   78.4077 18.99 12.83 145  10.0f         6    3 305   1.34   2.12 m i    ISC        6872453
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+ML     3.6          NDI        6593748
+
+Event  7196882 Western Xizang-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/02 11:38:40.66   0.75 0.650  31.5710   78.2190  25.3  10.0  60  33.0f        11      196  15.50  77.73     se NEIC       6862230
+2003/12/02 11:38:40.80   4.38 1.400  31.5860   78.2040  12.2  11.2  -1  10.0f             18 193                      NDI        6593756
+2003/12/02 11:38:44.28   6.58 0.640  31.6985   78.4508  60.7  16.7  53  46.1  59.8   10      196  15.36  77.56     uk IDC        6108360
+2003/12/02 11:38:45.00   1.22        31.9620   77.4450  66.3  16.6  97  33.0          8                               MOS        6836038
+2003/12/02 11:38:50.78   4.60 1.590  32.7487   77.4397  58.4  26.3  21   0.0          3      202  11.70  21.49     uk NNC        6231634
+ (#PARAM ENERGY_CLASS=9.42)
+2003/12/02 11:38:40.41   1.50 1.354  31.6572   78.2421   7.5 5.880  49  25.9  13.0   46   36 102   1.06  77.64 m i se ISC        6872510
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+ML     3.4          NDI        6593756
+mb     3.5 0.1   10 IDC        6108360
+mb1    3.7 0.1   10 IDC        6108360
+mb1mx  3.6 0.1   17 IDC        6108360
+ML     3.8 0.3    1 IDC        6108360
+MS     3.3 0.2    1 IDC        6108360
+Ms1    3.3 0.2    1 IDC        6108360
+ms1mx  2.3 0.3   24 IDC        6108360
+mb     3.9        1 MOS        6836038
+mb     3.7       10 ISC        6872510
+MS     3.3        1 ISC        6872510
+
+Event  7197162 India-Bangladesh border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/02 21:14:52.49   0.53 1.090  25.7870   90.3920  16.3  10.6  54  23.1         19      104  10.77  64.74     se NEIC       6862262
+ (#PARAM pP_DEPTH=23.10000)
+2003/12/02 21:14:53.30   1.42        25.7000   90.3690  24.8  15.7 113  33.0         10                               MOS        6836042
+2003/12/02 21:14:54.59   0.79 0.490  25.6718   90.0925  69.4  13.2  54  21.8   4.1   15      178  21.98  64.84     uk IDC        6108380
+2003/12/02 21:14:51.72   1.33 0.866  25.8043   90.2635 12.53 6.859  58  17.0  11.4   25   21  72   0.26  64.83 m i se ISC        6872539
+ (#PRIME)
+ (#PARAM pP_DEPTH=22+1)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.8        1 NEIC       6862262
+mb     4.0        1 MOS        6836042
+mb     3.7 0.1    7 IDC        6108380
+mb1    3.8 0.1    8 IDC        6108380
+mb1mx  3.7 0.1   15 IDC        6108380
+ML     3.6 0.3    1 IDC        6108380
+mb     4.0        9 ISC        6872539
+
+Event  7197753 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/03 17:07:19.95   0.91 0.490  32.8955   88.9483  67.3  18.2  55   0.0f         9      141  14.78 150.05     uk IDC        6108427
+2003/12/03 17:07:24.93   0.98 1.240  33.0490   88.7570  25.5  11.6  52  33.0f         8      177   3.92  55.78     se NEIC       6862326
+2003/12/03 17:07:30.80        1.900  32.8700   89.1800                  33.0              10                          BJI        5634519
+2003/12/03 17:07:23.70   0.50 1.216  32.8583   88.5568 10.73 7.578  29  33.0f        22   21  86   3.85  70.92 m i se ISC        6872609
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.6 0.1    7 IDC        6108427
+mb1    3.8 0.1    8 IDC        6108427
+mb1mx  3.7 0.1   17 IDC        6108427
+ML     3.0 0.3    1 IDC        6108427
+mb     3.9        2 NEIC       6862326
+mb     4.1          BJI        5634519
+Ms     3.6          BJI        5634519
+mb     3.6        7 ISC        6872609
+
+Event  7200148 India-Bangladesh border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/06 09:53:03.96   1.45 1.890  25.5960   90.2500  54.1  19.5  69  26.7         11      201   4.17  64.69     se NEIC       6862593
+ (#PARAM pP_DEPTH=26.70000)
+2003/12/06 09:53:08.61   3.91 0.650  26.4469   91.8253 265.0  17.9  63  24.7   6.8    7      205  21.67  64.32     uk IDC        6108614
+2003/12/06 09:53:03.72   1.00 1.460  25.5704   90.3886 18.74 9.556  58  26.7f        12   11 200   1.35  64.58 m i se ISC        6872906
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.4        1 NEIC       6862593
+mb     3.5 0.2    4 IDC        6108614
+mb1    3.8 0.2    4 IDC        6108614
+mb1mx  3.5 0.1   16 IDC        6108614
+mb     3.8        5 ISC        6872906
+
+Event  7204150 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/10 17:17:29.60        1.400  30.0200   82.5900                  33.0              22                          BJI        5634657
+2003/12/10 17:17:34.02   0.77 0.540  30.4740   83.4072  25.7  17.8  64   0.0f        14      111  16.32 145.34     uk IDC        6108902
+2003/12/10 17:17:36.40   0.74 0.340  30.3177   83.4273  16.1  14.3 104  10.0   0.0   12    7 321   1.98   3.59     ke DMN        5577350
+2003/12/10 17:17:37.33   0.39 0.890  30.4690   83.2780  10.1   6.8 216  33.0f        30       63   6.86 145.22     se NEIC       6862971
+2003/12/10 17:17:37.70   1.20        30.5790   83.2530  14.5   8.6  96  33.0         27                               MOS        6836210
+2003/12/10 17:17:40.69        1.020  30.4380   83.3110   7.2   5.5  26  49.5   8.2   96   82                       ke EHB       11231281
+2003/12/10 17:17:40.90   6.38 1.800  30.0870   83.0870  27.9  17.9  -1  10.0f             23 198                      NDI        6593816
+2003/12/10 17:17:37.76   0.24 1.136  30.5872   83.2961 4.403 3.331 123  33.0f        96   88  25   2.27  86.14 m i ke ISC        6873355
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.1          BJI        5634657
+mB     4.6          BJI        5634657
+Ms     3.8          BJI        5634657
+Msz    3.8          BJI        5634657
+mb     4.2 0.1   12 IDC        6108902
+mb1    4.4 0.1   13 IDC        6108902
+mb1mx  4.3 0.1   19 IDC        6108902
+ML     3.9 0.3    1 IDC        6108902
+MS     3.6 0.1    2 IDC        6108902
+Ms1    3.7 0.1    2 IDC        6108902
+ms1mx  3.0 0.1   28 IDC        6108902
+Ml     4.5 0.2    4 DMN        5577350
+mb     4.5        7 NEIC       6862971
+mb     4.6       10 MOS        6836210
+MD     4.4          NDI        6593816
+ML     4.1          NDI        6593816
+mb     4.5          NEIC       6593816
+mb     4.3       25 ISC        6873355
+MS     3.5        5 ISC        6873355
+
+Event  7205381 Western Xizang-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/11 14:44:09.00   3.59 1.100  30.6350   80.4650  12.3  14.5  -1  10.0f             17 231                      NDI        6593822
+2003/12/11 14:44:11.88  17.23 0.300  30.6713   78.8264 334.0  88.2 129   0.0f         4      319  16.32  48.99     uk IDC        6108959
+2003/12/11 14:44:06.87   1.59 1.442  30.4414   80.5079 10.17 8.185 130   3.9  9.04   26   18 162   0.83  49.75 m i    ISC        6873451
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+ML     3.2          NDI        6593822
+mb     3.9 0.4    3 IDC        6108959
+mb1    3.9 0.3    4 IDC        6108959
+mb1mx  3.6 0.2   18 IDC        6108959
+ML     3.7 0.3    1 IDC        6108959
+mb     3.9        3 ISC        6873451
+
+Event  7205888 Western Xizang-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/12 01:02:40.00   5.72 1.500  31.2970   80.0860  24.7  36.0  -1  14.5  15.7        17 235                      NDI        6593824
+2003/12/12 01:02:48.90   1.88 0.530  30.6546   79.4668  93.1  26.8  58   0.0f         5      201  16.26  72.87     uk IDC        6108993
+2003/12/12 01:03:02.57   7.84 0.560  31.5141   78.8726  79.8  38.3  18  16.8  86.5    6      323  13.35  22.94     uk NNC        6231926
+ (#PARAM ENERGY_CLASS=9.66)
+2003/12/12 01:02:49.67   0.50 1.778  30.7840   79.3492 7.708 4.701 125  14.5f        32   24 119   0.29  73.03 m i    ISC        6873501
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+MD     3.3          NDI        6593824
+ML     3.7          NDI        6593824
+mb     4.1 0.3    4 IDC        6108993
+mb1    4.2 0.2    5 IDC        6108993
+mb1mx  3.8 0.2   15 IDC        6108993
+ML     4.0 0.3    1 IDC        6108993
+mb     4.1        5 ISC        6873501
+
+Event  7208741 Western Xizang-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/14 17:11:59.82   1.21 0.880  30.5748   80.5167  61.7  17.9  59   0.0f         9      195  16.25  86.49     uk IDC        6109137
+2003/12/14 17:12:02.40   1.31        30.6540   80.4050  72.9  17.9  93  33.0          7                               MOS        6835667
+2003/12/14 17:12:02.70   6.67 1.900  30.5610   80.5600  18.6  36.3  -1  33.0f             19 259                      NDI        6593845
+2003/12/14 17:12:02.87   0.60 1.100  30.6290   80.4990  26.8  10.3  80  33.0f        12      138  13.27  86.41     se NEIC       6863342
+2003/12/14 17:12:03.91   0.51 1.325  30.7750   80.7132 8.949 6.330  77  33.0f        36   29 107   1.02  86.25 m i se ISC        6873733
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.8 0.2    7 IDC        6109137
+mb1    4.0 0.1    8 IDC        6109137
+mb1mx  3.9 0.1   15 IDC        6109137
+ML     3.9 0.3    1 IDC        6109137
+mb     4.0        5 MOS        6835667
+MD     3.4          NDI        6593845
+ML     3.4          NDI        6593845
+mb     3.8        7 ISC        6873733
+
+Event  7209898 Western Xizang-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/15 22:54:18.10   0.96 0.610  31.7205   78.3481  51.0  17.5  51   0.0f        10      175  15.36  85.56     uk IDC        6109211
+2003/12/15 22:54:19.40   1.35        31.5160   78.3480  26.5   8.7 104  33.0         19                               MOS        6835682
+2003/12/15 22:54:19.51        0.940  31.6670   78.1220   7.3   4.5  46   7.2  11.7   75   63                       ke EHB       11231343
+2003/12/15 22:54:20.32   0.61 1.350  31.6220   78.2030  21.4  11.3  71  33.0f        20      126  14.15  85.65     se NEIC       6863428
+2003/12/15 22:54:20.90   7.01 1.900  31.6570   78.1910  28.3  29.2  -1  33.0f             20 198                      NDI        6593851
+2003/12/15 22:54:24.60        1.900  32.0400   78.5000                  23.0              16                          BJI        5634735
+2003/12/15 22:54:30.72  10.76 0.510  32.5305   77.8263  96.3  59.3 173  19.6   118    7       95  12.04  21.76     uk NNC        6232053
+ (#PARAM ENERGY_CLASS=10.01)
+2003/12/15 22:54:21.00   0.49 1.335  31.5948   78.1420 7.900 3.772  64  37.3  7.54   85   68  51   1.00  85.68 m i se ISC        6873830
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.1 0.1    8 IDC        6109211
+mb1    4.4 0.1    9 IDC        6109211
+mb1mx  4.2 0.1   15 IDC        6109211
+ML     3.7 0.3    1 IDC        6109211
+mb     4.7        2 MOS        6835682
+mb     4.5        2 NEIC       6863428
+MD     4.4          NDI        6593851
+ML     4.0          NDI        6593851
+mb     4.5          NEIC       6593851
+mb     4.3          BJI        5634735
+ML     4.1          BJI        5634735
+mb     4.2       12 ISC        6873830
+
+Event  7209938 Western Xizang-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/15 23:51:12.55   2.06 0.750  31.6407   78.5334  98.3  27.7  60   0.0f         4      201  15.41  74.10     uk IDC        6109213
+2003/12/15 23:51:29.00   3.04 0.900  30.3070   78.0110  11.8  11.2  -1  19.9   9.8        10 105                      NDI        6593854
+2003/12/15 23:51:10.77   0.81 1.401  31.4864   78.4323 10.34 8.800  54  10.0f        16   14 115   1.14  74.08 m i    ISC        6900463
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.7 0.3    2 IDC        6109213
+mb1    3.7 0.3    3 IDC        6109213
+mb1mx  3.4 0.2   12 IDC        6109213
+ML     2.7 0.3    1 IDC        6109213
+MD     3.1          NDI        6593854
+mb     3.6        2 ISC        6900463
+
+Event  7209940 Western Xizang-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/15 23:51:51.75   1.88 0.370  31.5052   78.1860  82.3  25.7  58   0.0f         6      202  15.59  77.82     uk IDC        6109214
+2003/12/15 23:51:52.72   0.69 0.767  31.6485   78.2854 10.38 9.541 146  10.0f        10   10 107   1.13  77.64 m i    ISC        6873833
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.9 0.1    4 IDC        6109214
+mb1    4.0 0.1    5 IDC        6109214
+mb1mx  3.8 0.1   13 IDC        6109214
+ML     3.4 0.3    1 IDC        6109214
+mb     3.9        4 ISC        6873833
+
+Event  7209942 Western Xizang-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/15 23:56:05.67   1.30 0.550  31.7189   78.4187  75.3  18.8  56   0.0f         8      196  15.35  85.56     uk IDC        6109215
+2003/12/15 23:56:07.70   1.03        31.5010   78.1240  25.9  12.1 103  33.0         13                               MOS        6835684
+2003/12/15 23:56:07.98   0.56 1.080  31.5270   78.1510  17.9   9.5  63  33.0f        15      147  11.35  85.75     se NEIC       6863433
+2003/12/15 23:56:08.30   7.10 2.200  31.3090   78.1840  21.8  20.2  -1  10.0f             14 219                      NDI        6593855
+2003/12/15 23:56:07.16   1.27 1.152  31.5558   78.1212 9.240 3.765  57  24.3  11.0   59   44  77   0.92  85.72 m i se ISC        6873834
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.1 0.1    6 IDC        6109215
+mb1    4.3 0.1    7 IDC        6109215
+mb1mx  4.1 0.1   14 IDC        6109215
+ML     3.4 0.3    1 IDC        6109215
+mb     5.2        2 MOS        6835684
+mb     4.4        1 NEIC       6863433
+ML     3.6          NDI        6593855
+mb     4.4          NEIC       6593855
+mb     4.3        7 ISC        6873834
+
+Event  7213917 Western Xizang-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/21 04:16:31.90   4.51 1.300  31.8200   78.0630  25.2  16.6  -1  38.7  21.4         8 202                      NDI        6593886
+2003/12/21 04:16:33.84   1.08 1.560  31.5495   78.0280 13.65 5.922  45  33.0f        13    9 186   0.85   3.15 m i    ISC        6914221
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+MD     3.1          NDI        6593886
+ML     3.5          NDI        6593886
+
+Event  7215758 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/23 15:43:02.44   0.95 0.790  31.2112   89.4068  49.6  19.7  56   0.0f        10      134  16.50 150.51     uk IDC        6109678
+2003/12/23 15:43:05.90        2.800  31.3800   89.6900                  20.0              12                          BJI        5634848
+2003/12/23 15:43:06.00   1.14        31.2500   89.1020  28.2  14.1 104  33.0         11                               MOS        6853573
+2003/12/23 15:43:06.50   0.68 0.930  31.3970   89.4780  20.6   9.3  53  33.0f        13      172   2.22 108.47     se NEIC       6864056
+2003/12/23 15:43:00.40   1.52 1.274  31.1638   89.2096 11.50 7.184  99   1.7  10.6   26   25  70   2.22  84.72 m i se ISC        6874494
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.7 0.1    8 IDC        6109678
+mb1    3.9 0.1    9 IDC        6109678
+mb1mx  3.9 0.1   15 IDC        6109678
+mb     4.0          BJI        5634848
+ML     4.4          BJI        5634848
+mb     4.4        1 MOS        6853573
+mb     4.0        2 NEIC       6864056
+mb     3.7        9 ISC        6874494
+
+Event  7218889 Sikkim
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2003/12/27 14:12:06.07   1.10 0.610  27.4036   88.3798  92.1  17.9  54   0.0f         8      178  19.94  67.15     uk IDC        6110073
+2003/12/27 14:12:08.90        4.800  27.3000   88.1000                  33.0               5                          BJI        5634932
+2003/12/27 14:12:08.91   0.63 0.990  27.2680   88.1030  15.2  12.1 108  33.0f        10       89   3.61  67.23     se NEIC       6864516
+2003/12/27 14:12:09.20   2.70 0.900  27.1260   88.3390  14.3  10.4  -1  10.0f              5 179                      NDI        6593925
+2003/12/27 14:12:12.16   0.86 1.029  27.2828   88.1136 10.94   7.3  99  66.5  10.9   24   19  68   2.10  67.23 m i se ISC        6875039
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.8 0.1    7 IDC        6110073
+mb1    4.0 0.1    8 IDC        6110073
+mb1mx  3.9 0.1   14 IDC        6110073
+ML     4.1 0.3    1 IDC        6110073
+ML     3.6          BJI        5634932
+MD     3.1          NDI        6593925
+mb     3.8        7 ISC        6875039
+
+Event  7444333 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2004/12/01 07:23:55.52   3.92 0.040  32.9974   90.5300 142.0  35.0  89   0.0f         3      244  19.06  72.81     uk IDC        6528595
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.8 0.0    2 IDC        6528595
+mb1    3.9 0.2    3 IDC        6528595
+mb1mx  3.5 0.2   16 IDC        6528595
+ML     4.4 0.3    1 IDC        6528595
+
+Event  7445145 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2004/12/02 23:45:50.03   0.89 0.900  30.6095   83.5085  32.4  16.3  48   0.0f        11      165  18.51  77.18     uk IDC        6528836
+2004/12/02 23:45:55.20   1.33 1.280  30.6070   83.3730  20.8   9.4  70  40.7  15.0   19       97  13.60  77.65     se NEIC       7254322
+2004/12/02 23:45:55.90   2.84 1.200  30.0580   83.4700  48.3   9.9  -1  10.0f              5 204                      NDI        7322490
+2004/12/02 23:45:49.44   0.44 1.374  30.5614   83.4839 7.372   6.0 140  10.0f        31   29  82   3.01  77.67 m i se ISC        7896970
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.7 0.1   10 IDC        6528836
+mb1    3.9 0.1   11 IDC        6528836
+mb1mx  3.8 0.1   20 IDC        6528836
+ML     3.5 0.3    1 IDC        6528836
+MS     3.4 0.1    2 IDC        6528836
+Ms1    3.4 0.2    2 IDC        6528836
+ms1mx  3.0 0.1   22 IDC        6528836
+mb     4.2        4 NEIC       7254322
+mb     4.2          NEIC       7322490
+mb     3.8       13 ISC        7896970
+MS     3.3        2 ISC        7896970
+
+Event  7445970 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2004/12/05 13:04:33.60   0.72 0.400  30.7157   81.2987  31.1  13.8  41  10.0   0.0   12    6 339   3.56   4.88     ke DMN        6333960
+2004/12/05 13:04:36.70        2.300  30.6500   81.2300                  10.0               7                          BJI        6621287
+2004/12/05 13:04:38.08   0.46 1.030  30.4810   81.2400  14.4   7.3  63  10.0f        26      106  12.91  86.48     se NEIC       7254756
+2004/12/05 13:04:39.50   0.80        30.4300   81.3660  28.9  14.4 115  33.0         13                               MOS        7155445
+2004/12/05 13:04:39.60        1.500  30.5800   81.4550                  10.0f             23                          NDI        7322502
+2004/12/05 13:04:40.67        0.760  30.5830   81.3670   6.1   4.2  41  20.7  11.8   70   63                       ke EHB       11237094
+2004/12/05 13:04:44.97   6.34 0.650  30.5235   81.3944  30.0  13.4  45  61.6  58.4   15      165  19.95  86.45     uk IDC        6529354
+2004/12/05 13:04:38.00   0.26 1.368  30.7338   81.3871 4.356 3.022  79  10.0f        92   77  52   1.56  86.21 m i ke ISC        7897290
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+Ml     4.6 0.1    6 DMN        6333960
+mb     3.9          BJI        6621287
+mb     4.2        6 NEIC       7254756
+mb     4.3       10 MOS        7155445
+MD     3.7          NDI        7322502
+ML     3.8          NDI        7322502
+mb     4.2          NEIC       7322502
+mb     3.8 0.1   14 IDC        6529354
+mb1    4.0 0.0   15 IDC        6529354
+mb1mx  3.8 0.1   22 IDC        6529354
+ML     4.1 0.3    1 IDC        6529354
+mb     4.0       20 ISC        7897290
+
+Event  7446822 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2004/12/08 21:55:05.42   1.13 0.720  32.4000   90.6947  36.9  22.4  54   0.0f         8      146  15.75  83.29     uk IDC        6530060
+2004/12/08 21:55:06.40        2.100  32.7100   90.6000                  15.0              11                          BJI        6621332
+2004/12/08 21:55:07.93   4.18 0.880  32.4750   90.6340  13.7   7.4 217  14.6  28.9   17      146  15.80  83.21     se NEIC       7255144
+2004/12/08 21:55:08.79   0.41 1.017  32.5551   90.7054 7.563 5.493  64  33.0f        29   27  61   2.87  83.12 m i se ISC        7897587
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.6 0.1    6 IDC        6530060
+mb1    3.8 0.1    8 IDC        6530060
+mb1mx  3.7 0.1   20 IDC        6530060
+ML     3.9 0.0    2 IDC        6530060
+MS     3.4 0.1    3 IDC        6530060
+Ms1    3.4 0.0    3 IDC        6530060
+ms1mx  3.1 0.2   22 IDC        6530060
+mb     3.4          BJI        6621332
+ML     3.9          BJI        6621332
+Ms     4.0          BJI        6621332
+Msz    3.4          BJI        6621332
+mb     3.6        9 NEIC       7255144
+mb     3.7        8 ISC        7897587
+MS     3.4        2 ISC        7897587
+
+Event  8328509 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2004/12/14 22:15:55.50   1.55 0.600  31.4520   84.2860  14.3   8.5  -1  10.0f              5 230                      NDI        7322562
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.3          NDI        7322562
+
+Event  8328601 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2004/12/18 20:50:58.10   3.23 1.300  32.5320   84.4780  50.8  20.2  -1  10.0f              5 245                      NDI        7322589
+2004/12/18 20:51:06.55   1.93 0.240  30.6144   83.6157  57.9  25.7  62   0.0f         5      198  18.44  70.02     uk IDC        6531133
+2004/12/18 20:51:07.18   0.70 1.459  30.6319   83.8500 15.75 9.310  18  10.0f        11   10 120   3.33  69.88 m i    ISC        8018705
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+MD     3.7          NDI        7322589
+mb     3.6 0.1    4 IDC        6531133
+mb1    3.7 0.1    5 IDC        6531133
+mb1mx  3.5 0.1   19 IDC        6531133
+ML     3.3 0.3    1 IDC        6531133
+mb     3.5        4 ISC        8018705
+
+Event  8328777 Nepal-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2004/12/26 05:11:43.80   3.24 1.200  29.6840   80.7210  39.3  36.7  -1  10.0f              4 318                      NDI        7322696
+
+Magnitude  Err Nsta Author      OrigID
+ML     4.4          NDI        7322696
+
+Event  8329174 Nepal-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2004/12/30 12:49:00.50   2.42 0.600  29.5620   80.6600  19.0  19.5  -1   6.3   8.8        11 297                      NDI        7323049
+
+Magnitude  Err Nsta Author      OrigID
+ML     3.5          NDI        7323049
+
+Event  8204653 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2004/12/31 18:55:12.53   1.34 0.620  30.1399   86.0553  44.6  27.3  47   0.0f         5      179  23.59  86.23     uk IDC        7201728
+2004/12/31 18:55:18.88   3.97 0.262  30.0961   85.9349 45.55 26.70 106  60.7  40.5    7    7 179   6.93  86.27 m i    ISC        7902508
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.6 0.2    5 IDC        7201728
+mb1    3.7 0.2    5 IDC        7201728
+mb1mx  3.5 0.1   17 IDC        7201728
+mbtmp  3.6 0.2    5 IDC        7201728
+mb     3.6        5 ISC        7902508
+

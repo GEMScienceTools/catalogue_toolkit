@@ -1,0 +1,49 @@
+DATA_TYPE EVENT IMS1.0
+Reviewed ISC Bulletin
+Event  3254347 Northern India
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2000/12/05 21:47:50.20   3.01 0.900  28.9540   77.4030   9.3   7.7  -1  14.2   8.7        10 188                      NDI        4214847
+2000/12/05 21:47:53.92   1.44 1.703  28.7640   77.2960 14.65 11.19   0  14.2f         6    6 177   0.11   5.50 m i    ISC        4412029
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+MD     2.3          NDI        4214847
+ML     2.5          NDI        4214847
+MW     2.5          NDI        4214847
+
+Event  3264199 Qinghai
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2000/12/07 23:53:36.94   3.66 0.130  34.6313   92.7415 237.0  28.0  72   0.0f         4      187  17.03  80.74     uk IDC        4221686
+2000/12/07 23:53:35.14   1.60 0.723  33.8960   90.0600 74.08 21.42  90  33.0f         5    5 182   8.45  81.91 m i    ISC        4412219
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.6 0.3    3 IDC        4221686
+ML     3.5 0.0    1 IDC        4221686
+mb     3.7        2 ISC        4412219
+
+Event  3254520 Nepal-India border region
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2000/12/18 16:45:35.90   3.92 1.700  29.8210   80.1970  12.7  32.5  -1   5.0f              6 234                      NDI        4214956
+
+Magnitude  Err Nsta Author      OrigID
+MD     3.1          NDI        4214956
+
+Event  3265672 Xizang
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2000/12/28 19:44:09.24   4.78 0.620  30.9443   84.4666 188.0  31.4  69   0.0f         3      228  18.07  72.06     uk IDC        4222892
+2000/12/28 19:44:25.89   2.74 0.753  31.7240   86.7930 26.06 21.53  90 100.4  38.0   10   10 156   3.88  71.16 m i    ISC        4414178
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.4 0.2    2 IDC        4222892
+ML     3.2 0.0    1 IDC        4222892
+mb     3.2        2 ISC        4414178
+
+Event  3254630 Northern India
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2000/12/29 08:40:32.30   5.75 1.900  24.2800   83.1610  11.5  10.4  -1  10.0f             11 125                      NDI        4215043
+
+Magnitude  Err Nsta Author      OrigID
+ML     3.3          NDI        4215043
+

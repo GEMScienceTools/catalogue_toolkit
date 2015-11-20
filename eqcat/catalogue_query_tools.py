@@ -366,6 +366,21 @@ class CatalogueSelector(object):
                          [llon, llat]])
         return self.select_within_polygon(bbox[:, 0], bbox[:, 1], select_type)
 
+    
+    def select_within_date_range(self, start_date=None, end_date=None,
+                                 select_type="any"):
+        """
+        Selects within a date[years] range
+        """
+        if not start_date:
+            start_date = 0
+        if not end_date:
+            end_date = 2015
+        idx = (self.catalogue.origins["year"] >= start_date) &\
+            (self.catalogue.origins["year"] <= end_date)
+        return self._select_by_origins(idx, select_type)
+
+
 
 def get_agency_origin_count(catalogue):
     """
@@ -405,6 +420,45 @@ def get_agency_magtype_statistics(catalogue, pretty_print=True):
     for agency, n_origins in agency_count:
 
         print "Agency: %s - %d Origins" % (agency, n_origins)
+        if not agency in mag_group_keys:
+            print "No magnitudes corresponding to this agency"
+            print "".join(["=" for iloc in range(0, 40)])
+            continue
+
+        grp1 = mag_group.get_group(agency)
+        mag_counts = grp1["magType"].value_counts()
+        mag_counts = mag_counts.iteritems()
+        if pretty_print:
+            print "%s" % " | ".join(["{:s} ({:d})".format(val[0], val[1])
+                                     for val in mag_counts])
+            print "".join(["=" for iloc in range(0, 40)])
+        agency_dict = {"Origins": n_origins, "Magnitudes": dict(mag_counts)}
+        output.append((agency, agency_dict))
+    return OrderedDict(output)
+    
+
+def get_agency_magtype_statistics_with_agency_code(catalogue, agency_dict = None, pretty_print=True):
+    """
+    Returns an analysis of the number of different magnitude types found for
+    each agency
+    """
+    agency_count = get_agency_origin_count(catalogue)
+    mag_group = catalogue.magnitudes.groupby("magAgency")
+    mag_group_keys = mag_group.groups.keys()
+    output = []
+    agency_name = []
+    agency_country = []
+    agency_codes = agency_dict
+    
+    
+    for agency, n_origins in agency_count:
+        for key, value in sorted(agency_codes.iteritems()):
+               if key == agency:
+                  agency_name = value.get('name')
+                  agency_country = value.get('country')
+        print "Agency: %s - %s - %s " % (agency, agency_name, agency_country)
+        print "Origins: %d " % (n_origins)
+    
         if not agency in mag_group_keys:
             print "No magnitudes corresponding to this agency"
             print "".join(["=" for iloc in range(0, 40)])
