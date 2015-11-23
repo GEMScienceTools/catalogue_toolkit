@@ -94,9 +94,8 @@ class Magnitude(object):
         '''
         if (magnitude.origin_id == self.origin_id) and (magnitude.author == 
             self.author) and (magnitude.scale == self.scale):
-            if fabs(magnitude.value - self.value) > 0.005:
-                print self.__dict__
-                print magnitude.__dict__
+            if fabs(magnitude.value - self.value) > 0.001:
+                print "%s != %s" %(self.__str__(), str(magnitude))
                 raise ValueError('Two magnitudes with same metadata contain '
                                  'different values!')
             return True
@@ -108,33 +107,6 @@ class Magnitude(object):
         Returns the magnitude identifier
         """
         return self.magnitude_id
-
-#    def create_hdf5_magnitude(self, grp, mag_id):
-#        """
-#        Creates an instance of the magnitude dataset in hdf5
-#        """
-#        mag_dset = grp.create_dataset("{:s}".format(self.origin_id) +\
-#            "_{:s}".format(mag_id).zfill(3), (1,), dtype="f")
-#        self._add_nonessential_param(mag_dset, "author", self.author)
-#        #mag_dset.attrs["author"] = self.author
-#        mag_dset.attrs["scale"] = self.scale
-#        self._add_nonessential_param(mag_dset, "sigma", self.sigma)
-#        #mag_dset.attrs["sigma"] = self.sigma
-#        #mag_dset.attrs["stations"] = self.stations
-#        self._add_nonessential_param(mag_dset, "stations", self.stations)
-#        #print self.value, self.origin_id, self.author, self.scale
-#        mag_dset[0] = self.value
-#        
-#    
-#    def _add_nonessential_param(self, grp, param, value):
-#        """
-#        Adds any non-essential parameters as attributes 
-#        """
-#        if value:
-#            grp.attrs[param] = value
-#        else:
-#            grp.attrs[param] = False
-
 
 
 class Location(object):
@@ -181,9 +153,13 @@ class Location(object):
         Returns a simple location string that concatenates longitude,
         latitude and depth
         """
-        return "%sN-%sE-%s" % (str(self.longitude),
-                               str(self.latitude),
-                               str(self.depth))
+        if not self.depth:
+            depth_str = ""
+        else:
+            depth_str = str(self.depth)
+        return "%s|%s|%s" % (str(self.longitude),
+                             str(self.latitude),
+                             depth_str)
 
 class Origin(object):
     '''
@@ -233,6 +209,8 @@ class Origin(object):
         self.is_centroid = is_centroid
         self.time_error = time_error
         self.time_rms = time_rms
+        self.date_time_str = "|".join([str(self.date).replace("-", "|"),
+                                       str(self.time).replace(":", "|")])
 
     def get_number_magnitudes(self):
         """
@@ -296,48 +274,8 @@ class Origin(object):
         Returns an string providing information regarding the origin (namely
         the ID, date, time and location
         """
-        return "%s|%s|%s" % (self.id,
-                             " ".join([str(self.date), str(self.time)]),
-                             str(self.location))
 
-#    def create_hdf5_origin(self, grp):
-#        """
-#        Adds the origin group
-#        """
-#        origin_grp = grp.create_group("{:s}".format(self.id))
-#        origin_grp.attrs["author"] = self.author
-#        origin_grp.attrs["year"] = self.date.year
-#        origin_grp.attrs["month"] = self.date.month
-#        origin_grp.attrs["day"] = self.date.day
-#        origin_grp.attrs["hour"] = self.time.hour
-#        origin_grp.attrs["minute"] = self.time.minute
-#        seconds = float(self.time.second) + float(self.time.microsecond) /\
-#            1.0E6
-#        origin_grp.attrs["second"] = seconds
-#        self._add_nonessential_param(origin_grp, "time_error", self.time_error)
-#        origin_grp.attrs["longitude"] = self.location.longitude
-#        origin_grp.attrs["latitude"] = self.location.latitude
-#        origin_grp.attrs["depth"] = self.location.depth
-#        self._add_nonessential_param(origin_grp, "depth_error",
-#                                      self.location.depth_error)
-#        self._add_nonessential_param(origin_grp, "SemiMajor90",
-#                                      self.location.semimajor90)
-#        self._add_nonessential_param(origin_grp, "SemiMinor90",
-#                                      self.location.semiminor90)
-#        self._add_nonessential_param(origin_grp, "ErrorStrike",
-#                                      self.location.error_strike)
-#        for iloc, mag in enumerate(self.magnitudes):
-#            mag.create_hdf5_magnitude(origin_grp, iloc)
-#
-#    def _add_nonessential_param(self, grp, param, value):
-#        """
-#
-#        """
-#        if value:
-#            grp.attrs[param] = value
-#        else:
-#            grp.attrs[param] = False
-
+        return "%s|%s|%s" % (self.id, self.date_time_str, str(self.location))
 
 class Event(object):
     '''
@@ -444,21 +382,11 @@ class Event(object):
                 mag_sigmas.append(mag.sigma)
         return authors, mag_scales, mag_values, mag_sigmas
 
-#    def create_hdf5_event(self, fle):
-#        """
-#
-#        """
-#        event_grp = fle.create_group("{:s}".format(self.id))
-#        event_grp.attrs["ID"] = self.id
-#        for origin in self.origins:
-#            origin.create_hdf5_origin(event_grp)
-
     def __str__(self):
         """
         Return string definition from the ID and description
         """
-        return "%s:%s" % (str(self.id), self.description)
-
+        return "%s|'%s'" % (str(self.id), self.description)
 
 
 class ISFCatalogue(object):
@@ -685,6 +613,24 @@ class ISFCatalogue(object):
         np.savetxt(filename, cat_array, fmt=frmt)
         print 'done!'
 
+    def quick_export(self, filename, delimiter=","):
+        """
+        Rapidly exports the catalogue to an ascii format
+        """
+        f = open(filename, "w")
+        print >> f, "eventID,Description,originID,year,month,day,hour,"\
+            "minute,second,longitude,latitude,depth,magOriginID,magAgency,"\
+            "magnitude,magScale"
+        for event in self.events:
+            base_str = str(event)
+            for origin in event.origins:
+                output_strings = [base_str, str(origin)]
+                output_strings.extend([str(mag) for mag in origin.magnitudes])
+                output_str = "|".join(output_strings)
+                print >> f, output_str.replace("|", delimiter)
+        f.close()
+        print "Exported to %s" % filename
+          
     def __iter__(self):
         """
         If iterable, returns list of events
@@ -696,16 +642,5 @@ class ISFCatalogue(object):
         For len return number of events
         """
         return self.get_number_events()
-
-#    def build_hdf5_database(self, target_file):
-#        """
-#        Parses the catalogue to an hdf5 database
-#        """
-#        fle = h5py.File(target_file, "a")
-#        for event in self.events:
-#            event.create_hdf5_event(fle)
-#        fle.close()
-#
-#
 
 
