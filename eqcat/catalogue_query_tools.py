@@ -1033,6 +1033,24 @@ class CatalogueRegressor(object):
         if not overlay:
             plt.show()
 
+    def plot_magnitude_conversion_model(self, model, overlay, line_color="g",
+            filetype="png", resolution=300, filename=None):
+        """
+        Plots a specific magnitude conversion model (to overlay on top of
+        a current figure)
+        """
+        model_x = np.arange(0.9 * np.min(self.data[self.keys[0]]),
+                            1.1 * np.max(self.data[self.keys[0]]),
+                            0.01)
+        model_y, _ = model.convert_value(model_x, 0.0)
+        plt.plot(model_x, model_y, line_color,
+                 linewidth=2.0,
+                 label=model.model_name)
+        plt.legend(loc=2, frameon=False)
+        if filename:
+            utils._save_image(filename, filetype, resolution)
+        if not overlay:
+            plt.show()
 
     def retrieve_model(self):
         """
