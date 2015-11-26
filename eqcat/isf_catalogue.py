@@ -329,9 +329,11 @@ class Event(object):
         Returns the full set of magnitudes as a delimited list of strings
         """
         mag_list = []
-        for mag in self.magnitudes:
-            mag_list.extend([str(mag.value), str(mag.sigma), mag.scale,
-                             mag.author])
+        for origin in self.origins:
+            for mag in origin.magnitudes:
+                mag_list.append(str(mag))
+                #mag_list.extend([str(mag.value), str(mag.sigma), mag.scale,
+                #                 mag.author])
         return delimiter.join(mag_list)
 
     def assign_magnitudes_to_origins(self):
