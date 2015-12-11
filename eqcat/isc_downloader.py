@@ -184,7 +184,7 @@ class ISCBulletinUrl():
 
       for SY in range(StartYear,EndYear,SplitYears):
 
-        EY = min([EndYear,SY+SplitYears])
+        EY = min([EndYear,SY+SplitYears-1])
         self.SetField("StartYear",SY)
         self.SetField("EndYear",EY)
 
