@@ -42,6 +42,10 @@ from datetime import date
 from math import exp, sqrt, sin, cos, atan2, pi
 from eqcat.utils import haversine
 
+from openquake.hazardlib.geo import geodetic
+from openquake.hazardlib.geo.geodetic import _prepare_coords
+
+
 
 def is_GCMTMw(magnitude):
     '''
@@ -720,22 +724,55 @@ class DynamicHomogenisor(Homogenisor):
                     self.log[iloc][1]]) 
         fid.close()
 
-CF = pi / 180.
+#: Earth radius in km.
+EARTH_RADIUS = 6371.0
 
-def decimal_degree_diff(origin1, origin2):
-    '''
-    Returns the distance in decimal degrees between two origins
-    '''
 
-    lon1 = origin1.location.longitude * CF
-    lat1 = origin1.location.latitude * CF
-    lon2 = origin2.location.longitude * CF
-    lat2 = origin2.location.latitude * CF
-    dlat = lat2 - lat1
-    dlon = lon2 - lon1
-    aval = (sin(dlat / 2.) ** 2.) + (cos(lat1) * cos(lat2) *
-                                     (sin(dlon / 2.) ** 2.))
-    return atan2(aval, 1. - aval) * (180. / pi)
+def geodetic_distance_diff(origin1, origin2):
+    """
+    Calculate the geodetic distance between two points or two collections
+    of points.
+
+    Parameters are coordinates in decimal degrees. They could be scalar
+    float numbers or numpy arrays, in which case they should "broadcast
+    together".
+
+    Implements http://williams.best.vwh.net/avform.htm#Dist
+
+    :returns:
+        Distance in km, floating point scalar or numpy array of such.
+    """
+    
+    lons1 = origin1.location.longitude
+    lats1 = origin1.location.latitude
+    lons2 = origin2.location.longitude
+    lats2 = origin2.location.latitude
+    
+    lons1, lats1, lons2, lats2 = _prepare_coords(lons1, lats1, lons2, lats2)
+    distance = np.arcsin(np.sqrt(
+        np.sin((lats1 - lats2) / 2.0) ** 2.0
+        + np.cos(lats1) * np.cos(lats2)
+        * np.sin((lons1 - lons2) / 2.0) ** 2.0
+    ).clip(-1., 1.))
+    return (2.0 * EARTH_RADIUS) * distance
+
+
+#CF = pi / 180.
+
+#def decimal_degree_diff(origin1, origin2):
+#    '''
+#    Returns the distance in decimal degrees between two origins
+#    '''
+#
+#    lon1 = origin1.location.longitude * CF
+#    lat1 = origin1.location.latitude * CF
+#    lon2 = origin2.location.longitude * CF
+#    lat2 = origin2.location.latitude * CF
+#    dlat = lat2 - lat1
+#    dlon = lon2 - lon1
+#    aval = (sin(dlat / 2.) ** 2.) + (cos(lat1) * cos(lat2) *
+#                                     (sin(dlon / 2.) ** 2.))
+#    return atan2(aval, 1. - aval) * (180. / pi)
 
 SECS_PER_YEAR = 365.25 * 24. * 3600.
 BREAK_STR = "==============================================="
@@ -825,8 +862,8 @@ class DuplicateFinder(object):
             is_in_distance = False
             for origin1 in self.reference.events[iloc].origins:
                 for origin2 in event.origins:
-                    distance = decimal_degree_diff(origin1, origin2)
-                    #print distance
+                    # compute distance in kms
+                    distance = geodetic_distance_diff(origin1, origin2)
                     if distance < self.dist_window:
                         is_in_distance = True
             if is_in_distance:
