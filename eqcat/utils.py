@@ -33,6 +33,22 @@ MARKER_LEAP = np.array([0, 31, 60, 91, 121, 152, 182,
 
 SECONDS_PER_DAY = 86400.0
 
+
+
+def _prepare_coords(lons1, lats1, lons2, lats2):
+    """
+    Convert two pairs of spherical coordinates in decimal degrees
+    to numpy arrays of radians. Makes sure that respective coordinates
+    in pairs have the same shape.
+    """
+    lons1 = np.array(np.radians(lons1))
+    lats1 = np.array(np.radians(lats1))
+    assert lons1.shape == lats1.shape
+    lons2 = np.array(np.radians(lons2))
+    lats2 = np.array(np.radians(lats2))
+    assert lons2.shape == lats2.shape
+    return lons1, lats1, lons2, lats2
+
 def decimal_year(year, month, day):
     """
     Allows to calculate the decimal year for a vector of dates 

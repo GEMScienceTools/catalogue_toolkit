@@ -40,12 +40,10 @@ from collections import OrderedDict
 from scipy.misc import derivative
 from datetime import date
 from math import exp, sqrt, sin, cos, atan2, pi
-from eqcat.utils import haversine
+from eqcat.utils import haversine, _prepare_coords
 
-from openquake.hazardlib.geo import geodetic
-from openquake.hazardlib.geo.geodetic import _prepare_coords
-
-
+#from openquake.hazardlib.geo import geodetic
+#from openquake.hazardlib.geo.geodetic import _prepare_coords
 
 def is_GCMTMw(magnitude):
     '''
