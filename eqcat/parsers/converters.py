@@ -169,7 +169,7 @@ class GCMTtoISFParser(object):
                                 gcmt.hypocentre.longitude,
                                 gcmt.hypocentre.latitude, 
                                 gcmt.hypocentre.depth)
-            centroid_loc = Location(gcmt.centroid.centroid_id,
+            centroid_loc = Location(origin_id + "-C",
                                     gcmt.centroid.longitude,
                                     gcmt.centroid.latitude,
                                     gcmt.centroid.depth,
@@ -183,7 +183,7 @@ class GCMTtoISFParser(object):
                           is_prime=True)
             hypo.magnitudes = origin_mags
             # Get centroids
-            centroid = Origin(gcmt.centroid.centroid_id,
+            centroid = Origin(origin_id + "-C",
                               gcmt.centroid.date,
                               gcmt.centroid.time,
                               centroid_loc,
