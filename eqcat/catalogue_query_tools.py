@@ -42,6 +42,10 @@ except:
 # RESET Axes tick labels
 matplotlib.rc("xtick", labelsize=14)
 matplotlib.rc("ytick", labelsize=14)
+# Switch to Type 1 fonts
+matplotlib.rcParams["pdf.fonttype"] = 42
+matplotlib.rcParams["ps.fonttype"] = 42
+matplotlib.rcParams["ps.useafm"] = True
 
 class CatalogueDB(object):
     """
