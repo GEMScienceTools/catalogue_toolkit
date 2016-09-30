@@ -1,7 +1,7 @@
 #
 # LICENSE
 #
-# Copyright (c) 2015 GEM Foundation
+# Copyright (c) 2016 GEM Foundation
 #
 # The Catalogue Toolkit is free software: you can redistribute
 # it and/or modify it under the terms of the GNU Affero General Public
@@ -15,15 +15,17 @@
 
 """
 Utility to download the ISC catalogue from website.
-Version 30/10/2015
+Version 29/09/2016
 """
 
+import os
+import time
 import urllib2
 import collections
 
 class ISCBulletinUrl():
 
-  #---------------------------------------
+  #---------------------------------------------------------------------------------------
 
   def __init__(self):
 
@@ -55,7 +57,7 @@ class ISCBulletinUrl():
     self.Request["EndYear"]                 = "end_year=2013"
     self.Request["EndMonth"]                = "end_month=12"
     self.Request["EndDay"]                  = "end_day=31"
-    self.Request["EndTime"]                 = "end_time=00:00:00"
+    self.Request["EndTime"]                 = "end_time=23:59:59"
     self.Request["MinimumDepth"]            = "min_dep="
     self.Request["MaximumDepth"]            = "max_dep="
     self.Request["NoDepthEvents"]           = "null_dep=on"
@@ -77,13 +79,13 @@ class ISCBulletinUrl():
     self.Request["IncludeComments"]         = "include_comments=on"
     self.Request["IncludeLinks"]            = "include_links=off"
 
-  #---------------------------------------
+  #---------------------------------------------------------------------------------------
 
   def UseMirror(self):
 
     self.BaseServer = "http://isc-mirror.iris.washington.edu/cgi-bin/web-db-v4?"
 
-  #---------------------------------------
+  #---------------------------------------------------------------------------------------
 
   def ListFields(self):
 
@@ -95,17 +97,17 @@ class ISCBulletinUrl():
       if not Value: Value = "[Empty]"
       print "\t" + Key + " = " + Value
 
-  #---------------------------------------
+  #---------------------------------------------------------------------------------------
 
-  def SetField(self,field_name,field_value):
+  def SetField(self, field_name, field_value):
 
     buf = self.Request[field_name]
     buf = buf.split("=")[0]
     self.Request[field_name] = buf + "=%s" % field_value
 
-  #---------------------------------------
+  #---------------------------------------------------------------------------------------
 
-  def SaveSettings(self,ParamFile):
+  def SaveSettings(self, ParamFile):
 
     ParFile = open(ParamFile, "w")
 
@@ -119,9 +121,9 @@ class ISCBulletinUrl():
 
     ParFile.close()
 
-  #---------------------------------------
+  #---------------------------------------------------------------------------------------
 
-  def LoadSettings(self,ParamFile):
+  def LoadSettings(self, ParamFile):
 
     ParFile = open(ParamFile, "r")
 
@@ -133,7 +135,7 @@ class ISCBulletinUrl():
 
     ParFile.close()
 
-  #---------------------------------------
+  #---------------------------------------------------------------------------------------
 
   def CreateUrl(self):
 
@@ -143,44 +145,65 @@ class ISCBulletinUrl():
 
     return UrlString
 
-  #---------------------------------------
+  #---------------------------------------------------------------------------------------
 
   def DownloadBlock(self):
 
+    Tries = 0
+    CatBlock = ""
+
     UrlString = self.CreateUrl()
 
-    UrlReq = urllib2.Request(UrlString)
-    UrlRes = urllib2.urlopen(UrlReq)
-    Page = UrlRes.read()
+    while True:
 
-    CatStart = Page.find("DATA_TYPE")
-    CatStop = Page.find("STOP")
+      UrlReq = urllib2.Request(UrlString)
+      UrlRes = urllib2.urlopen(UrlReq)
+      Page = UrlRes.read()
+      UrlRes.close()
 
-    if CatStart > -1 and CatStop > -1:
+      if Page.find("Sorry") > -1:
 
-      CatBlock = Page[CatStart:CatStop-1]
+        if Tries > 10:
+          print "Warning: Maximum number of attempts reached..."
+          break
 
-    else:
+        print "Warning: Server is busy, retrying in a few seconds..."
+        time.sleep(30)
+        Tries += 1
 
-      CatBlock = ""
-      print "Warning: Cataloge not available for the selected period"
+      else:
+
+        CatStart = Page.find("DATA_TYPE")
+        CatStop = Page.find("STOP")
+
+        if CatStart > -1 and CatStop > -1:
+
+          CatBlock = Page[CatStart:CatStop-1]
+          break
+
+        else:
+
+          print "Warning: Cataloge not available for the selected period."
+          break
 
     return CatBlock
 
-  #---------------------------------------
+  #---------------------------------------------------------------------------------------
 
-  def GetCatalogue(self,OutputFile,SplitYears=0):
+  def GetCatalogue(self, SplitYears=[]):
+
+    self.CatBlock = ""
 
     if not SplitYears:
 
-      CatBlock = self.DownloadBlock()
+      # Download in one block
+      self.CatBlock = self.DownloadBlock()
 
     else:
 
+      # Split download into several chunks
       StartYear = int(self.Request["StartYear"].split("=")[1])
       EndYear = int(self.Request["EndYear"].split("=")[1])
-
-      CatBlock = ""
 
       for SY in range(StartYear,EndYear,SplitYears):
 
@@ -195,9 +218,19 @@ class ISCBulletinUrl():
           # Remove header from data blocks
           Chunk = Chunk.split('\n', 2)[-1]
 
-        CatBlock = CatBlock + Chunk
+        self.CatBlock += Chunk
 
-    CatFile = open(OutputFile, "w")
-    CatFile.write("%s" % CatBlock)
-    CatFile.close()
+  #---------------------------------------------------------------------------------------
 
+  def WriteOutput(self, OutputFile, OverWrite=False):
+
+    if os.path.isfile(OutputFile) and not OverWrite:
+      print "Warning: File exists. Use OverWrite option."
+      return
+
+    try:
+      with open(OutputFile, "w") as CatFile:
+        CatFile.write("%s" % self.CatBlock)
+        CatFile.close()
+    except:
+      print "Warning: Cannot open output file...."
