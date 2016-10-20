@@ -201,11 +201,19 @@ class ISCBulletinUrl():
 
     else:
 
+      # Make sure the whole year is covered
+      self.SetField("StartMonth","01")
+      self.SetField("StartDay","01")
+      self.SetField("StartTime","00:00:00")
+      self.SetField("EndMonth","12")
+      self.SetField("EndDay","31")
+      self.SetField("EndTime","23:59:59")
+
       # Split download into several chunks
       StartYear = int(self.Request["StartYear"].split("=")[1])
       EndYear = int(self.Request["EndYear"].split("=")[1])
 
-      for SY in range(StartYear,EndYear,SplitYears):
+      for SY in range(StartYear,EndYear+1,SplitYears):
 
         EY = min([EndYear,SY+SplitYears-1])
         self.SetField("StartYear",SY)

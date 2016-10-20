@@ -353,7 +353,7 @@ class CatalogueSelector(object):
         idx = pd.Series(polypath.contains_points(np.column_stack([
             self.catalogue.origins["longitude"].values,
             self.catalogue.origins["latitude"].values])))
-        idx = idx & self.catalogue.origins["depth"].notnull()
+        #idx = idx & self.catalogue.origins["depth"].notnull()
         return self._select_by_origins(idx, select_type)
 
     def select_within_bounding_box(self, bounds, select_type="any"):
