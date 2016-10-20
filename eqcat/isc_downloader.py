@@ -1,21 +1,25 @@
+# -*- coding: utf-8 -*-
 #
-# LICENSE
+# Copyright (C) 2010-2016 GEM Foundation
 #
-# Copyright (c) 2016 GEM Foundation
+# OpenQuake is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# The Catalogue Toolkit is free software: you can redistribute
-# it and/or modify it under the terms of the GNU Affero General Public
-# License as published by the Free Software Foundation, either version
-# 3 of the License, or (at your option) any later version.
+# OpenQuake is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
 #
 # You should have received a copy of the GNU Affero General Public License
-# with this download. If not, see <http://www.gnu.org/licenses/>
-
-#!/usr/bin/env/python
+# along with OpenQuake. If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Poggi Valerio
 
 """
 Utility to download the ISC catalogue from website.
-Version 29/09/2016
+Version 20/10/2016
 """
 
 import os
@@ -37,7 +41,7 @@ class ISCBulletinUrl():
 
     # Compulsory fields
     self.Request["CatalogueType"]           = "request=REVIEWED"
-    self.Request["OutputFormat"]            = "out_format=CATCSV"
+    self.Request["OutputFormat"]            = "out_format=ISF"
     self.Request["SearchAreaShape"]         = "searchshape=RECT"
     self.Request["RectangleBottomLatitude"] = "bot_lat=36"
     self.Request["RectangleTopLatitude"]    = "top_lat=48"
@@ -76,7 +80,7 @@ class ISCBulletinUrl():
     self.Request["PrimeOnly"]               = "prime_only="
     self.Request["IncludeMagnitudes"]       = "include_magnitudes=on"
     self.Request["IncludeHeaders"]          = "include_headers=on"
-    self.Request["IncludeComments"]         = "include_comments=on"
+    self.Request["IncludeComments"]         = "include_comments=off"
     self.Request["IncludeLinks"]            = "include_links=off"
 
   #---------------------------------------------------------------------------------------
@@ -134,6 +138,23 @@ class ISCBulletinUrl():
       self.SetField(Key,Value)
 
     ParFile.close()
+
+  #---------------------------------------------------------------------------------------
+
+  def SetSearchArea(self, Lat, Lon):
+
+    self.SetField("SearchAreaShape","RECT")
+    self.SetField("RectangleBottomLatitude",str(Lat[0]))
+    self.SetField("RectangleTopLatitude",str(Lat[1]))
+    self.SetField("RectangleLeftLongitude",str(Lon[0]))
+    self.SetField("RectangleRightLongitude",str(Lon[1]))
+
+  #---------------------------------------------------------------------------------------
+
+  def SetSearchTime(self, Year0, Year1):
+
+    self.SetField("StartYear",str(Year0))
+    self.SetField("EndYear",str(Year1))
 
   #---------------------------------------------------------------------------------------
 
@@ -242,3 +263,4 @@ class ISCBulletinUrl():
         CatFile.close()
     except:
       print "Warning: Cannot open output file...."
+
