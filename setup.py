@@ -49,7 +49,7 @@ setup(
         'numpy',
         'scipy',
         'h5py',
-        'pytables',
+        'tables',
         'pandas',
         'matplotlib',
         'basemap',
