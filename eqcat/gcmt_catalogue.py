@@ -24,6 +24,16 @@ import datetime
 from math import fabs, floor, sqrt, pi
 import numpy as np
 import eqcat.gcmt_utils as utils
+from collections import OrderedDict
+# Adding on an exporter to Geojson, but only if geojson package exists
+try:
+    import geojson
+except ImportError:
+    print("geojson package not installed - export to geojson not available!")
+    HAS_GEOJSON = False
+else:
+    HAS_GEOJSON = True
+    
 
 def cmp_mat(a, b):
     """
@@ -52,6 +62,14 @@ class GCMTHypocentre(object):
         self.m_s = None
         self.location = None
 
+    def __repr__(self):
+        """
+        String representation is bar separated list of attributes
+        """
+        return "|".join([
+            str(getattr(self, val))
+            for val in ["date", "time", "longitude", "latitude", "depth"]])
+
 
 
 class GCMTCentroid(object):
@@ -79,6 +97,14 @@ class GCMTCentroid(object):
         self.depth_error = None
         self.depth_type = None
         self.centroid_id = None
+    
+    def __repr__(self):
+        """
+        """
+        return "|".join([
+            str(getattr(self, val))
+            for val in ["date", "time", "longitude", "latitude", "depth"]])
+
 
 
     def _get_centroid_time(self, time_diff):
@@ -128,6 +154,30 @@ class GCMTPrincipalAxes(object):
         """
         raise NotImplementedError('Get azimuthal projection not yet '
                                   'implemented!')
+
+    def __repr__(self):
+        """
+        """
+        if self.t_axis:
+            t_str = "T: L={:.4E}|Az={:.3f}|Pl={:.3f}".format(
+                self.t_axis["eigenvalue"], self.t_axis["azimuth"],
+                self.t_axis["plunge"])
+        else:
+            t_str = "T: None"
+        if self.b_axis:
+            b_str = "N: L={:.4E}|Az={:.3f}|Pl={:.3f}".format(
+                self.b_axis["eigenvalue"], self.b_axis["azimuth"],
+                self.b_axis["plunge"])
+        else:
+            b_str = "N: None"
+        if self.p_axis:
+            p_str = "P: L={:.4E}|Az={:.3f}|Pl={:.3f}".format(
+                self.p_axis["eigenvalue"], self.p_axis["azimuth"],
+                self.p_axis["plunge"])
+        else:
+            p_str = "P: None"
+        return "{:s}|{:s}|{:s}".format(t_str, b_str, p_str)
+
         
 
 class GCMTNodalPlanes(object):
@@ -141,6 +191,24 @@ class GCMTNodalPlanes(object):
         """
         self.nodal_plane_1 = None
         self.nodal_plane_2 = None
+
+    def __repr__(self):
+        """
+        String rep is just strike/dip/rake e.g. 180/90/0
+        """
+        if self.nodal_plane_1:
+            np1_str = "{:.0f}/{:.0f}/{:.0f}".format(self.nodal_plane_1["strike"],
+                                                    self.nodal_plane_1["dip"],
+                                                    self.nodal_plane_1["rake"])
+        else:
+            np1_str = "-/-/-"
+        if self.nodal_plane_2:
+            np2_str = "{:.0f}/{:.0f}/{:.0f}".format(self.nodal_plane_2["strike"],
+                                                    self.nodal_plane_2["dip"],
+                                                    self.nodal_plane_2["rake"])
+        else:
+            np2_str = "-/-/-"
+        return "{:s} {:s}".format(np1_str, np2_str)
 
 
 
@@ -167,6 +235,18 @@ class GCMTMomentTensor(object):
         else:
             # Default to USE
             self.ref_frame = 'USE'
+
+    def __repr__(self):
+        """
+        """
+        if self.tensor is not None:
+            return "[{:.3E} {:.3E} {:.3E}\n{:.3E} {:.3E} {:.3E}\n{:.3E} {:.3E} {:.3E}]".format(
+                self.tensor[0, 0], self.tensor[0, 1], self.tensor[0, 2],
+                self.tensor[1, 0], self.tensor[1, 1], self.tensor[1, 2],
+                self.tensor[2, 0], self.tensor[2, 1], self.tensor[2, 2])
+        else:
+            return "[]"
+                
 
     def normalise_tensor(self):
         """
@@ -222,7 +302,6 @@ class GCMTMomentTensor(object):
         self.eigenvalues, self.eigenvectors = utils.eigendecompose(self.tensor,
                                                                    normalise)
         return self.eigenvalues, self.eigenvectors
-    
 
 
     def get_nodal_planes(self):
@@ -313,6 +392,16 @@ class GCMTEvent(object):
         self.f_clvd = None
         self.e_rel = None
 
+    def __repr__(self):
+        """
+        """
+        output_str = "{:s} - {:s} Mw\n".format(self.identifier,
+                                               str(self.magnitude))
+        return output_str + "\n".join([str(self.hypocentre),
+                                       str(self.centroid),
+                                       str(self.nodal_planes),
+                                       str(self.principal_axes),
+                                       str(self.moment_tensor)])
 
     def get_f_clvd(self):
         '''
@@ -377,8 +466,14 @@ class GCMTCatalogue(object):
 
     def number_events(self):
         '''
-        Returns number of CMTs
+        Returns number of CMTs - kept for backward compatibility!
         '''
+        return len(self.gcmts)
+
+    def __len__(self):
+        """
+        Returns number of CMTs
+        """
         return len(self.gcmts)
 
    
@@ -607,3 +702,98 @@ class GCMTCatalogue(object):
                     gcmt.centroid.longitude,
                     gcmt.centroid.latitude)
         fid.close()
+
+    def write_to_geojson(self, filename):
+        """
+
+        """
+        if not HAS_GEOJSON:
+            raise NotImplementedError("geojson module not available!")
+        feature_set = []
+        print("Creating geojson features")
+        for i, gcmt in enumerate(self.gcmts):
+            # Create Feature  set
+            geom = geojson.Point((gcmt.centroid.longitude,
+                                  gcmt.centroid.latitude))
+            attrs = OrderedDict([
+                ("MTID", gcmt.identifier),
+                ("Mw", gcmt.magnitude),
+                ("Mo", gcmt.moment),
+                ("CLong", gcmt.centroid.longitude),
+                ("CLat", gcmt.centroid.latitude),
+                ("CDepth", gcmt.centroid.depth),
+                ("HLong", gcmt.hypocentre.longitude),
+                ("HLat", gcmt.hypocentre.latitude),
+                ("HDepth", gcmt.hypocentre.depth),
+                ("Year", gcmt.centroid.date.year),
+                ("Month", gcmt.centroid.date.month),
+                ("Day", gcmt.centroid.date.day),
+                ("Hour", gcmt.centroid.time.hour),
+                ("Minute", gcmt.centroid.time.minute),
+                ("Second", gcmt.centroid.time.second)
+            ])
+            # Nodal planes
+            if gcmt.nodal_planes:
+                attrs["Strike1"] = gcmt.nodal_planes.nodal_plane_1["strike"]
+                attrs["Dip1"] = gcmt.nodal_planes.nodal_plane_1["dip"]
+                attrs["Rake1"] = gcmt.nodal_planes.nodal_plane_1["rake"]
+                attrs["Strike2"] = gcmt.nodal_planes.nodal_plane_2["strike"]
+                attrs["Dip2"] = gcmt.nodal_planes.nodal_plane_2["dip"]
+                attrs["Rake2"] = gcmt.nodal_planes.nodal_plane_2["rake"]
+            else:
+                attrs["Strike1"] = ""
+                attrs["Dip1"] = ""
+                attrs["Rake1"] = ""
+                attrs["Strike2"] = ""
+                attrs["Dip2"] = ""
+                attrs["Rake2"] = ""
+            # Principal axes
+            if gcmt.principal_axes:
+                attrs["T_Length"] = gcmt.principal_axes.t_axis["eigenvalue"]
+                attrs["T_Plunge"] = gcmt.principal_axes.t_axis["plunge"]
+                attrs["T_Azimuth"] = gcmt.principal_axes.t_axis["azimuth"]
+                attrs["N_Length"] = gcmt.principal_axes.b_axis["eigenvalue"]
+                attrs["N_Plunge"] = gcmt.principal_axes.b_axis["plunge"]
+                attrs["N_Azimuth"] = gcmt.principal_axes.b_axis["azimuth"]
+                attrs["P_Length"] = gcmt.principal_axes.p_axis["eigenvalue"]
+                attrs["P_Plunge"] = gcmt.principal_axes.p_axis["plunge"]
+                attrs["P_Azimuth"] = gcmt.principal_axes.p_axis["azimuth"]
+            else:
+                attrs["T_Length"] = "" 
+                attrs["T_Plunge"] = ""
+                attrs["T_Azimuth"] = ""
+                attrs["N_Length"] = ""
+                attrs["N_Plunge"] = ""
+                attrs["N_Azimuth"] = ""
+                attrs["P_Length"] = ""
+                attrs["P_Plunge"] = ""
+                attrs["P_Azimuth"] = ""
+            # Moment tensor
+            if gcmt.moment_tensor:
+                mrr, mtt, mpp, mrt, mrp, mtp =\
+                    gcmt.moment_tensor._to_6component()
+                attrs["mrr"] = mrr
+                attrs["mtt"] = mtt
+                attrs["mpp"] = mpp
+                attrs["mrt"] = mrt
+                attrs["mrp"] = mrp
+                attrs["mtp"] = mtp
+            else:
+                attrs["mrr"] = ""
+                attrs["mtt"] = ""
+                attrs["mpp"] = ""
+                attrs["mrt"] = ""
+                attrs["mrp"] = ""
+                attrs["mtp"] = ""
+            if gcmt.identifier:
+                i_d = gcmt.identifier
+            else:
+                i_d = str(i)
+            feature_set.append(geojson.Feature(geometry=geom,
+                                               properties=attrs,
+                                               id=i_d))
+        fcollection = geojson.FeatureCollection(feature_set)
+        print("Exporting to file")
+        with open(filename, "w") as f:
+            geojson.dump(fcollection, f)
+        print("Done")
