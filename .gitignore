@@ -61,3 +61,6 @@ target/
 
 # Mac
 *.DS_Store
+
+# Python pseudocode
+*.pyc
