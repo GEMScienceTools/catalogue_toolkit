@@ -324,7 +324,7 @@ class ISFReader(BaseCatalogueDatabaseReader):
         # Location rejection
         valid_location = False
         for orig in event.origins:
-            valid_location = (orig.location.longitude >= self.lower_lon) and\
+            valid_location = (orig.location.longitude >= self.lower_long) and\
                 (orig.location.longitude <= self.upper_long) and\
                 (orig.location.latitude >= self.lower_lat) and\
                 (orig.location.latitude <= self.upper_lat)
