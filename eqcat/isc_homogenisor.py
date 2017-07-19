@@ -127,7 +127,7 @@ class MagnitudeConversionRule(object):
     Defines a Rule for converting a magnitude
     '''
     def __init__(self, author, scale, model, sigma_model=None, start_date=None,
-            end_date=None, key=None, model_name=None):
+                 end_date=None, key=None, model_name=None):
         '''
         Applies to 
         '''
@@ -322,16 +322,18 @@ class Homogenisor(object):
                                                            mag_rule.scale])
         return None, None, None
 
-    def export_homogenised_to_csv(self, filename):
+    def export_homogenised_to_csv(self, filename, default_depth=10.0):
         """
-
-        """
-        '''
         Writes the catalogue to a simple csv format
         [eventID, Agency, OriginID, year, month, day, hour, minute, second,
         timeError, longitude, latitude, SemiMajor90, SemiMinor90, ErrorStrike,
         depth, depthError, magnitude, sigmaMagnitude]
-        '''
+
+        As some programmes may not be able to process the nans when depth
+        is missing they may be unable to treat depth as numerical data
+        (... I'm looking at you QGIS!). Set a default numerical value
+        for the caes when the depth is missing
+        """
         name_list = ['eventID', 'Agency', 'Identifier', 'year', 'month', 'day',
                      'hour', 'minute', 'second', 'timeError', 'longitude',
                      'latitude', 'SemiMajor90', 'SemiMinor90', 'ErrorStrike',
@@ -339,9 +341,14 @@ class Homogenisor(object):
         fid = open(filename, "wt")
         # Write header
         print >> fid, ",".join(name_list)
+        default_depth = str(default_depth)
         for event in self.catalogue.events:
             if hasattr(event, "preferred") and event.preferred is not None:
                 eqk = event.preferred
+                if eqk.location depth:
+                    depth_str = str(eqk.location.depth)
+                else:
+                    depth_str = default_depth
                 second = round(float(eqk.time.second) + \
                                float(eqk.time.microsecond) / 1.0E6, 2)
                 row_str = ",".join([str(event.id),
@@ -781,7 +788,7 @@ class DuplicateFinder(object):
     the second catalogue into the first
     """
     def __init__(self, reference_catalogue, time_window, distance_window,
-        magnitude_window=None, logging=False):
+                 magnitude_window=None, logging=False):
         '''
         :param reference_catalogue:
             Catalogue in ISF Format
@@ -818,15 +825,23 @@ class DuplicateFinder(object):
                 continue
             else:
                 # Possible duplicates
-                dup_event = self.compare_duplicate_list(event, idx, dtime)
-                if dup_event:
+                dup_event, has_dup = self.compare_duplicate_list(event,
+                                                                 idx,
+                                                                 dtime)
+                if has_dup:
                     # Merge origins of new catalogue into origin of reference
                     self.reference.events[dup_event].merge_secondary_origin(
                         event.origins)
                 else:
-                    self.reference.events.append(event)        
+                    self.reference.events.append(event)
+                    if self.logging:
+                        self.merge_log.append([BREAK_STR])
+                        self.merge_log.append(
+                            ["Event %s not duplication" % str(event)])
 
         # Sort reference events
+        print("After duplicate finding: %g events (%g)" %\
+            (self.reference.get_number_events(), len(self.reference.events))
         ref_times = self.reference.get_decimal_dates()
         ascend_time = np.argsort(ref_times)
         event_list = [self.reference.events[ascend_time[i]]
@@ -869,29 +884,28 @@ class DuplicateFinder(object):
         if len(distance_valid) > 1:
             # Multiple possible duplicates!
             # Assign to nearest event in time
-            if self.logging:
-                ref_string = str(self.reference.events[0]) + "-".join([
-                    str(origin) for origin in self.reference.events[0].origins]
-                    )
-                event_string = str(event) + "-".join([
-                    str(origin) for origin in event.origins])
-                self.merge_log.extend([BREAK_STR, ref_string, event_string])
-            #print distance_valid, len(distance_valid)
-            #dtime = dtime[idx]
             dtime = dtime[distance_valid]
             nrloc = np.argmin(dtime)
-            #print dtime, nrloc
-            return distance_valid[nrloc]
-        elif len(distance_valid) == 1:
-            # Single duplicate - add origins from event two to event 1
+            locn = distance_valid[nrloc]
             if self.logging:
-                ref_string = str(self.reference.events[0]) + "-".join([
-                    str(origin) for origin in self.reference.events[0].origins]
+                ref_string = str(self.reference.events[locn]) + "-".join([
+                    str(origin) for origin in self.reference.events[locn].origins]
                     )
                 event_string = str(event) + "-".join([
                     str(origin) for origin in event.origins])
                 self.merge_log.extend([BREAK_STR, ref_string, event_string])
-            return distance_valid[0]
+            return locn, True
+        elif len(distance_valid) == 1:
+            # Single duplicate - add origins from event two to event 1
+            locn = distance_valid[0]
+            if self.logging:
+                ref_string = str(self.reference.events[locn]) + "-".join([
+                    str(origin) for origin in self.reference.events[locn].origins]
+                    )
+                event_string = str(event) + "-".join([
+                    str(origin) for origin in event.origins])
+                self.merge_log.extend([BREAK_STR, ref_string, event_string])
+            return locn, True
         else:
             # Not duplicates
-            return None
+            return None, False

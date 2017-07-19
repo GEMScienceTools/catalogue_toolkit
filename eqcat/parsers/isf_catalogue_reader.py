@@ -98,8 +98,7 @@ def get_event_origin_row(row, selected_agencies=[]):
     origin_id = _to_str(row[128:])
     author = _to_str(row[118:127])
     if len(selected_agencies) and not author in selected_agencies:
-        # Origin not an instance of ISC Reviewed, Engdahl, HRVD or GCMT -
-        # origin not saved!
+        # Origin not an instance of (or authored by) a selected agency
         return None
     # Get date yyyy/mm/dd
     ymd = map(int, row[:10].split('/'))
@@ -142,8 +141,6 @@ def get_event_magnitude(row, event_id,
     author = row[20:29].strip(' ')
     scale=row[:5].strip(' ')
     if (len(selected_agencies) and not author in selected_agencies):
-        #\
-        #or (len(selected_agencies) and not scale in selected_types)):
         # Magnitude does not correspond to a selected agency - ignore
         return None
     sigma = _to_float(row[11:14])
@@ -159,20 +156,18 @@ class ISFReader(BaseCatalogueDatabaseReader):
     defined by the user
     '''
 
-    def __init__(self, filename, 
-                 selected_origin_agencies=[],
-                 selected_magnitude_agencies=[],
-                 #selected_magnitude_types =[],
-                 rejection_keywords=[],
-                 lower_magnitude=None, upper_magnitude=None):
+    def __init__(self, filename, selected_origin_agencies=[],
+                 selected_magnitude_agencies=[], rejection_keywords=[],
+                 bbox=[], lower_magnitude=None, upper_magnitude=None,
+                 store_all_comments=False):
         
         super(ISFReader, self).__init__(filename, 
                                         selected_origin_agencies,
                                         selected_magnitude_agencies)
-#                                        ,selected_magnitude_types)
         
         self.rejected_catalogue = []
         self.rejection_keywords = rejection_keywords
+        self.store_comments = store_all_comments
         if lower_magnitude and upper_magnitude:
             assert upper_magnitude > lower_magnitude
         if lower_magnitude:
@@ -183,6 +178,17 @@ class ISFReader(BaseCatalogueDatabaseReader):
             self.upper_mag = upper_magnitude
         else:
             self.upper_mag = np.inf
+        if len(bbox):
+            assert len(bbox) == 4
+            self.lower_long = bbox[0]
+            self.lower_lat = bbox[1]
+            self.upper_long = bbox[2]
+            self.upper_lat = bbox[3]
+        else:
+            self.lower_long = -180.0
+            self.lower_lat = -90.0
+            self.upper_long = 180.0
+            self.upper_lat = 90.0
 
     def read_file(self, identifier, name):
         """
@@ -227,6 +233,7 @@ class ISFReader(BaseCatalogueDatabaseReader):
             if comment_find:
                 comment_find.group(1)
                 comment_str += "{:s}\n".format(comment_find.group(1))
+                # Not sure - but sometimes this needs to be switched off
                 continue
 
             if 'Event' in row[:5]:
@@ -292,7 +299,8 @@ class ISFReader(BaseCatalogueDatabaseReader):
             #print "%s - %s" % (Event.id, Event.description)
             #print Event.comment
             if self._acceptance(event):
-                event.comment = ""
+                if not self.store_comments:
+                    event.comment = ""
                 self.catalogue.events.append(event)
 
 
@@ -312,6 +320,17 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 valid_magnitude = True
                 break
         if not valid_magnitude:
+            return False
+        # Location rejection
+        valid_location = False
+        for orig in event.origins:
+            valid_location = (orig.location.longitude >= self.lower_lon) and\
+                (orig.location.longitude <= self.upper_long) and\
+                (orig.location.latitude >= self.lower_lat) and\
+                (orig.location.latitude <= self.upper_lat)
+            if valid_location:
+                break
+        if not valid_location:
             return False
         for keyword in self.rejection_keywords:
             if keyword.lower() in event.comment.lower():

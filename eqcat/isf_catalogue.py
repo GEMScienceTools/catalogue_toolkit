@@ -69,9 +69,9 @@ class Magnitude(object):
         Number of stations
     '''
     def __init__(self, event_id, origin_id, value, author, scale=None,
-        sigma=None, stations=None):
-        '''
-        '''
+                 sigma=None, stations=None):
+        """
+        """
         self.event_id = event_id
         self.origin_id = origin_id
         self.value = value
@@ -82,6 +82,7 @@ class Magnitude(object):
             self.scale = 'UK'
         self.sigma = sigma
         self.stations = stations
+        # Createa ID string from attributes
         self.magnitude_id = "|".join(["{:s}".format(self.origin_id),
                                       self.author,
                                       "{:.2f}".format(self.value),
@@ -92,8 +93,9 @@ class Magnitude(object):
         Compares if a second instance of a magnitude class is the same as the
         current magnitude
         '''
-        if (magnitude.origin_id == self.origin_id) and (magnitude.author == 
-            self.author) and (magnitude.scale == self.scale):
+        if (magnitude.origin_id == self.origin_id) and\
+            (magnitude.author == self.author) and\
+            (magnitude.scale == self.scale):
             if fabs(magnitude.value - self.value) > 0.001:
                 print "%s != %s" %(self.__str__(), str(magnitude))
                 raise ValueError('Two magnitudes with same metadata contain '
@@ -102,7 +104,7 @@ class Magnitude(object):
         else:
             return False
     
-    def __str__(self):
+    def __repr__(self):
         """
         Returns the magnitude identifier
         """
@@ -145,11 +147,11 @@ class Location(object):
     :param float depth_error:
         1 s.d. Error on the depth value (km) 
     '''
-    def __init__(self, origin_id, longitude, latitude, depth, depthSolution=None,
-                semimajor90=None,
-                semiminor90=None, error_strike=None, depth_error=None):
-        '''
-        '''
+    def __init__(self, origin_id, longitude, latitude, depth,
+                 depthSolution=None, semimajor90=None, semiminor90=None,
+                 error_strike=None, depth_error=None):
+        """
+        """
         self.identifier = origin_id
         self.longitude = longitude
         self.latitude = latitude
@@ -185,7 +187,7 @@ class Location(object):
            
 
 class Origin(object):
-    '''
+    """
     In instance of an origin block
     :param int identifier:
         Origin identifier
@@ -214,12 +216,12 @@ class Origin(object):
         - 'LocationMethod' - Location Method
         - 'EventType' - Event type
     
-    '''
+    """
     def __init__(self, identifier, date, time, location, author, 
         is_prime=False, is_centroid=False, time_error=None, time_rms=None, 
         metadata=None):
         """
-        Instantiates
+        Instantiates origin
         """
         self.id = identifier
         self.date = date
@@ -270,7 +272,7 @@ class Origin(object):
         else:
             return [(mag.value, mag.scale) for mag in self.magnitudes]
 
-    def merge_secondary_magnitudes(self, magnitudes):
+    def merge_secondary_magnitudes(self, magnitudes, event_id):
         """
         Merge magnitudes as instances of isf_catalogue.Magnitude into origin
         list. 
@@ -278,8 +280,12 @@ class Origin(object):
         if self.get_number_magnitudes() == 0:
             # As no magnitudes currently exist then add all input magnitudes
             # to origin
-            self.magnitudes = magnitudes
+            for magnitude in magnitudes:
+                magnitude.event_id = event_id
+                self.magnitudes.append(magnitude)
+            return magnitudes
         else:
+            new_magnitudes = []
             for magnitude1 in magnitudes:
                 if not isinstance(magnitude1, Magnitude):
                     raise ValueError('Secondary magnitude must be instance of '
@@ -289,8 +295,12 @@ class Origin(object):
                     # Compare magnitudes
                     has_magnitude = magnitude2.compare_magnitude(magnitude1)
                 if not has_magnitude:
-                    # Magnitude not in current list - append
+                    # Magnitude not in current list - update the event ID
+                    # then append
+                    magnitude1.event_id = event_id
+                    new_magnitudes.append(magnitude1)
                     self.magnitudes.append(magnitude1)
+            return new_magnitudes
     
     def __str__(self):
         """
@@ -394,9 +404,14 @@ class Event(object):
                 # Origin is already in list - process magnitudes
                 location = current_id_list.index(origin2.id)
                 origin = self.origins[location]
-                origin.merge_secondary_magnitudes(origin2.magnitudes)
+                new_magnitudes = origin.merge_secondary_magnitudes(
+                    origin2.magnitudes, self.id)
+                self.magnitudes.extend(new_magnitudes)
                 self.origins[location] = origin
             else:
+                for magnitude in origin2.magnitudes:
+                    magnitude.event_id = self.id
+                    self.magnitudes.append(magnitude)
                 self.origins.append(origin2)
 
     def get_origin_mag_vals(self):
@@ -443,6 +458,19 @@ class ISFCatalogue(object):
         else:
             self.events = []
 
+
+    def __iter__(self):
+        """
+        If iterable, returns list of events
+        """
+        for event in self.events:
+            yield event
+
+    def __len__(self):
+        """
+        For len return number of events
+        """
+        return self.get_number_events()
 
     def get_number_events(self):
         """
@@ -669,17 +697,4 @@ class ISFCatalogue(object):
                 print >> f, output_str.replace("|", delimiter)
         f.close()
         print "Exported to %s" % filename
-          
-    def __iter__(self):
-        """
-        If iterable, returns list of events
-        """
-        return self.events
-
-    def __len__(self):
-        """
-        For len return number of events
-        """
-        return self.get_number_events()
-
 

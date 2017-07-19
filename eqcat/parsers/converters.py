@@ -43,8 +43,10 @@ def _header_check(input_keys, catalogue_keys):
 
 
 def _float_check(attribute_array, value):
-    '''Checks if value is valid float, appends to array if valid, appends
-    nan if not'''
+    """
+    Checks if value is valid float, appends to array if valid, appends
+    nan if not
+    """
     value = value.strip(' ')
     if value:
         attribute_array = np.hstack([attribute_array, float(value)])
@@ -54,8 +56,10 @@ def _float_check(attribute_array, value):
 
 
 def _int_check(attribute_array, value):
-    '''Checks if value is valid integer, appends to array if valid, appends
-    nan if not'''
+    """
+    Checks if value is valid integer, appends to array if valid, appends
+    nan if not
+    """
     value = value.strip(' ')
     if value:
         attribute_array = np.hstack([attribute_array, int(value)])

@@ -39,10 +39,11 @@ class GeneralCsvCatalogue(object):
                         'depthError', 'magnitude', 'sigmaMagnitude', 'moment', 
                         'mpp', 'mpr', 'mrr', 'mrt', 'mtp', 'mtt']
 
-    INT_ATTRIBUTE_LIST = ['eventID','year', 'month', 'day', 'hour', 'minute',
+    INT_ATTRIBUTE_LIST = ['year', 'month', 'day', 'hour', 'minute',
                           'flag', 'scaling']
 
-    STRING_ATTRIBUTE_LIST = ['Agency', 'magnitudeType','comment', 'source']
+    STRING_ATTRIBUTE_LIST = ['eventID', 'Agency', 'magnitudeType','comment',
+                             'source']
     
     TOTAL_ATTRIBUTE_LIST = list(
         (set(FLOAT_ATTRIBUTE_LIST).union(
