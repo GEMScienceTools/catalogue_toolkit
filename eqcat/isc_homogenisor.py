@@ -345,7 +345,7 @@ class Homogenisor(object):
         for event in self.catalogue.events:
             if hasattr(event, "preferred") and event.preferred is not None:
                 eqk = event.preferred
-                if eqk.location depth:
+                if eqk.location.depth:
                     depth_str = str(eqk.location.depth)
                 else:
                     depth_str = default_depth
@@ -841,7 +841,7 @@ class DuplicateFinder(object):
 
         # Sort reference events
         print("After duplicate finding: %g events (%g)" %\
-            (self.reference.get_number_events(), len(self.reference.events))
+            (self.reference.get_number_events(), len(self.reference.events)))
         ref_times = self.reference.get_decimal_dates()
         ascend_time = np.argsort(ref_times)
         event_list = [self.reference.events[ascend_time[i]]
