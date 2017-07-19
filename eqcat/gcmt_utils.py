@@ -20,7 +20,7 @@
 Set of moment tensor utility functions
 '''
 import numpy as np
-from math import fabs, log10, sqrt, acos, atan2, pi
+from math import fabs, log10, sqrt, acos, atan2, pi, sin, cos, degrees, radians
 
 
 def tensor_components_to_use(mrr, mtt, mpp, mrt, mrp, mtp):
@@ -215,3 +215,77 @@ def moment_magnitude_scalar(moment):
         return  (2. / 3.) * (np.log10(moment) - 9.05)
     else:
         return  (2. / 3.) * (log10(moment) - 9.05)
+
+
+# functions to construct second nodal plane from the first
+# transcribed to Python from GMT source code
+def computed_strike(nodal_plane, tol=1.0E-7):
+    """
+    Nodal plane is the nodal plane dict from the GCMTNodalPlanes object
+    {"strike": , "dip":, "rake":  }
+    """
+    strike, dip, rake = [radians(nodal_plane[val])
+                         for val in ["strike", "dip", "rake"]]
+    cd1 = cos(dip)
+    if fabs(nodal_plane["rake"]) < tol:
+        a_m = 1.
+    else:
+        a_m = nodal_plane["rake"] / fabs(nodal_plane["rake"])
+    s_r, c_r = sin(rake), cos(rake)
+    s_s, c_s = sin(strike), cos(strike)
+    if (cd1 < tol) and (fabs(c_r) < tol):
+        # 2nd plane is horizontal and strike undertermined
+        strike2 = nodal_plane["strike"] + 180.0
+        return (strike2 % 360.)
+
+    sp2 = -a_m * (c_r * c_s + (s_r * s_s * cd1))
+    cp2 = a_m * (s_s * c_r - (s_r * c_s * cd1))
+    strike2 = degrees(atan2(sp2, cp2))
+    return (strike2 % 360.)
+
+def computed_dip(nodal_plane, tol=1.0E-7):
+    """
+    Returns the second nodal plane dip from the first nodal plane
+    """
+    if fabs(nodal_plane["rake"]) < tol:
+        a_m = 1.0
+    else:
+        a_m = nodal_plane["rake"] / fabs(nodal_plane["rake"])
+    dip2 = acos(a_m * sin(radians(nodal_plane["rake"])) *
+                sin(radians(nodal_plane["dip"])))
+    return degrees(dip2)
+
+
+def computed_rake(nodal_plane, tol=1.0E-7):
+    """
+    Returns the second nodal plane rake from the first nodal plane
+    """
+    str2 = computed_strike(nodal_plane, tol)
+    dip2 = computed_dip(nodal_plane, tol)
+    strike, dip, rake = [radians(nodal_plane[val])
+                         for val in ["strike", "dip", "rake"]]
+    if fabs(nodal_plane["rake"]) < tol:
+        a_m = 1.0
+    else:
+        a_m = nodal_plane["rake"] / fabs(nodal_plane["rake"])
+    s_d, c_d = sin(dip), cos(dip)
+    s_s, c_s = sin(strike - radians(str2)), cos(strike)
+    if fabs(dip2 - 90.) < tol:
+        sinrake2 = a_m * c_d
+    else:
+        sinrake2 = -a_m * s_d * (c_s / c_d)
+    rake2 = atan2(sinrake2, -a_m * s_d * s_s)
+    return degrees(rake2), str2, dip2
+
+def compute_second_nodal_plane(nodal_plane, tol=1.0E-7):
+    """
+    Given a nodal plane of the form {'strike':, 'dip':, 'rake':} returns the
+    complementary plane as a dictionary of the same form
+    """
+    nodal_plane_2 = {}
+    rake, strike, dip = computed_rake(nodal_plane, tol)
+    nodal_plane_2["strike"] = strike
+    nodal_plane_2["dip"] = dip
+    nodal_plane_2["rake"] = rake
+    return nodal_plane_2
+

@@ -218,6 +218,7 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 
             if '(#CENTROID)' in row:
                 # Previous origin block is a centroid
+                #pdb.set_trace()
                 if len(origins) > 0:
                     origins[-1].is_centroid = True
                 continue
@@ -231,22 +232,10 @@ class ISFReader(BaseCatalogueDatabaseReader):
             if 'Event' in row[:5]:
                 # Is an event header row
                 if counter > 0:
-                    # Add magnitudes and origins to previous event
-                    # and previous event to catalogue
-                    Event.origins = origins
-                    Event.magnitudes = magnitudes
-                    if len(Event.origins) and len(Event.magnitudes):
-                        Event.assign_magnitudes_to_origins()
-                        Event.comment = comment_str
-                        #print "%s - %s" % (Event.id, Event.description)
-                        #print Event.comment
-                        if self._acceptance(Event):
-                            Event.comment = ""
-                            self.catalogue.events.append(Event)
-
+                    self._build_event(event, origins, magnitudes, comment_str)
                 
                 # Get a new event
-                Event = get_event_header_row(row.rstrip('\n'))
+                event = get_event_header_row(row.rstrip('\n'))
                 comment_str = ""
                 origins = []
                 magnitudes = []
@@ -267,9 +256,8 @@ class ISFReader(BaseCatalogueDatabaseReader):
             if is_magnitude and len(row.strip('\n')) == 38:
                 # Is a magnitude row
                 mag = get_event_magnitude(row.strip('\n'),
-                                          Event.id,
+                                          event.id,
                                           self.selected_magnitude_agencies)
-#                                          ,self.selected_magnitude_types)
 
                 if mag:
                     magnitudes.append(mag)
@@ -281,7 +269,8 @@ class ISFReader(BaseCatalogueDatabaseReader):
                                             self.selected_origin_agencies)
                 if orig:
                     origins.append(orig)
-
+        if event is not None:
+            self._build_event(event, origins, magnitudes, comment_str)
         if len(self.rejected_catalogue):
             # Turn list of rejected events into its own instance of
             # ISFCatalogue
@@ -290,6 +279,22 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 name + " - Rejected",
                 events=self.rejected_catalogue)
         return self.catalogue
+
+    def _build_event(self, event, origins, magnitudes, comment_str):
+        """
+        Add magnitudes and origins and event and append to the catalogue
+        """
+        event.origins = origins
+        event.magnitudes = magnitudes
+        if len(event.origins) and len(event.magnitudes):
+            event.assign_magnitudes_to_origins()
+            event.comment = comment_str
+            #print "%s - %s" % (Event.id, Event.description)
+            #print Event.comment
+            if self._acceptance(event):
+                event.comment = ""
+                self.catalogue.events.append(event)
+
 
     def _acceptance(self, event):
         """

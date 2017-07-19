@@ -108,6 +108,18 @@ class Magnitude(object):
         """
         return self.magnitude_id
 
+    def __eq__(self, eqk, tol=1.0E-3):
+        """
+        Returns True if the event IDs, magnitudes, scale and author are the
+        same, False otherwise
+        """
+        eq_check = (eqk.event_id == self.event_id) and\
+            (eqk.origin_id == self.origin_id) and\
+            (fabs(eqk.value - self.value) < tol) and\
+            (eqk.scale == self.scale) and\
+            (eqk.author == self.author)
+        return eq_check
+
 
 class Location(object):
     '''
@@ -160,6 +172,17 @@ class Location(object):
         return "%s|%s|%s" % (str(self.longitude),
                              str(self.latitude),
                              depth_str)
+
+    def __eq__(self, loc, tol=1.0E-3):
+        """
+        Determines if the location is the same
+        """
+        loc_check = (loc.identifier == self.identifier) and\
+            (fabs(loc.longitude - self.longitude) < tol) and\
+            (fabs(loc.latitude - self.latitude) < tol) and\
+            (fabs(loc.depth - self.depth) < tol)
+        return loc_check
+           
 
 class Origin(object):
     '''
@@ -275,7 +298,15 @@ class Origin(object):
         the ID, date, time and location
         """
 
-        return "%s|%s|%s" % (self.id, self.date_time_str, str(self.location))
+        return "%s|%s|%s|%s" % (self.id, self.author,
+                                self.date_time_str, str(self.location))
+
+    def __eq__(self, orig):
+        """
+        Determine
+        """
+        return str(self) == str(orig)
+
 
 class Event(object):
     '''
@@ -389,6 +420,12 @@ class Event(object):
         Return string definition from the ID and description
         """
         return "%s|'%s'" % (str(self.id), self.description)
+
+    def __eq__(self, evnt):
+        """
+        Compares two events on the basis of ID
+        """
+        return str(self) == str(evnt)
 
 
 class ISFCatalogue(object):

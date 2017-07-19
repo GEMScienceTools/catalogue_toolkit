@@ -580,7 +580,8 @@ def _save_image(filename, filetype='png', resolution=300):
         filename, filetype, resolution = build_filename(filename,
                                                         filetype,
                                                         resolution)
-        plt.savefig(filename, dpi=resolution, format=filetype)
+        plt.savefig(filename, dpi=resolution, format=filetype,
+                    bbox_inches="tight")
     else:
         pass
     return

@@ -25,6 +25,7 @@ import datetime
 import numpy as np
 import eqcat.gcmt_utils as utils
 from math import floor
+from eqcat.parsers.base import _to_int, _to_str, _to_float
 from eqcat.parsers.generic_catalogue import GeneralCsvCatalogue
 from eqcat.isf_catalogue import (ISFCatalogue, Magnitude,
                                  Origin, Location, Event)
