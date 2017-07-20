@@ -201,7 +201,16 @@ class ISFReader(BaseCatalogueDatabaseReader):
         is_magnitude = False
         comment_str = ""
         for row in f.readlines():
-            if not row.rstrip('\n'):
+            # Strip newline carriage
+            if row.endswith("\r\n"):
+                # If the file was compiled on windows machines
+                row = row.rstrip("\r\n")
+            elif row.endswith("\n"):
+                row = row.rstrip("\n")
+            else:
+                pass
+
+            if not row:
                 # Ignore empty rows
                 continue
             elif "DATA_TYPE EVENT IMS1.0" in row:
@@ -224,7 +233,6 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 
             if '(#CENTROID)' in row:
                 # Previous origin block is a centroid
-                #pdb.set_trace()
                 if len(origins) > 0:
                     origins[-1].is_centroid = True
                 continue
@@ -242,27 +250,26 @@ class ISFReader(BaseCatalogueDatabaseReader):
                     self._build_event(event, origins, magnitudes, comment_str)
                 
                 # Get a new event
-                event = get_event_header_row(row.rstrip('\n'))
+                event = get_event_header_row(row)
                 comment_str = ""
                 origins = []
                 magnitudes = []
                 counter += 1
                 continue
-
-            if row.rstrip('\n') == origin_header:
+            if row == origin_header:
                 is_origin = True
                 is_magnitude = False
                 continue
-            elif row.strip('\n') == magnitude_header:
+            elif row == magnitude_header:
                 is_origin = False
                 is_magnitude = True
                 continue
             else:
                 pass
             
-            if is_magnitude and len(row.strip('\n')) == 38:
+            if is_magnitude and len(row) == 38:
                 # Is a magnitude row
-                mag = get_event_magnitude(row.strip('\n'),
+                mag = get_event_magnitude(row,
                                           event.id,
                                           self.selected_magnitude_agencies)
 
@@ -270,9 +277,9 @@ class ISFReader(BaseCatalogueDatabaseReader):
                     magnitudes.append(mag)
                 continue
 
-            if is_origin and len(row.strip('\n')) == 136:
+            if is_origin and len(row) == 136:
                 # Is an origin row
-                orig = get_event_origin_row(row.strip('\n'),
+                orig = get_event_origin_row(row,
                                             self.selected_origin_agencies)
                 if orig:
                     origins.append(orig)
