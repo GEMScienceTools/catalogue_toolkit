@@ -19,7 +19,6 @@
 Reader for the catalogue in a reduced ISF Format considering only
 headers
 '''
-import pdb
 import os
 import re
 import datetime
@@ -234,7 +233,6 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 
             if '(#CENTROID)' in row:
                 # Previous origin block is a centroid
-                #pdb.set_trace()
                 if len(origins) > 0:
                     origins[-1].is_centroid = True
                 continue
@@ -253,13 +251,11 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 
                 # Get a new event
                 event = get_event_header_row(row)
-                #pdb.set_trace()
                 comment_str = ""
                 origins = []
                 magnitudes = []
                 counter += 1
                 continue
-            #pdb.set_trace()
             if row == origin_header:
                 is_origin = True
                 is_magnitude = False
@@ -285,10 +281,8 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 # Is an origin row
                 orig = get_event_origin_row(row,
                                             self.selected_origin_agencies)
-                #pdb.set_trace()
                 if orig:
                     origins.append(orig)
-        #pdb.set_trace()
         if event is not None:
             self._build_event(event, origins, magnitudes, comment_str)
         if len(self.rejected_catalogue):
