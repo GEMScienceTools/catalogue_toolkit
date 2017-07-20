@@ -49,6 +49,7 @@ setup(
         'numpy',
         'scipy',
         'h5py',
+        'geojson',
         'tables',
         'pandas',
         'matplotlib',
