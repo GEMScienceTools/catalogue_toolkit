@@ -19,6 +19,7 @@
 Reader for the catalogue in a reduced ISF Format considering only
 headers
 '''
+#import pdb
 import os
 import re
 import datetime
@@ -155,6 +156,8 @@ class ISFReader(BaseCatalogueDatabaseReader):
     the origin agencies, the magnitude agencies and the magnitude types
     defined by the user
     '''
+    ANTHROPOGENIC_KEYWORDS = ["Geothermal", "Reservoir", "Mining",
+                              "Anthropogenic"]
 
     def __init__(self, filename, selected_origin_agencies=[],
                  selected_magnitude_agencies=[], rejection_keywords=[],
@@ -238,13 +241,13 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 continue
 
             comment_find = re.search("\((.*?)\)", row)
-            if comment_find:
+            if comment_find and not row.startswith("Event"):
                 comment_find.group(1)
                 comment_str += "{:s}\n".format(comment_find.group(1))
                 # Not sure - but sometimes this needs to be switched off
                 continue
 
-            if 'Event' in row[:5]:
+            if row.startswith('Event'):
                 # Is an event header row
                 if counter > 0:
                     self._build_event(event, origins, magnitudes, comment_str)
@@ -281,6 +284,7 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 # Is an origin row
                 orig = get_event_origin_row(row,
                                             self.selected_origin_agencies)
+                #pdb.set_trace()
                 if orig:
                     origins.append(orig)
         if event is not None:
@@ -339,6 +343,9 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 break
         if not valid_location:
             return False
+        for keyword in self.ANTHROPOGENIC_KEYWORDS:
+            if keyword.lower() in event.comment.lower():
+                event.induced_flag = keyword
         for keyword in self.rejection_keywords:
             if keyword.lower() in event.comment.lower():
                 self.rejected_catalogue.append(event)
