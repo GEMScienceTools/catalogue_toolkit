@@ -337,7 +337,8 @@ class Homogenisor(object):
         name_list = ['eventID', 'Agency', 'Identifier', 'year', 'month', 'day',
                      'hour', 'minute', 'second', 'timeError', 'longitude',
                      'latitude', 'SemiMajor90', 'SemiMinor90', 'ErrorStrike',
-                     'depth', 'depthError', 'magnitude', 'sigmaMagnitude']
+                     'depth', 'depthError', 'magnitude', 'sigmaMagnitude',
+                     'Anthropogenic']
         fid = open(filename, "wt")
         # Write header
         print >> fid, ",".join(name_list)
@@ -370,6 +371,7 @@ class Homogenisor(object):
                                     _to_str(eqk.location.depth_error),
                                     str(eqk.magnitude),
                                     _to_str(eqk.magnitude_sigma),
+                                    str(event.induced_flag),
                                     event.magnitude_string()])
                 print >> fid, row_str
         fid.close()

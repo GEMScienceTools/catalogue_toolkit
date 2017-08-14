@@ -340,6 +340,7 @@ class Event(object):
         self.magnitudes = magnitudes
         self.description = description
         self.comment = ""
+        self.induced_flag = ""
 
     def number_origins(self):
         '''
