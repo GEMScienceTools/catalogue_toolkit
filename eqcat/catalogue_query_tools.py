@@ -28,6 +28,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize, LogNorm
 import eqcat.utils as utils
+from eqcat.regression_models import function_map
 from matplotlib.path import Path
 from scipy import odr
 from eqcat.isf_catalogue import (Magnitude, Location, Origin,
@@ -867,6 +868,11 @@ class CatalogueRegressor(object):
         self.data = data
         self.common_catalogue = common_catalogue
         self.keys = self.data.keys()
+        # Retrieve the scale and agency information from
+        self.x_scale, self.x_agency = self.keys[0].split("(")
+        self.x_agency = self.x_agency.rstrip(")")
+        self.y_scale, self.y_agency = self.keys[2].split("(")
+        self.y_agency = self.y_agency.rstrip(")")
         self.model = None
         self.regression_data = None
         self.results = None
@@ -948,11 +954,11 @@ class CatalogueRegressor(object):
         if "2segment" in model_type:
             model_type, mag = model_type.split("M")
             mag = float(mag)
-            self.model_type = utils.function_map[model_type](mag)
+            self.model_type = function_map[model_type](mag)
         else:
-            if not model_type in utils.function_map.keys():
+            if not model_type in function_map.keys():
                 raise ValueError("Model type %s not supported!" % model_type)
-            self.model_type = utils.function_map[model_type]()
+            self.model_type = function_map[model_type]()
         self.model = odr.Model(self.model_type.run)
         if (model_type=="exponential") and (len(initial_params) != 3):
             raise ValueError("Exponential model requires three initial "
@@ -990,7 +996,6 @@ class CatalogueRegressor(object):
         regressor.set_iprint(final=2)
         self.results = regressor.run()
         return self.results
-
     
     def plot_model(self, overlay, xlim=[], ylim=[], marker="o", line_color="g",
             figure_size=(7, 8), filetype="png",
@@ -1058,13 +1063,23 @@ class CatalogueRegressor(object):
 
     def retrieve_model(self):
         """
-         
+        Returns a set of x- and y-values for the given model 
         """
         model_x = np.arange(0.9 * np.min(self.data[self.keys[0]]),
                             1.1 * np.max(self.data[self.keys[0]]),
                             0.01)
         model_y = self.model_type.run(self.results.beta, model_x)
-        if isinstance(self.model_type, utils.TwoSegmentLinear):
+        standard_deviation = self.get_standard_deviation()
+        return model_x, model_y, standard_deviation
+
+    def get_standard_deviation(self, default=True):
+        """
+        Returns the "default" standard deviations for each function. In the
+        case of the piecewise functions a different standard deviation is
+        given for each segment for the default setting. Otherwise a single
+        total standard deviation is defined for the whole function
+        """
+        if default and isinstance(self.model_type, function_map["2segment"]):
 
             idx = self.data[self.keys[0]] < self.model_type.corner_magnitude
             data_xl = self.data[self.keys[0]][idx]
@@ -1077,7 +1092,8 @@ class CatalogueRegressor(object):
             sigma_u = np.std(data_yu -
                              self.model_type.run(self.results.beta, data_xu))
             standard_deviation = [sigma_l, sigma_u]
-        elif isinstance(self.model_type, utils.PiecewiseLinear):
+        elif default and isinstance(self.model_type,
+                                    function_map["piecewise"]):
             standard_deviation = []
             npar = len(self.results.beta)
             corner_magnitudes = [-np.inf]
@@ -1098,7 +1114,63 @@ class CatalogueRegressor(object):
                 self.data[self.keys[2]] -
                 self.model_type.run(self.results.beta, self.data[self.keys[0]])
                 )
-        return model_x, model_y, standard_deviation
+        return standard_deviation
+
+    def get_magnitude_conversion_model(self):
+        """
+        Returns the regression model as an instance of :class: 
+        eqcat.isc_homogenisor.MagnitudeConversionRule
+        """
+        standard_deviation = self.get_standard_deviation()
+        return self.model_type.to_conversion_rule(self.x_agency, self.x_scale,
+                                                  self.results.beta,
+                                                  standard_deviation)
+
+    def get_catalogue_residuals(self, catalogue=None):
+        """
+        Returns a list of normalised residuals and their corresponding
+        events
+        """
+        if not catalogue:
+            catalogue = self.common_catalogue
+
+        rule = self.get_magnitude_conversion_model()
+        # Group magnitudes and origins by event ID
+        mag_grps = catalogue.magnitudes.groupby("eventID")
+        orig_grps = catalogue.origins.groupby("originID")
+        output = []
+        for event_id, event in mag_grps:
+            input_x = None
+            observed_y = None
+            for _, row in event.iterrows():
+                if row.magAgency == self.x_agency and\
+                    row.magType.lower() == self.x_scale.lower():
+                    input_x = row.value
+                    input_x_row = deepcopy(row)
+                    input_x_origin = orig_grps.get_group(row.originID)
+                if row.magAgency == self.y_agency and\
+                    row.magType.lower() == self.y_scale.lower():
+                    observed_y = row.value
+                    observed_y_origin = orig_grps.get_group(row.originID)
+                    observed_y_row = deepcopy(row)
+            if input_x and observed_y:
+                residual, expected_y, sigma = rule.get_residual(input_x,
+                                                                observed_y)
+                event_data = {
+                    "residual": residual,
+                    "x_mag": input_x,
+                    "y_obs": observed_y,
+                    "y_model": expected_y,
+                    "stddev": sigma,
+                    "x_mag_data": input_x_row,
+                    "x_orig_data": input_x_origin,
+                    "y_mag_data": observed_y_row,
+                    "y_orig_data": observed_y_origin}   
+                #output.append((residual, input_x, observed_y, expected_y,
+                #               sigma,  input_x_row, input_x_origin,
+                #               observed_y_row, observed_y_origin))
+                output.append(event_data)
+        return output
 
 
 def plot_catalogue_map(config, catalogue, magnitude_scale=False,

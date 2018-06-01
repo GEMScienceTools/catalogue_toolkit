@@ -34,7 +34,6 @@ MARKER_LEAP = np.array([0, 31, 60, 91, 121, 152, 182,
 SECONDS_PER_DAY = 86400.0
 
 
-
 def _prepare_coords(lons1, lats1, lons2, lats2):
     """
     Convert two pairs of spherical coordinates in decimal degrees
@@ -48,6 +47,7 @@ def _prepare_coords(lons1, lats1, lons2, lats2):
     lats2 = np.array(np.radians(lats2))
     assert lons2.shape == lats2.shape
     return lons1, lats1, lons2, lats2
+
 
 def decimal_year(year, month, day):
     """
@@ -72,12 +72,14 @@ def decimal_year(year, month, day):
 
     return dec_year
 
+
 def leap_check(year):
     """
     Returns logical array indicating if year is a leap year
     """
     return np.logical_and((year % 4) == 0, 
                           np.logical_or((year % 100 != 0), (year % 400) == 0))
+
 
 def decimal_time(year, month, day, hour, minute, second):
     """
@@ -197,6 +199,25 @@ def greg2julian(year, month, day, hour, minute, second):
              1721028.5 + (timeut / 24.0)
     return julian_time
 
+def _set_string(value):
+    """
+    Turns a number into a string prepended with + or - depending on
+    whether the number if positive or negative.
+    """
+    if value >= 0.0:
+        return "+ {:.3f}".format(value)
+    else:
+        return "- {:.3f}".format(value)
+
+def _to_latex(string):
+    """
+    For a string given in the form XX(YYYY) returns the LaTeX string to
+    place bracketed contents as a subscript
+    :param 
+    """
+    lb = string.find("(")
+    ub = string.find(")")
+    return "$" + string[:lb] + ("_{%s}$" % string[lb+1:ub])
 
 def piecewise_linear_scalar(params, xval):
     '''Piecewise linear function for a scalar variable xval (float).
@@ -237,37 +258,7 @@ def piecewise_linear_scalar(params, xval):
         select = np.nonzero(turning_points <= xval)[0][-1] + 1
     return gradients[select] * xval + c_val[select]
 
-def piecewise_linear(params, xval):
-    """
-    Implements the piecewise linear analysis function as a vector
-    """
-    n_params = len(params)
-    if fabs(float(n_params / 2) - float(n_params) / 2.) > 1E-7:
-        raise ValueError(
-            'Piecewise Function requires 2 * nsegments parameters')
-    
-    n_seg = n_params / 2
-    
-    if n_seg == 1:
-        return params[1] + params[0] * xval
-    gradients = params[0 : n_seg]
-    turning_points = params[n_seg: -1]
-    c_val = params[-1]
-    for iloc, slope in enumerate(gradients):
-        if iloc == 0:
-            yval = (slope * xval) + c_val
 
-        else:
-            select = np.where(xval >= turning_points[iloc - 1])[0]
-            # Project line back to x = 0
-            c_val = c_val - turning_points[iloc - 1] * slope
-            yval[select] = (slope * xval[select]) + c_val
-        if iloc < (n_seg - 1):
-            # If not in last segment then re-adjust intercept to new turning
-            # point
-            c_val = (slope * turning_points[iloc]) + c_val
-    return yval
-    
 def polynomial(params, xval):
     """
     Returns the polynomial f(xval) where the order is defined by the
@@ -279,269 +270,13 @@ def polynomial(params, xval):
         yval += (param * (xval ** float(iloc)))
     return yval
 
+
 def exponential(params, xval):
     """
     Returns an exponential function
     """
     assert len(params) == 3
     return np.exp(params[0] + params[1] * xval) + params[2]
-
-
-def _set_string(value):
-    """
-    Turns a number into a string prepended with + or - depending on
-    whether the number if positive or negative.
-    """
-    if value >= 0.0:
-        return "+ {:.3f}".format(value)
-    else:
-        return "- {:.3f}".format(value)
-
-def _to_latex(string):
-    """
-    For a string given in the form XX(YYYY) returns the LaTeX string to
-    place bracketed contents as a subscript
-    :param 
-    """
-    lb = string.find("(")
-    ub = string.find(")")
-    return "$" + string[:lb] + ("_{%s}$" % string[lb+1:ub])
-
-
-class GeneralFunction(object):
-    """
-    Class (notionally abstract) for defining the properties of a fitting
-    function
-    """
-    def __init__(self):
-        """
-        Instantiate
-        """
-        self.params = []
-
-    def run(self, params, xval):
-        """
-        Executes the funtion
-        :param list params:
-            Functon parameters
-        :param numpy.ndarray xval:
-            Input data
-        """
-        raise NotImplementedError
-
-    def get_string(self, output_string, input_string):
-        """
-        Returns a string describing the equation with its final parameters
-        :param str output_string:
-            Name of output parameter
-        :param str input_string:
-            Name of input parameter
-        """
-        raise NotImplementedError
-
-
-class PiecewiseLinear(GeneralFunction):
-    """
-    Implements a Piecewise linear functional form with N-segements
-    """
-
-    def run(self, params, xval):
-        """
-        Executes the model
-        :param list params:
-            Contolling parameters as
-            [slope_1, slope_2, ..., slope_i, turning_point1, turning_point2, 
-             ..., turning_point_i-1, intercept]
-        :param numpy.ndarray xval:
-            Input data
-        """
-        self.params = []
-        n_params = len(params)
-        if fabs(float(n_params / 2) - float(n_params) / 2.) > 1E-7:
-            raise ValueError(
-                'Piecewise Function requires 2 * nsegments parameters')
-        
-        n_seg = n_params / 2
-        
-        if n_seg == 1:
-            return params[1] + params[0] * xval
-        gradients = params[0 : n_seg]
-        turning_points = params[n_seg: -1]
-        c_val = params[-1]
-        for iloc, slope in enumerate(gradients):
-            if iloc == 0:
-                yval = (slope * xval) + c_val
-                self.params.append((c_val, slope, turning_points[iloc]))
-            else:
-                select = np.where(xval >= turning_points[iloc - 1])[0]
-                # Project line back to x = 0
-                c_val = c_val - turning_points[iloc - 1] * slope
-                yval[select] = (slope * xval[select]) + c_val
-                if iloc < (n_seg - 1):
-                    self.params.append(
-                        (c_val, slope, turning_points[iloc - 1]))
-                else:
-                    # In the last segment
-                    self.params.append(
-                        (c_val, slope, turning_points[iloc - 1]))
-            if iloc < (n_seg - 1):
-                # If not in last segment then re-adjust intercept to turning
-                # turning point
-                c_val = (slope * turning_points[iloc]) + c_val
-        
-        return yval
-
-    def get_string(self, output_string, input_string):
-        """
-        Returns the title string
-        """
-        n_seg = len(self.params)
-        full_string = []
-        for iloc, params in enumerate(self.params):
-            eq_string = "{:s} = {:.3f} {:s} {:s}".format(
-                _to_latex(output_string),
-                params[0],
-                _set_string(params[1]),
-                _to_latex(input_string))
-            if iloc == 0:
-                cond_string = eq_string +  "    for {:s} < {:.3f}".format(
-                    _to_latex(input_string),
-                    params[2])
-            elif iloc == (n_seg - 1):
-                cond_string = eq_string + "    for {:s} $\geq$ {:.3f}".format(
-                    _to_latex(input_string),
-                    params[2])
-            else:
-                cond_string = eq_string +\
-                    "    for {:.3f} $\leq$ {:s} < {:.3f}".format(
-                        self.params[iloc - 1][2],
-                        _to_latex(input_string),
-                        params[2])
-            full_string.append(cond_string)
-        return "\n".join([case_string for case_string in full_string])
-                    
-class Polynomial(GeneralFunction):
-    """
-    Implements a nth-order polynomial function
-    """
-    def run(self, params, xval):
-        """
-        Returns the polynomial f(xval) where the order is defined by the
-        number of params, i.e.
-        yval = \SUM_{i=1}^{Num Params} params[i] * (xval ** i - 1)
-        """
-        yval = np.zeros_like(xval)
-        for iloc, param in enumerate(params):
-            yval += (param * (xval ** float(iloc)))
-        self.params = params
-        return yval
-
-    def get_string(self, output_string, input_string):
-        """
-        Returns the title string
-        """
-        base_string = "{:s} = ".format(_to_latex(output_string))
-        for iloc, param in enumerate(self.params):
-            if iloc == 0:
-                base_string = base_string + "{:.3f}".format(param)
-            elif iloc == 1:
-                base_string = base_string + " {:s}{:s}".format(
-                    _set_string(param),
-                    _to_latex(input_string))
-            else:
-                base_string = base_string + (" %s%s$^%d$" %(
-                    _set_string(param),
-                    _to_latex(input_string),
-                    iloc))
-        return base_string
-
-
-class Exponential(GeneralFunction):
-    """
-    Implements an exponential function of the form y = exp(a + bX) + c
-    """
-    def run(self, params, xval):
-        """
-        Returns an exponential function
-        """
-        assert len(params) == 3
-        self.params = params
-        return np.exp(params[0] + params[1] * xval) + params[2]
-
-    def get_string(self, output_string, input_string):
-        """
-        Returns the title string
-        """
-        base_string = "%s = e$^{(%.3f %s %s)}$ %s" % (
-            _to_latex(output_string),
-            self.params[0],
-            _set_string(self.params[1]),
-            self._to_latex(input_string),
-            _set_string(self.params[2]))
-        return base_string
-    
-    def _to_latex(self, string):
-        """
-        For a string given in the form XX(YYYY) returns the LaTeX string to
-        place bracketed contents as a subscript
-        :param 
-        """
-        lb = string.find("(")
-        ub = string.find(")")
-        return string[:lb] + ("_{%s}" % string[lb+1:ub])
-                                                  
-class TwoSegmentLinear(GeneralFunction):
-    """
-    Implements a two-segement piecewise linear model with a fixed (i.e. not
-    optimisable) corner magnitude
-    """
-    def __init__(self, corner_magnitude):
-        """
-        :param float corner_magnitude:
-            Corner magnitude
-        """
-        super(TwoSegmentLinear, self).__init__()
-        setattr(self, "corner_magnitude", corner_magnitude)
-
-    def run(self, params, xval):
-        """
-        Runs the model
-        """
-        yval = params[0] * xval + params[2]
-        cval = params[0] * self.corner_magnitude + params[2]
-        cval -= (self.corner_magnitude * params[1])
-        idx = xval > self.corner_magnitude
-        yval[idx] = cval + params[1] * xval[idx]
-        self.params = [[params[0], params[2]], [params[1], cval]]
-        return yval
-
-    def get_string(self, output_string, input_string):
-        """
-        Returns the title string
-        """
-        base_string = "{:s} = ".format(_to_latex(output_string))
-        # Equation 1
-        upper_string = base_string +\
-            "{:.3f} {:s}{:s}    for {:s} < {:.2f}".format(
-                self.params[0][1],
-                _set_string(self.params[0][0]),
-                _to_latex(input_string),
-                _to_latex(input_string),
-                self.corner_magnitude)
-        lower_string = base_string +\
-            "{:.3f} {:s}{:s}    for {:s} $\geq$ {:.2f}".format(
-                self.params[1][1],
-                _set_string(self.params[1][0]),
-                _to_latex(input_string),
-                _to_latex(input_string),
-                self.corner_magnitude)
-        return "\n".join([upper_string, lower_string])
-       
-
-function_map = {"piecewise": PiecewiseLinear,
-                "polynomial": Polynomial,
-                "exponential": Exponential,
-                "2segment": TwoSegmentLinear}
 
 
 def build_filename(filename, filetype='png', resolution=300):
@@ -566,6 +301,7 @@ def build_filename(filename, filetype='png', resolution=300):
         resolution = 300
     return filename, filetype, resolution
 
+
 def _save_image(filename, filetype='png', resolution=300):
     """
     If filename is specified, saves the image
@@ -586,6 +322,7 @@ def _save_image(filename, filetype='png', resolution=300):
         pass
     return
 
+
 def _save_image_tight(fig, lgd, filename, filetype='png', resolution=300):
     """
     If filename is specified, saves the image
@@ -605,8 +342,6 @@ def _save_image_tight(fig, lgd, filename, filetype='png', resolution=300):
     else:
         pass
     return
-
-
 
 
 AGEN_CODES = {

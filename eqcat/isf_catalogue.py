@@ -27,14 +27,14 @@ from utils import decimal_time
 from math import fabs
 
 
-DATAMAP = [("eventID", "a16"), ("originID", "a16"), ("Agency", "a14"), 
+DATAMAP = [("eventID", "a20"), ("originID", "a20"), ("Agency", "a14"), 
     ("year", "i2"), ("month", "i2"), ("day", "i2"), ("hour", "i2"),
     ("minute", "i2"), ("second", "f2"), ("time_error", "f4"),
     ("longitude", "f4"), ("latitude", "f4"), ("depth", "f4"),("depthSolution", "a1"), 
     ("semimajor90", "f4"), ("semiminor90", "f4"), ("error_strike", "f2"),
     ("depth_error", "f4"), ("prime", "i1")]
 
-MAGDATAMAP = [("eventID", "a12"), ("originID", "a12"), ("magnitudeID", "a40"), 
+MAGDATAMAP = [("eventID", "a20"), ("originID", "a20"), ("magnitudeID", "a40"), 
     ("value", "f4"), ("sigma", "f4"), ("magType", "a6"), ("magAgency", "a14")]
 
 def datetime_to_decimal_time(date, time):
@@ -83,10 +83,17 @@ class Magnitude(object):
         self.sigma = sigma
         self.stations = stations
         # Createa ID string from attributes
-        self.magnitude_id = "|".join(["{:s}".format(self.origin_id),
-                                      self.author,
-                                      "{:.2f}".format(self.value),
-                                      self.scale])
+        if self.value > 10.0:
+            # Probably a moment magnitude
+            self.magnitude_id = "|".join(["{:s}".format(self.origin_id),
+                                          self.author,
+                                          "{:.6e}".format(self.value),
+                                          self.scale])
+        else: 
+            self.magnitude_id = "|".join(["{:s}".format(self.origin_id),
+                                          self.author,
+                                          "{:.2f}".format(self.value),
+                                          self.scale])
     
     def compare_magnitude(self, magnitude, tol=1E-3):
         '''

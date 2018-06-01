@@ -196,6 +196,14 @@ class MagnitudeConversionRule(object):
                         (sigma ** 2.))
         else:
             return sigma
+
+    def get_residual(self, input_mag, observed_mag):
+        """
+        Determines the residual value of a given magnitude based on the
+        conversion relation
+        """
+        expected_mag, sigma = self.convert_value(input_mag, 0)
+        return (observed_mag - expected_mag) / sigma, expected_mag, sigma
         
 
 class OriginRule(object):
