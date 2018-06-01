@@ -166,7 +166,7 @@ class GeneralCsvCatalogue(object):
             mag = [Magnitude(event_id,
                              origin_id, 
                              self.data['magnitude'][iloc], 
-                             name, 
+                             catalogue_id, 
                              scale='Mw', 
                              sigma=self.data['sigmaMagnitude'][iloc])]
             # Create Moment
@@ -176,7 +176,7 @@ class GeneralCsvCatalogue(object):
                 mag.append(Magnitude(event_id,
                                      origin_id,
                                      moment,
-                                     name,
+                                     catalogue_id,
                                      scale='Mo'))
 
             # Create Location
@@ -215,7 +215,7 @@ class GeneralCsvCatalogue(object):
                                     self.data['minute'][iloc],
                                     int(secs),
                                     microsecs)
-            origin = Origin(origin_id, eq_date, eq_time, locn, name, 
+            origin = Origin(origin_id, eq_date, eq_time, locn, catalogue_id, 
                             is_prime=True)
             origin.magnitudes = mag
             event = Event(event_id, [origin], origin.magnitudes)
@@ -245,3 +245,73 @@ class GeneralCsvCatalogue(object):
             if np.isnan(self.data[component][iloc]):
                 return False
         return True
+
+class MixedMagnitudeCsvCatalogue(GeneralCsvCatalogue):
+    """
+    
+    """
+    def write_to_isf_catalogue(self, catalogue_id, name):
+        """
+        Exports the catalogue to an instance of the :class:
+        eqcat.isf_catalogue.ISFCatalogue
+        """
+        isf_cat = ISFCatalogue(catalogue_id, name)
+        for iloc in range(0, self.get_number_events()):
+            # Origin ID
+            event_id = str(self.data['eventID'][iloc])
+            origin_id = event_id
+            # Create Magnitude
+            mag = self.data["magnitude"][iloc]
+            if not mag or np.isnan(mag):
+                # No magnitude - not useful
+                continue
+
+            mag = [Magnitude(event_id,
+                             origin_id, 
+                             mag, 
+                             catalogue_id, 
+                             scale=self.data["magnitudeType"][iloc], 
+                             sigma=self.data['sigmaMagnitude'][iloc])]
+
+            # Create Location
+            semimajor90 = self.data['SemiMajor90'][iloc]
+            semiminor90 = self.data['SemiMinor90'][iloc]
+            error_strike = self.data['ErrorStrike'][iloc]
+            if np.isnan(semimajor90):
+                semimajor90 = None
+            if np.isnan(semiminor90):
+                semiminor90 = None
+            if np.isnan(error_strike):
+                error_strike = None
+            depth_error = self.data['depthError'][iloc]
+            if np.isnan(depth_error):
+                depth_error = None
+            locn = Location(origin_id,
+                            self.data['longitude'][iloc],
+                            self.data['latitude'][iloc],
+                            self.data['depth'][iloc],
+                            semimajor90,
+                            semiminor90,
+                            error_strike,
+                            depth_error)
+
+            # Create Origin
+            # Date
+            eq_date = datetime.date(self.data['year'][iloc],
+                                    self.data['month'][iloc],
+                                    self.data['day'][iloc])
+            # Time
+            secs = self.data['second'][iloc]
+            
+            microsecs = int((secs - floor(secs)) * 1E6)
+            eq_time = datetime.time(self.data['hour'][iloc],
+                                    self.data['minute'][iloc],
+                                    int(secs),
+                                    microsecs)
+            origin = Origin(origin_id, eq_date, eq_time, locn, catalogue_id, 
+                            is_prime=True)
+            origin.magnitudes = mag
+            event = Event(event_id, [origin], origin.magnitudes)
+            isf_cat.events.append(event)
+        return isf_cat
+

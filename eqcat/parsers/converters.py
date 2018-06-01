@@ -77,14 +77,14 @@ class GenericCataloguetoISFParser(object):
         '''
         '''
         self.filename = filename
-        self.catalogue = None
+        self.catalogue = GeneralCsvCatalogue()
 
     def parse(self, cat_id, cat_name):
         '''
         Opens the raw file parses the catalogue then exports
         '''
         filedata = open(self.filename, 'rU')
-        self.catalogue = GeneralCsvCatalogue()
+        #self.catalogue = GeneralCsvCatalogue()
         # Reading the data file
         data = csv.DictReader(filedata)
         # Parsing the data content
@@ -129,22 +129,38 @@ class GCMTtoISFParser(object):
     '''
     Read in a file in GCMT NDK format and parse to ISF Catalogue
     '''
-    def __init__(self, gcmt_file):
+    def __init__(self, gcmt_file=None):
         '''
         '''
-        self.filename = gcmt_file
-        parser = ParseNDKtoGCMT(self.filename)
-        self.catalogue = parser.read_file()
+        if gcmt_file:
+            self.filename = gcmt_file
+            parser = ParseNDKtoGCMT(self.filename)
+            self.catalogue = parser.read_file()
+        else:
+            self.filename = None
+            self.catalogue = None
 
-    def parse(self):
+    @classmethod
+    def from_catalogue(cls, catalogue, cat_id, cat_name):
+        """
+        If a different parser has been used just instantiate the class
+        """
+        self = cls()
+        self.catalogue = catalogue
+        if not len(self.catalogue):
+            print("No events in catalogue - returning None")
+            return None
+        return self.parse(cat_id, cat_name)
+
+    def parse(self, cat_id="GCMT", cat_name="GCMT"):
         '''
         Returns the catalogue as an instance of an ISFCatalogue
         An ISF catalogue will have two origins: The hypocentre solution and
         the centroid
         '''
-        isf_cat = ISFCatalogue('GCMT', 'GCMT')
+        isf_cat = ISFCatalogue(cat_id, cat_name)
         n_cmts = self.catalogue.number_events()
-        base_id = 'GCMT_'
+        base_id = cat_id + '_'
         counter = 1
         for gcmt in self.catalogue.gcmts:
             # Get IDs
@@ -166,9 +182,9 @@ class GCMTtoISFParser(object):
                                              gcmt.hypocentre.source, 
                                              scale='Ms'))
             m_w = Magnitude(event_id,
-                            gcmt.centroid.centroid_id, gcmt.magnitude, 'GCMT', 
+                            gcmt.centroid.centroid_id, gcmt.magnitude, cat_id, 
                             scale='Mw')
-            origin_mags.append(m_w)
+            #origin_mags.append(m_w)
             # Get locations
             hypo_loc = Location(origin_id, 
                                 gcmt.hypocentre.longitude,
@@ -192,11 +208,12 @@ class GCMTtoISFParser(object):
                               gcmt.centroid.date,
                               gcmt.centroid.time,
                               centroid_loc,
-                              'GCMT',
+                              cat_id,
                               is_centroid=True,
                               time_error=gcmt.centroid.time_error)
             centroid.magnitudes = [m_w]
-            event = Event(event_id, [hypo, centroid], origin_mags,
+            event = Event(event_id, [hypo, centroid],
+                          hypo.magnitudes + centroid.magnitudes,
                           gcmt.hypocentre.location)
             setattr(event, 'tensor', gcmt.moment_tensor)
             isf_cat.events.append(event)
