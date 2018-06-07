@@ -33,7 +33,7 @@ Origin conversion
 2) ISC location
 
 '''
-
+from __future__ import print_function
 import csv
 import numpy as np
 from collections import OrderedDict
@@ -146,14 +146,14 @@ class MagnitudeConversionRule(object):
         if not start_date or isinstance(start_date, date):
             self.start = start_date
         elif isinstance(start_date, str):
-            self.start = date(*map(int, start_date.split("/")))
+            self.start = date(*list(map(int, start_date.split("/"))))
         else:
             raise ValueError("Start date must be instance of datetime.date"
                              " class or string formatted as YYYY/MM/DD")
         if not end_date or isinstance(end_date, date):
             self.finish = end_date
         elif isinstance(end_date, str):
-            self.finish = date(*map(int, end_date.split("/")))
+            self.finish = date(*list(map(int, end_date.split("/"))))
         else:
             raise ValueError("End date must be instance of datetime.date"
                              " class or string formatted as YYYY/MM/DD")
@@ -219,14 +219,14 @@ class OriginRule(object):
         if not start_date or isinstance(start_date, date):
             self.start = start_date
         elif isinstance(start_date, str):
-            self.start = date(*map(int, start_date.split("/")))
+            self.start = date(*list(map(int, start_date.split("/"))))
         else:
             raise ValueError("Start date must be instance of datetime.date"
                              " class or string formatted as YYYY/MM/DD")
         if not end_date or isinstance(end_date, date):
             self.finish = end_date
         elif isinstance(end_date, str):
-            self.finish = date(*map(int, end_date.split("/")))
+            self.finish = date(*list(map(int, end_date.split("/"))))
         else:
             raise ValueError("End date must be instance of datetime.date"
                              " class or string formatted as YYYY/MM/DD")
@@ -290,11 +290,11 @@ class Homogenisor(object):
                     else:
                         pref_origin.magnitude_sigma = 0.
                     pref_origin.record_key = "|".join([author, mag_rec])
-                    print event.id, mag_rec, pref_origin.record_key
+                    print(event.id, mag_rec, pref_origin.record_key)
                 else:
                     # No magnitude can be converted - reject origin
                     pref_origin = None
-                    print "% s -- None --  None" % event.id
+                    print("% s -- None --  None" % event.id)
                 event.preferred = pref_origin
         return self.catalogue
 
@@ -319,8 +319,7 @@ class Homogenisor(object):
         # Render all scales to upper
         mag_scales = [mag.upper() for mag in mag_scales]
         for mag_rule in self.mag_rules:
-            #print mag_rule.scale, mag_rule.author
-            for iloc in xrange(len(mag_agencies)):
+            for iloc in range(len(mag_agencies)):
                 if (mag_rule.author == mag_agencies[iloc]) and\
                     (mag_rule.scale.upper() == mag_scales[iloc]):
                     mag_value, mag_sigma = mag_rule.convert_value(
@@ -349,7 +348,7 @@ class Homogenisor(object):
                      'Anthropogenic']
         fid = open(filename, "wt")
         # Write header
-        print >> fid, ",".join(name_list)
+        print(",".join(name_list), file=fid)
         default_depth = str(default_depth)
         for event in self.catalogue.events:
             if hasattr(event, "preferred") and event.preferred is not None:
@@ -381,7 +380,7 @@ class Homogenisor(object):
                                     _to_str(eqk.magnitude_sigma),
                                     str(event.induced_flag),
                                     event.magnitude_string()])
-                print >> fid, row_str
+                print(row_str, file=fid)
         fid.close()
 
 
@@ -571,8 +570,8 @@ class HomogenisorPreprocessor(object):
         for rule in rule_set:
             date_rule, key_rule = rule[0].split("|")
             start_string, end_string = (date_rule.strip(" ")).split(" - ")
-            start_date = date(*map(int, start_string.split("/")))
-            end_date = date(*map(int, end_string.split("/")))
+            start_date = date(*list(map(int, start_string.split("/"))))
+            end_date = date(*list(map(int, end_string.split("/"))))
             rule_list.append(((start_date, end_date, key_rule.strip(" ")),
                               rule[1]))
         return rule_list
@@ -585,7 +584,7 @@ class HomogenisorPreprocessor(object):
         rule_list = []
         for rule in rule_set:
             float_rule, key_rule = rule[0].split("|")
-            lower, upper = map(float, float_rule.split(" - "))
+            lower, upper = list(map(float, float_rule.split(" - ")))
             rule_list.append(((lower, upper, key_rule.strip(" ")), rule[1]))
         return rule_list
 
@@ -597,9 +596,9 @@ class HomogenisorPreprocessor(object):
         for rule in rule_set:
             date_rule, float_rule = rule[0].split("|")
             start_string, end_string = (date_rule.strip(" ")).split(" - ")
-            start_date = date(*map(int, start_string.split("/")))
-            end_date = date(*map(int, end_string.split("/")))
-            lower, upper = map(float, float_rule.split(" - "))
+            start_date = date(*list(map(int, start_string.split("/"))))
+            end_date = date(*list(map(int, end_string.split("/"))))
+            lower, upper = list(map(float, float_rule.split(" - ")))
             rule_list.append(((start_date, end_date, lower, upper), rule[1]))
         return rule_list
 
@@ -610,8 +609,8 @@ class HomogenisorPreprocessor(object):
         rule_list = []
         for rule in rule_set:
             start_string, end_string = rule[0].split(" - ")
-            start_date = date(*map(int, start_string.split("/")))
-            end_date = date(*map(int, end_string.split("/")))
+            start_date = date(*list(map(int, start_string.split("/"))))
+            end_date = date(*list(map(int, end_string.split("/"))))
             rule_list.append(((start_date, end_date), rule[1]))
         return rule_list
 
@@ -621,7 +620,7 @@ class HomogenisorPreprocessor(object):
         """
         rule_list = []
         for rule in rule_set:
-            low_limit, high_limit = map(float, rule[0].split(" - "))
+            low_limit, high_limit = list(map(float, rule[0].split(" - ")))
             rule_list.append(((low_limit, high_limit), rule[1]))
         return rule_list
 
@@ -679,7 +678,7 @@ class DynamicHomogenisor(Homogenisor):
             event_mag = self.mag_rules[event.magnitude_rule_idx][1]
             for mag_rule in event_mag:
                 #print mag_rule.scale, mag_rule.author
-                for iloc in xrange(len(mag_agencies)):
+                for iloc in range(len(mag_agencies)):
                     if (mag_rule.author == mag_agencies[iloc]) and\
                         (mag_rule.scale.upper() == mag_scales[iloc]):
                         mag_value, mag_sigma = mag_rule.convert_value(
@@ -719,7 +718,7 @@ class DynamicHomogenisor(Homogenisor):
             else:
                 descriptor = event.description
             if event.preferred:
-                print >> fid, "%s" % ",".join([str(event.id), descriptor,
+                print("%s" % ",".join([str(event.id), descriptor,
                     str(event.preferred.date), str(event.preferred.time),
                     str(event.preferred.record_key),
                     str(event.preferred.location.longitude), 
@@ -730,13 +729,13 @@ class DynamicHomogenisor(Homogenisor):
                     origin_rule_idx,
                     magnitude_rule_idx,
                     self.log[iloc][0],
-                    self.log[iloc][1]])
+                    self.log[iloc][1]]), file=fid)
             else:
-                print >> fid, "%s" % ",".join([str(event.id), descriptor,
+                print("%s" % ",".join([str(event.id), descriptor,
                     origin_rule_idx,
                     magnitude_rule_idx,
                     self.log[iloc][0],
-                    self.log[iloc][1]]) 
+                    self.log[iloc][1]]), file=fid) 
         fid.close()
 
 #: Earth radius in km.

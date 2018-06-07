@@ -72,7 +72,7 @@ class GeneralCsvCatalogue(object):
         """
         Returns the number of events
         """
-        return len(self.data[self.data.keys()[0]])
+        return len(self.data[list(self.data.keys())[0]])
 
     def write_to_gcmt_class(self):
         """

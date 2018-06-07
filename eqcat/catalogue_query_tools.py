@@ -19,6 +19,7 @@
 Collection of Catalogue Database Query Tools
 """
 import h5py
+import re
 import numpy as np
 import pandas as pd
 from copy import copy, deepcopy
@@ -37,8 +38,8 @@ from eqcat.isf_catalogue import (Magnitude, Location, Origin,
 try:
     from mpl_toolkits.basemap import Basemap
 except:
-    print "Basemap not installed or unavailable!"
-    print "Catalogue Plotting Functions will not work"
+    print("Basemap not installed or unavailable!")
+    print("Catalogue Plotting Functions will not work")
 
 # RESET Axes tick labels
 matplotlib.rc("xtick", labelsize=14)
@@ -108,11 +109,11 @@ class CatalogueDB(object):
         isf_catalogue = ISFCatalogue(identifier, name)
         event_groups = self.origins.groupby("eventID")
         mag_groups = self.magnitudes.groupby("eventID")
-        mag_keys = mag_groups.indices.keys()
+        mag_keys = list(mag_groups.indices.keys())
         ngrps = len(event_groups)
         for iloc, grp in enumerate(event_groups):
             if (iloc % 1000) == 0:
-                print "Processing event %d of %d" % (iloc, ngrps)
+                print("Processing event %d of %d" % (iloc, ngrps))
             # Get magnitudes list
             if grp[0] in mag_keys:
                 # Magnitudes associated to this origin
@@ -227,7 +228,7 @@ class CatalogueSelector(object):
             grps = origin_cat.groupby("eventID")
             original_grps = self.catalogue.origins.groupby("eventID")
             event_list = []
-            for key in grps.groups.keys():
+            for key in list(grps.groups.keys()):
                 if np.all(original_grps.get_group(key)["idx"].values):
                     event_list.append(key)
             event_list = np.array(event_list)
@@ -267,7 +268,7 @@ class CatalogueSelector(object):
             grps = mag_cat.groupby("eventID")
             mag_grps = self.catalogue.magnitudes.groupby("eventID")
             event_list = []
-            for key in grps.groups.keys():
+            for key in list(grps.groups.keys()):
                 if np.all(mag_grps.get_group(key)["idx"].values):
                     event_list.append(key)
             event_list = np.array(event_list)
@@ -394,7 +395,7 @@ def get_agency_origin_count(catalogue):
     """
     agency_count = catalogue.origins["Agency"].value_counts()
     count_list = []
-    agency_list = agency_count.keys()
+    agency_list = list(agency_count.keys())
     for iloc in range(0, len(agency_count)):
         count_list.append((agency_list[iloc], agency_count[iloc]))
     return count_list
@@ -407,7 +408,7 @@ def get_agency_magnitude_count(catalogue):
     """
     agency_count = catalogue.magnitudes["magAgency"].value_counts()
     count_list = []
-    agency_list = agency_count.keys()
+    agency_list = list(agency_count.keys())
     for iloc in range(0, len(agency_count)):
         count_list.append((agency_list[iloc], agency_count[iloc]))
     return count_list
@@ -420,29 +421,31 @@ def get_agency_magtype_statistics(catalogue, pretty_print=True):
     """
     agency_count = get_agency_origin_count(catalogue)
     mag_group = catalogue.magnitudes.groupby("magAgency")
-    mag_group_keys = mag_group.groups.keys()
+    mag_group_keys = list(mag_group.groups.keys())
     output = []
     for agency, n_origins in agency_count:
 
-        print "Agency: %s - %d Origins" % (agency, n_origins)
+        print("Agency: %s - %d Origins" % (agency, n_origins))
         if not agency in mag_group_keys:
-            print "No magnitudes corresponding to this agency"
-            print "".join(["=" for iloc in range(0, 40)])
+            print("No magnitudes corresponding to this agency")
+            print("".join(["=" for iloc in range(0, 40)]))
             continue
 
         grp1 = mag_group.get_group(agency)
         mag_counts = grp1["magType"].value_counts()
-        mag_counts = mag_counts.iteritems()
+        mag_counts = iter(mag_counts.items())
         if pretty_print:
-            print "%s" % " | ".join(["{:s} ({:d})".format(val[0], val[1])
-                                     for val in mag_counts])
-            print "".join(["=" for iloc in range(0, 40)])
+            print("%s" % " | ".join(["{:s} ({:d})".format(val[0], val[1])
+                                     for val in mag_counts]))
+            print("".join(["=" for iloc in range(0, 40)]))
         agency_dict = {"Origins": n_origins, "Magnitudes": dict(mag_counts)}
         output.append((agency, agency_dict))
     return OrderedDict(output)
     
 
-def get_agency_magtype_statistics_with_agency_code(catalogue, agency_dict = None, pretty_print=True):
+def get_agency_magtype_statistics_with_agency_code(catalogue,
+                                                   agency_dict=None,
+                                                   pretty_print=True):
     """
     Returns an analysis of the number of different magnitude types found for
     each agency
@@ -461,21 +464,21 @@ def get_agency_magtype_statistics_with_agency_code(catalogue, agency_dict = None
                if key == agency:
                   agency_name = value.get('name')
                   agency_country = value.get('country')
-        print "Agency: %s - %s - %s " % (agency, agency_name, agency_country)
-        print "Origins: %d " % (n_origins)
+        print("Agency: %s - %s - %s " % (agency, agency_name, agency_country))
+        print("Origins: %d " % (n_origins))
     
         if not agency in mag_group_keys:
-            print "No magnitudes corresponding to this agency"
-            print "".join(["=" for iloc in range(0, 40)])
+            print("No magnitudes corresponding to this agency")
+            print("".join(["=" for iloc in range(0, 40)]))
             continue
 
         grp1 = mag_group.get_group(agency)
         mag_counts = grp1["magType"].value_counts()
         mag_counts = mag_counts.iteritems()
         if pretty_print:
-            print "%s" % " | ".join(["{:s} ({:d})".format(val[0], val[1])
-                                     for val in mag_counts])
-            print "".join(["=" for iloc in range(0, 40)])
+            print("%s" % " | ".join(["{:s} ({:d})".format(val[0], val[1])
+                                     for val in mag_counts]))
+            print("".join(["=" for iloc in range(0, 40)]))
         agency_dict = {"Origins": n_origins, "Magnitudes": dict(mag_counts)}
         output.append((agency, agency_dict))
     return OrderedDict(output)
@@ -512,12 +515,12 @@ def get_agency_magnitude_pairs(catalogue, pair1, pair2, no_case=False):
             (catalogue.magnitudes["magType"] == pair2[1])
     
     if not np.any(case1_select):
-        print "Agency-Pair: (%s, %s) returned no magnitudes" %(pair1[0],
-                                                               pair1[1])
+        print("Agency-Pair: (%s, %s) returned no magnitudes" %(pair1[0],
+                                                               pair1[1]))
         return None, None
     if not np.any(case2_select):
-        print "Agency-Pair: (%s, %s) returned no magnitudes" %(pair2[0],
-                                                               pair2[1])
+        print("Agency-Pair: (%s, %s) returned no magnitudes" %(pair2[0],
+                                                               pair2[1]))
         return None, None
     select_cat1 = catalogue.magnitudes[case1_select]
     select_cat2 = catalogue.magnitudes[case2_select]
@@ -525,13 +528,13 @@ def get_agency_magnitude_pairs(catalogue, pair1, pair2, no_case=False):
     idx = select_cat2.eventID.isin(select_cat1.eventID)
     num_events = np.sum(idx)
     if np.any(idx):
-        print "Agency-Pairs: (%s, %s) & (%s, %s) returned %d events" % (
-            pair1[0], pair1[1], pair2[0], pair2[1], np.sum(idx))
+        print("Agency-Pairs: (%s, %s) & (%s, %s) returned %d events" % (
+            pair1[0], pair1[1], pair2[0], pair2[1], np.sum(idx)))
     
     else:
         # No common events
-        print "Agency-Pairs: (%s, %s) & (%s, %s) returned 0 events" % (
-            pair1[0], pair1[1], pair2[0], pair2[1])
+        print("Agency-Pairs: (%s, %s) & (%s, %s) returned 0 events" % (
+            pair1[0], pair1[1], pair2[0], pair2[1]))
         return None, None
         
     common_catalogue = select_cat2[idx]
@@ -574,12 +577,12 @@ def mine_agency_magnitude_combinations(catalogue, agency_mag_data, threshold,
     exceed a threshold number of points
     """
     results_dict = []
-    for iloc, agency_1 in enumerate(agency_mag_data.keys()):
-        for mag_1 in agency_mag_data[agency_1]["Magnitudes"].keys():
+    for iloc, agency_1 in enumerate(agency_mag_data):
+        for mag_1 in agency_mag_data[agency_1]["Magnitudes"]:
             if agency_mag_data[agency_1]["Magnitudes"][mag_1] < threshold:
                 continue
-            for agency_2 in agency_mag_data.keys()[iloc:]:
-                for mag_2 in agency_mag_data[agency_2]["Magnitudes"].keys():
+            for agency_2 in list(agency_mag_data.keys())[iloc:]:
+                for mag_2 in agency_mag_data[agency_2]["Magnitudes"]:
                     if (agency_1 == agency_2) and (mag_1 == mag_2):
                         # Redundent
                         continue
@@ -587,8 +590,8 @@ def mine_agency_magnitude_combinations(catalogue, agency_mag_data, threshold,
                         threshold:
                         # Skip
                         continue
-                    print "Trying: (%s, %s) and (%s, %s)" % (agency_1, mag_1,
-                                                             agency_2, mag_2)
+                    print("Trying: (%s, %s) and (%s, %s)" % (agency_1, mag_1,
+                                                             agency_2, mag_2))
                     data, _ = get_agency_magnitude_pairs(catalogue,
                                                          (agency_1, mag_1),
                                                          (agency_2, mag_2),
@@ -602,7 +605,7 @@ def mine_agency_magnitude_combinations(catalogue, agency_mag_data, threshold,
                                 ("|".join([data_keys[0], data_keys[2]]),
                                  data))
                     else:
-                        print "----> No pairs found!"
+                        print("----> No pairs found!")
     return OrderedDict(results_dict)
 
 
@@ -614,12 +617,12 @@ def mine_agency_magnitude_combinations_to_file(output_file, catalogue,
     """
     results_dict = []
     fle = h5py.File(output_file, "a")
-    for iloc, agency_1 in enumerate(agency_mag_data.keys()):
-        for mag_1 in agency_mag_data[agency_1]["Magnitudes"].keys():
+    for iloc, agency_1 in enumerate(agency_mag_data):
+        for mag_1 in agency_mag_data[agency_1]["Magnitudes"]:
             if agency_mag_data[agency_1]["Magnitudes"][mag_1] < threshold:
                 continue
-            for agency_2 in agency_mag_data.keys()[iloc:]:
-                for mag_2 in agency_mag_data[agency_2]["Magnitudes"].keys():
+            for agency_2 in list(agency_mag_data.keys())[iloc:]:
+                for mag_2 in agency_mag_data[agency_2]["Magnitudes"]:
                     if (agency_1 == agency_2) and (mag_1 == mag_2):
                         # Redundent
                         continue
@@ -627,15 +630,15 @@ def mine_agency_magnitude_combinations_to_file(output_file, catalogue,
                         threshold:
                         # Skip
                         continue
-                    print "Trying: (%s, %s) and (%s, %s)" % (agency_1, mag_1,
-                                                             agency_2, mag_2)
+                    print("Trying: (%s, %s) and (%s, %s)" % (agency_1, mag_1,
+                                                             agency_2, mag_2))
                     data, _ = get_agency_magnitude_pairs(catalogue,
                                                          (agency_1, mag_1),
                                                          (agency_2, mag_2),
                                                          no_case)
                     if data:
                         # Report number of values
-                        data_keys = data.keys()
+                        data_keys = list(data.keys())
                         npairs = len(data[data_keys[0]])
                         if npairs > threshold:
                             combo_key = "|".join([data_keys[0],
@@ -652,7 +655,7 @@ def mine_agency_magnitude_combinations_to_file(output_file, catalogue,
                                                        data[data_keys[2]],
                                                        data[data_keys[3]]])
                     else:
-                        print "----> No pairs found!"
+                        print("----> No pairs found!")
     fle.close()
     
 def join_query_results(data1, data2):
@@ -670,8 +673,8 @@ def join_query_results(data1, data2):
         else:
             return None
     joint_data = []
-    data2_keys = data2.keys()
-    for iloc, key in enumerate(data1.keys()):
+    data2_keys = list(data2.keys())
+    for iloc, key in enumerate(list(data1.keys())):
         if not (key == data2_keys[iloc]):
             joint_key = key + " & " + data2_keys[iloc]
         else:
@@ -698,10 +701,10 @@ def plot_agency_magnitude_pair(data, overlay=False, xlim=[], ylim=[],
         Lower and upper bounds for y-axis
     """
     if not data:
-        print "No pairs found - abandoning plot!"
+        print("No pairs found - abandoning plot!")
         return
     fig = plt.figure(figsize=figure_size)
-    keys = data.keys()
+    keys = list(data.keys())
     plt.errorbar(data[keys[0]], data[keys[2]],
                  xerr=data[keys[1]], yerr=data[keys[3]],
                  marker=marker, mfc="b", mec="k", ls="None",
@@ -744,7 +747,7 @@ def sample_agency_magnitude_pairs(data, xbins, ybins, number_samples=1):
     """
 
     """
-    keys = data.keys()
+    keys = list(data.keys())
     n_data = len(data[keys[0]])
     if not number_samples or (number_samples == 1):
         # Only one sample, return simple histogram
@@ -759,7 +762,7 @@ def sample_agency_magnitude_pairs(data, xbins, ybins, number_samples=1):
                               bins=[xbins, ybins])[0]
     else:
         counter = np.zeros([len(xbins) - 1, len(ybins) - 1])
-        for i in xrange(number_samples):
+        for i in range(number_samples):
             # Sample data sets
             data_x = data[keys[0]] + data[keys[1]] * np.random.normal(0., 1.,
                                                                       n_data)
@@ -777,9 +780,9 @@ def plot_agency_magnitude_density(data, overlay=False, number_samples=0,
     """
 
     """
-    keys = data.keys()
+    keys = list(data.keys())
     if not data:
-        print "No pairs found - abandoning plot!"
+        print("No pairs found - abandoning plot!")
         return
     
     if len(xlim) == 2:
@@ -841,6 +844,41 @@ DEFAULT_SIGMA = {"minimum": lambda x : np.nanmin(x),
                  "maximum": lambda x : np.nanmax(x),
                  "mean": lambda x : np.nanmean(x)}
 
+def extract_scale_agency(key):
+    """
+    Extract the magnitude scale and the agency from within the parenthesis
+    Cases: "Mw(XXX)" or "Mw(XXX) & Mw (YYY)" or "Mw(XXX) & Ms(YYY)"
+    """
+    # Within parenthesis compiler
+    wip = re.compile(r'(?<=\()[^)]+(?=\))')
+    # Out of parenthesis compiler
+    oop = re.compile(r'(.*?)\(.*?\)')
+    # Get the agencies
+    agencies = wip.findall(key)
+    if len(agencies) == 1:
+        # Simple case - only one agency
+        # Get the scale
+        scale = oop.findall(key)
+        return scale[0], agencies[0]
+    elif len(agencies) > 1:
+        # Multiple agencies
+        agencies = "|".join(agencies)
+        scales = oop.findall(key)
+        # Strip any spaces and '&'
+        nscales = []
+        for scale in scales:
+            scale = scale.replace("&", "")
+            scale = scale.replace(" ", "")
+            nscales.append(scale)
+        if nscales.count(nscales[0]) == len(nscales):
+            # Same magnitude scale
+            scales = nscales[0]
+        else:
+            # join scales
+            scales = "|".join(nscales)
+        return scales, agencies
+    else:
+        raise ValueError("Badly formatted key %s" % key)
 
 class CatalogueRegressor(object):
     """
@@ -867,12 +905,15 @@ class CatalogueRegressor(object):
         """
         self.data = data
         self.common_catalogue = common_catalogue
-        self.keys = self.data.keys()
-        # Retrieve the scale and agency information from
-        self.x_scale, self.x_agency = self.keys[0].split("(")
-        self.x_agency = self.x_agency.rstrip(")")
-        self.y_scale, self.y_agency = self.keys[2].split("(")
-        self.y_agency = self.y_agency.rstrip(")")
+        self.keys = list(self.data.keys())
+        # Retrieve the scale and agency information from keys
+
+        #self.x_scale, self.x_agency = self.keys[0].split("(")
+        self.x_scale, self.x_agency = extract_scale_agency(self.keys[0])
+        #self.x_agency = self.x_agency.rstrip(")")
+        #self.y_scale, self.y_agency = self.keys[2].split("(")
+        self.y_scale, self.y_agency = extract_scale_agency(self.keys[2])
+        #self.y_agency = self.y_agency.rstrip(")")
         self.model = None
         self.regression_data = None
         self.results = None
@@ -956,7 +997,7 @@ class CatalogueRegressor(object):
             mag = float(mag)
             self.model_type = function_map[model_type](mag)
         else:
-            if not model_type in function_map.keys():
+            if not model_type in function_map:
                 raise ValueError("Model type %s not supported!" % model_type)
             self.model_type = function_map[model_type]()
         self.model = odr.Model(self.model_type.run)

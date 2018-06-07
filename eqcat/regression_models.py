@@ -19,7 +19,7 @@
 import os
 import numpy as np
 from math import fabs
-from isc_homogenisor import MagnitudeConversionRule
+from eqcat.isc_homogenisor import MagnitudeConversionRule
 from eqcat.utils import _to_latex, _set_string
 
 

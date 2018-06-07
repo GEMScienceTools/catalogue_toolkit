@@ -34,7 +34,7 @@ def _read_date_from_string(str1):
     Reads the date from a string in the format YYYY/MM/DD and returns 
     :class: datetime.date
     """
-    full_date = map(int, str1.split('/'))
+    full_date = list(map(int, str1.split('/')))
     return datetime.date(full_date[0], full_date[1], full_date[2])
 
 def _read_time_from_string(str1):
@@ -42,7 +42,7 @@ def _read_time_from_string(str1):
     Reads the time from a string in the format HH:MM:SS.S and returns 
     :class: datetime.time
     '''
-    full_time = map(float, str1.split(':'))
+    full_time = list(map(float, str1.split(':')))
     hour = int(full_time[0])
     minute = int(full_time[1])
     if full_time[2] > 59.99:
@@ -97,8 +97,6 @@ def _read_moment_tensor_from_ndk_string(ndk_string, system='USE'):
     return tensor, sigma, exponent
 
 
-
-
 class ParseNDKtoGCMT(object):
     '''
     Implements the parser to read a file in ndk format to the GCMT catalogue
@@ -117,18 +115,19 @@ class ParseNDKtoGCMT(object):
         '''
         raw_data = getlines(self.filename)
         num_lines = len(raw_data)
-        if ((float(num_lines) / 5.) - float(num_lines / 5)) > 1E-9:
+        if ((float(num_lines) / 5.) - float(num_lines // 5)) > 1E-9:
             raise IOError('GCMT represented by 5 lines - number in file not'
                           ' a multiple of 5!')
-        self.data.number_gcmts = num_lines / 5
-        self.data.gcmts = [None] * self.data.number_gcmts #Pre-allocates list
+        self.data.number_gcmts = num_lines // 5
+        # Pre-allocates list
+        self.data.gcmts = [None for i in range(self.data.number_gcmts)]
         id0 = 0
-        print 'Parsing catalogue ...'
+        print('Parsing catalogue ...')
         for iloc in range(0, self.data.number_gcmts):
             self.data.gcmts[iloc] = self.read_ndk_event(raw_data, id0)
             id0 += 5
-        print 'complete. Contains %s moment tensors' \
-            % self.data.number_events()
+        print('complete. Contains %s moment tensors'
+            % self.data.number_events())
         if not start_year:
             self.data.start_year = self.data.gcmts[1].centroid.date.year
 
@@ -189,7 +188,7 @@ class ParseNDKtoGCMT(object):
         hypo.latitude = float(linestring[27:33])
         hypo.longitude = float(linestring[34:41])
         hypo.depth = float(linestring[42:47])
-        magnitudes = map(float, (linestring[48:55]).split(' '))
+        magnitudes = list(map(float, (linestring[48:55]).split(' ')))
         if magnitudes[0] > 0.:
             hypo.m_b = magnitudes[0]
         if magnitudes[1] > 0.:
@@ -204,9 +203,9 @@ class ParseNDKtoGCMT(object):
         '''
         gcmt.identifier = ndk_string[:16]
         inversion_data = re.split('[A-Z:]+', ndk_string[17:61])
-        gcmt.metadata['BODY'] = map(float, inversion_data[1].split())
-        gcmt.metadata['SURFACE'] = map(float, inversion_data[2].split())
-        gcmt.metadata['MANTLE'] = map(float, inversion_data[3].split())
+        gcmt.metadata['BODY'] = list(map(float, inversion_data[1].split()))
+        gcmt.metadata['SURFACE'] = list(map(float, inversion_data[2].split()))
+        gcmt.metadata['MANTLE'] = list(map(float, inversion_data[3].split()))
         further_meta = re.split('[: ]+', ndk_string[62:])
         gcmt.metadata['CMT'] = int(further_meta[1])
         gcmt.metadata['FUNCTION'] = {'TYPE': further_meta[2],
@@ -228,7 +227,7 @@ class ParseNDKtoGCMT(object):
 
         data = ndk_string[:58].split()
         centroid.centroid_type = data[0].rstrip(':')
-        data = map(float, data[1:])
+        data = list(map(float, data[1:]))
         time_diff = data[0]
         if fabs(time_diff) > 1E-6:
             centroid._get_centroid_time(time_diff)
