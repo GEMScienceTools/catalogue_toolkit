@@ -37,8 +37,8 @@ def _header_check(input_keys, catalogue_keys):
         if element in catalogue_keys:
             valid_key_list.append(element)
         else:
-            print 'Catalogue Attribute %s is not a recognised '\
-                   'catalogue key' % element
+            print('Catalogue Attribute %s is not a recognised '\
+                   'catalogue key' % element)
     return valid_key_list
 
 
@@ -90,7 +90,7 @@ class GenericCataloguetoISFParser(object):
         # Parsing the data content
         for irow, row in enumerate(data):
             if irow == 0:
-                valid_key_list = _header_check(row.keys(), 
+                valid_key_list = _header_check(list(row.keys()), 
                     self.catalogue.TOTAL_ATTRIBUTE_LIST)
             for key in valid_key_list:
                 if key in self.catalogue.FLOAT_ATTRIBUTE_LIST:

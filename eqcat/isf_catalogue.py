@@ -19,23 +19,24 @@
 """
 General class for an earthquame catalogue in ISC (ISF) format
 """
+from __future__ import print_function
 import datetime
 import numpy as np
 import h5py
 import pandas as pd
-from utils import decimal_time
 from math import fabs
+from eqcat.utils import decimal_time
 
 
-DATAMAP = [("eventID", "a20"), ("originID", "a20"), ("Agency", "a14"), 
+DATAMAP = [("eventID", "U20"), ("originID", "U20"), ("Agency", "U14"), 
     ("year", "i2"), ("month", "i2"), ("day", "i2"), ("hour", "i2"),
     ("minute", "i2"), ("second", "f2"), ("time_error", "f4"),
-    ("longitude", "f4"), ("latitude", "f4"), ("depth", "f4"),("depthSolution", "a1"), 
-    ("semimajor90", "f4"), ("semiminor90", "f4"), ("error_strike", "f2"),
-    ("depth_error", "f4"), ("prime", "i1")]
+    ("longitude", "f4"), ("latitude", "f4"), ("depth", "f4"),
+    ("depthSolution", "U1"), ("semimajor90", "f4"), ("semiminor90", "f4"),
+    ("error_strike", "f2"), ("depth_error", "f4"), ("prime", "i1")]
 
-MAGDATAMAP = [("eventID", "a20"), ("originID", "a20"), ("magnitudeID", "a40"), 
-    ("value", "f4"), ("sigma", "f4"), ("magType", "a6"), ("magAgency", "a14")]
+MAGDATAMAP = [("eventID", "U20"), ("originID", "U20"), ("magnitudeID", "U40"), 
+    ("value", "f4"), ("sigma", "f4"), ("magType", "U6"), ("magAgency", "U14")]
 
 def datetime_to_decimal_time(date, time):
     '''
@@ -104,7 +105,7 @@ class Magnitude(object):
             (magnitude.author == self.author) and\
             (magnitude.scale == self.scale):
             if fabs(magnitude.value - self.value) > 0.001:
-                print "%s != %s" %(self.__str__(), str(magnitude))
+                print("%s != %s" %(self.__str__(), str(magnitude)))
                 raise ValueError('Two magnitudes with same metadata contain '
                                  'different values!')
             return True
@@ -680,29 +681,28 @@ class ISFCatalogue(object):
         use in GMT
         '''
         # Get numpy array
-        print 'Creating array ...'
+        print('Creating array ...')
         #cat_array = self.render_to_simple_numpy_array('Mw')
         cat_array = self.render_to_simple_numpy_array()
         cat_array = cat_array[:, [4, 3, 5, 6]]
-        print 'Writing to file ...'
+        print('Writing to file ...')
         np.savetxt(filename, cat_array, fmt=frmt)
-        print 'done!'
+        print('done!')
 
     def quick_export(self, filename, delimiter=","):
         """
         Rapidly exports the catalogue to an ascii format
         """
-        f = open(filename, "w")
-        print >> f, "eventID,Description,originID,year,month,day,hour,"\
-            "minute,second,longitude,latitude,depth,magOriginID,magAgency,"\
-            "magnitude,magScale"
-        for event in self.events:
-            base_str = str(event)
-            for origin in event.origins:
-                output_strings = [base_str, str(origin)]
-                output_strings.extend([str(mag) for mag in origin.magnitudes])
-                output_str = "|".join(output_strings)
-                print >> f, output_str.replace("|", delimiter)
-        f.close()
-        print "Exported to %s" % filename
+        with open(filename, "w") as f:
+            print("eventID,Description,originID,year,month,day,hour,"\
+                  "minute,second,longitude,latitude,depth,magOriginID,"\
+                  "magAgency,magnitude,magScale", file=f)
+            for event in self.events:
+                base_str = str(event)
+                for origin in event.origins:
+                    output_strings = [base_str, str(origin)]
+                    output_strings.extend([str(mag) for mag in origin.magnitudes])
+                    output_str = "|".join(output_strings)
+                    print(output_str.replace("|", delimiter), file=f)
+            print("Exported to %s" % filename)
 

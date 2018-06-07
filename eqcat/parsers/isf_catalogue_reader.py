@@ -24,6 +24,7 @@ import os
 import re
 import datetime
 import numpy as np
+from io import open
 from math import floor, ceil, fabs
 from eqcat.parsers.base import (BaseCatalogueDatabaseReader,
                                 _to_int, _to_str, _to_float)
@@ -102,7 +103,7 @@ def get_event_origin_row(row, selected_agencies=[]):
         # Origin not an instance of (or authored by) a selected agency
         return None
     # Get date yyyy/mm/dd
-    ymd = map(int, row[:10].split('/'))
+    ymd = list(map(int, row[:10].split('/')))
     #print "YMD",ymd
     date = datetime.date(ymd[0], ymd[1], ymd[2])
     # Get time
@@ -296,6 +297,7 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 identifier + "-R",
                 name + " - Rejected",
                 events=self.rejected_catalogue)
+        f.close()
         return self.catalogue
 
     def _build_event(self, event, origins, magnitudes, comment_str):

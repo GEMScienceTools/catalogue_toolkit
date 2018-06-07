@@ -64,3 +64,6 @@ target/
 
 # Python pseudocode
 *.pyc
+
+# Jupyter notebook
+*.ipynb_checkpoints

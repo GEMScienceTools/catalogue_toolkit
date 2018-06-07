@@ -6,19 +6,18 @@
 #
 # Copyright (c) 2015 GEM Foundation
 #
-# The Catalogue Toolkit is free software: you can redistribute 
-# it and/or modify it under the terms of the GNU Affero General Public 
-# License as published by the Free Software Foundation, either version 
+# The Catalogue Toolkit is free software: you can redistribute
+# it and/or modify it under the terms of the GNU Affero General Public
+# License as published by the Free Software Foundation, either version
 # 3 of the License, or (at your option) any later version.
 #
 # You should have received a copy of the GNU Affero General Public License
 # with this download. If not, see <http://www.gnu.org/licenses/>
 
-#!/usr/bin/env/python
-
-'''
+"""
 Implements set of classes to represent a GCMT Catalogue
-'''
+"""
+from __future__ import print_function
 import csv
 import datetime
 from math import fabs, floor, sqrt, pi
@@ -33,17 +32,19 @@ except ImportError:
     HAS_GEOJSON = False
 else:
     HAS_GEOJSON = True
-    
+
 
 def cmp_mat(a, b):
     """
     Sorts two matrices returning a positive or zero value
     """
     c = 0
-    for x,y in zip(a.flat, b.flat):
-        c = cmp(abs(x),abs(y))
-        if c != 0: return c
+    for x, y in zip(a.flat, b.flat):
+        c = cmp(abs(x), abs(y))
+        if c != 0:
+            return c
     return c
+
 
 class GCMTHypocentre(object):
     """
@@ -71,7 +72,6 @@ class GCMTHypocentre(object):
             for val in ["date", "time", "longitude", "latitude", "depth"]])
 
 
-
 class GCMTCentroid(object):
     """
     Representation of a GCMT centroid
@@ -97,15 +97,14 @@ class GCMTCentroid(object):
         self.depth_error = None
         self.depth_type = None
         self.centroid_id = None
-    
+
     def __repr__(self):
         """
+        Returns a basic string representation
         """
         return "|".join([
             str(getattr(self, val))
             for val in ["date", "time", "longitude", "latitude", "depth"]])
-
-
 
     def _get_centroid_time(self, time_diff):
         """
@@ -125,7 +124,6 @@ class GCMTCentroid(object):
         self.date = source_time.date()
 
 
-        
 class GCMTPrincipalAxes(object):
     """
     Class to represent the plunge and azimuth of T-, B- and P- plunge axes.
@@ -137,7 +135,6 @@ class GCMTPrincipalAxes(object):
         self.t_axis = None
         self.b_axis = None
         self.p_axis = None
-        
 
     def get_moment_tensor_from_principal_axes(self):
         """
@@ -145,7 +142,6 @@ class GCMTPrincipalAxes(object):
         """
         raise NotImplementedError('Moment tensor from principal axes not yet '
                                   'implemented!')
-
 
     def get_azimuthal_projection(self, height=1.0):
         """
@@ -178,7 +174,6 @@ class GCMTPrincipalAxes(object):
             p_str = "P: None"
         return "{:s}|{:s}|{:s}".format(t_str, b_str, p_str)
 
-        
 
 class GCMTNodalPlanes(object):
     """
@@ -197,19 +192,20 @@ class GCMTNodalPlanes(object):
         String rep is just strike/dip/rake e.g. 180/90/0
         """
         if self.nodal_plane_1:
-            np1_str = "{:.0f}/{:.0f}/{:.0f}".format(self.nodal_plane_1["strike"],
-                                                    self.nodal_plane_1["dip"],
-                                                    self.nodal_plane_1["rake"])
+            np1_str = "{:.0f}/{:.0f}/{:.0f}".format(
+                self.nodal_plane_1["strike"],
+                self.nodal_plane_1["dip"],
+                self.nodal_plane_1["rake"])
         else:
             np1_str = "-/-/-"
         if self.nodal_plane_2:
-            np2_str = "{:.0f}/{:.0f}/{:.0f}".format(self.nodal_plane_2["strike"],
-                                                    self.nodal_plane_2["dip"],
-                                                    self.nodal_plane_2["rake"])
+            np2_str = "{:.0f}/{:.0f}/{:.0f}".format(
+                self.nodal_plane_2["strike"],
+                self.nodal_plane_2["dip"],
+                self.nodal_plane_2["rake"])
         else:
             np2_str = "-/-/-"
         return "{:s} {:s}".format(np1_str, np2_str)
-
 
 
 class GCMTMomentTensor(object):
@@ -246,7 +242,6 @@ class GCMTMomentTensor(object):
                 self.tensor[2, 0], self.tensor[2, 1], self.tensor[2, 2])
         else:
             return "[]"
-                
 
     def normalise_tensor(self):
         """
@@ -286,7 +281,6 @@ class GCMTMomentTensor(object):
             raise ValueError('Reference frame %s not recognised - cannot '
                              'transform to USE!' % self.ref_frame)
 
-    
     def _to_6component(self):
         '''
         Returns the unique 6-components of the tensor in USE format
@@ -296,13 +290,12 @@ class GCMTMomentTensor(object):
 
     def eigendecompose(self, normalise=False):
         '''
-        Performs and eigendecomposition of the tensor and orders into 
+        Performs and eigendecomposition of the tensor and orders into
         descending eigenvalues
         '''
         self.eigenvalues, self.eigenvectors = utils.eigendecompose(self.tensor,
                                                                    normalise)
         return self.eigenvalues, self.eigenvectors
-
 
     def get_nodal_planes(self):
         '''
@@ -321,12 +314,9 @@ class GCMTMomentTensor(object):
         rotation_matrix = (np.matrix(evect * rot_vec.T)).T
         if  np.linalg.det(rotation_matrix) < 0.:
             rotation_matrix *= -1.
-        flip_dc = np.matrix([[0., 0., -1.], 
-                             [0., -1., 0.],
-                             [-1., 0., 0.]])
+        flip_dc = np.matrix([[0., 0., -1.], [0., -1., 0.], [-1., 0., 0.]])
         rotation_matrices = sorted(
-            [rotation_matrix, flip_dc * rotation_matrix],
-            cmp=cmp_mat)
+            [rotation_matrix, flip_dc * rotation_matrix], cmp=cmp_mat)
         nodal_planes = GCMTNodalPlanes()
         dip, strike, rake = [(180. / pi) * angle 
             for angle in utils.matrix_to_euler(rotation_matrices[0])]
@@ -570,56 +560,55 @@ class GCMTCatalogue(object):
                    'minute', 'second', 'timeError', 'longitude', 'latitude',
                    'SemiMajor90', 'SemiMinor90', 'ErrorStrike', 'depth', 
                    'depthError', 'magnitude', 'sigmaMagnitude']
-        fid = open(filename, 'wt')
-        writer = csv.DictWriter(fid, fieldnames=header_list)
-        headers = dict((header, header) for header in header_list)
-        writer.writerow(headers)
-        print 'Writing to simple csv format ...'
-        for iloc, tensor in enumerate(self.gcmts):
-            # Generic Data
-            cmt_dict = {'eventID': iloc + 100000,
-                        'Agency': 'GCMT',
-                        'SemiMajor90': None,
-                        'SemiMinor90': None,
-                        'ErrorStrike': None,
-                        'magnitude': tensor.magnitude,
-                        'sigmaMagnitude': None,
-                        'depth': None,
-                        'depthError': None}
+        with open(filename, 'wt') as fid:
+            writer = csv.DictWriter(fid, fieldnames=header_list)
+            headers = dict((header, header) for header in header_list)
+            writer.writerow(headers)
+            print('Writing to simple csv format ...')
+            for iloc, tensor in enumerate(self.gcmts):
+                # Generic Data
+                cmt_dict = {'eventID': iloc + 100000,
+                            'Agency': 'GCMT',
+                            'SemiMajor90': None,
+                            'SemiMinor90': None,
+                            'ErrorStrike': None,
+                            'magnitude': tensor.magnitude,
+                            'sigmaMagnitude': None,
+                            'depth': None,
+                            'depthError': None}
 
-            if centroid_location:
-                # Time and location come from centroid
-                cmt_dict['year'] = tensor.centroid.date.year
-                cmt_dict['month'] = tensor.centroid.date.month
-                cmt_dict['day'] = tensor.centroid.date.day
-                cmt_dict['hour'] = tensor.centroid.time.hour
-                cmt_dict['minute'] = tensor.centroid.time.minute
-                cmt_dict['second'] = np.round(
-                    np.float(tensor.centroid.time.second) +
-                    np.float(tensor.centroid.time.microsecond) / 1000000., 2)
-                cmt_dict['timeError'] = tensor.centroid.time_error
-                cmt_dict['longitude'] = tensor.centroid.longitude
-                cmt_dict['latitude'] = tensor.centroid.latitude
-                cmt_dict['depth'] = tensor.centroid.depth
-                cmt_dict['depthError'] = tensor.centroid.depth_error
-            else:
-                # Time and location come from hypocentre
-                cmt_dict['year'] = tensor.hypocentre.date.year
-                cmt_dict['month'] = tensor.hypocentre.date.month
-                cmt_dict['day'] = tensor.hypocentre.date.day
-                cmt_dict['hour'] = tensor.hypocentre.time.hour
-                cmt_dict['minute'] = tensor.hypocentre.time.minute
-                cmt_dict['second'] = np.round(
-                    np.float(tensor.hypocentre.time.second) + 
-                    np.float(tensor.hypocentre.time.microsecond) / 1000000., 2)
-                cmt_dict['timeError'] = None
-                cmt_dict['longitude'] = tensor.hypocentre.longitude
-                cmt_dict['latitude'] = tensor.hypocentre.latitude
-                cmt_dict['depth'] = tensor.hypocentre.depth
-                cmt_dict['depthError'] = None
-            writer.writerow(cmt_dict)
-        fid.close()
-        print 'done!'
+                if centroid_location:
+                    # Time and location come from centroid
+                    cmt_dict['year'] = tensor.centroid.date.year
+                    cmt_dict['month'] = tensor.centroid.date.month
+                    cmt_dict['day'] = tensor.centroid.date.day
+                    cmt_dict['hour'] = tensor.centroid.time.hour
+                    cmt_dict['minute'] = tensor.centroid.time.minute
+                    cmt_dict['second'] = np.round(
+                        np.float(tensor.centroid.time.second) +
+                        np.float(tensor.centroid.time.microsecond) / 1000000., 2)
+                    cmt_dict['timeError'] = tensor.centroid.time_error
+                    cmt_dict['longitude'] = tensor.centroid.longitude
+                    cmt_dict['latitude'] = tensor.centroid.latitude
+                    cmt_dict['depth'] = tensor.centroid.depth
+                    cmt_dict['depthError'] = tensor.centroid.depth_error
+                else:
+                    # Time and location come from hypocentre
+                    cmt_dict['year'] = tensor.hypocentre.date.year
+                    cmt_dict['month'] = tensor.hypocentre.date.month
+                    cmt_dict['day'] = tensor.hypocentre.date.day
+                    cmt_dict['hour'] = tensor.hypocentre.time.hour
+                    cmt_dict['minute'] = tensor.hypocentre.time.minute
+                    cmt_dict['second'] = np.round(
+                        np.float(tensor.hypocentre.time.second) + 
+                        np.float(tensor.hypocentre.time.microsecond) / 1000000., 2)
+                    cmt_dict['timeError'] = None
+                    cmt_dict['longitude'] = tensor.hypocentre.longitude
+                    cmt_dict['latitude'] = tensor.hypocentre.latitude
+                    cmt_dict['depth'] = tensor.hypocentre.depth
+                    cmt_dict['depthError'] = None
+                writer.writerow(cmt_dict)
+        print('done!')
 
     def sum_tensor_set(self, selection, weight=None):
         '''
@@ -658,50 +647,43 @@ class GCMTCatalogue(object):
         :param str filename:
             Name of file
 
-
         "Sc" flag requires "Long, Lat, Depth, Stike, Dip, Rake, Strike, Dip,
                             Rake, Mantissa, Exponent, LongPlot, LatPlot, Text"
         """
-        fid = open(filename, 'wt')
-
-        for iloc, gcmt in enumerate(self.gcmts):
-            mantissa = gcmt.moment / (10. ** 
-                                      float(gcmt.moment_tensor.exponent))
-            exponent = gcmt.moment_tensor.exponent + 7.
-            if add_text:
-                print >> fid, "%9.4f %9.4f %9.4f %6.1f %6.1f %6.1f %6.1f "\
-                "%6.1f %6.1f %7.2f %5.1f %9.4f %9.4f %s" %(
-                    gcmt.centroid.longitude,
-                    gcmt.centroid.latitude,
-                    gcmt.centroid.depth,
-                    gcmt.nodal_planes.nodal_plane_1['strike'],
-                    gcmt.nodal_planes.nodal_plane_1['dip'],
-                    gcmt.nodal_planes.nodal_plane_1['rake'],
-                    gcmt.nodal_planes.nodal_plane_2['strike'],
-                    gcmt.nodal_planes.nodal_plane_2['dip'],
-                    gcmt.nodal_planes.nodal_plane_2['rake'],
-                    mantissa,
-                    exponent,
-                    gcmt.centroid.longitude,
-                    gcmt.centroid.latitude,
-                    gcmt.identifier.strip())
-            else:
-                print >> fid, "%9.4f %9.4f %9.4f %6.1f %6.1f %6.1f %6.1f"\
-                "%6.1f %6.1f %7.2f %5.1f %9.4f %9.4f" % (
-                    gcmt.centroid.longitude,
-                    gcmt.centroid.latitude,
-                    gcmt.centroid.depth,
-                    gcmt.nodal_planes.nodal_plane_1['strike'],
-                    gcmt.nodal_planes.nodal_plane_1['dip'],
-                    gcmt.nodal_planes.nodal_plane_1['rake'],
-                    gcmt.nodal_planes.nodal_plane_2['strike'],
-                    gcmt.nodal_planes.nodal_plane_2['dip'],
-                    gcmt.nodal_planes.nodal_plane_2['rake'],
-                    mantissa,
-                    exponent,
-                    gcmt.centroid.longitude,
-                    gcmt.centroid.latitude)
-        fid.close()
+        with open(filename, "wt") as fid:
+            for iloc, gcmt in enumerate(self.gcmts):
+                mantissa = gcmt.moment / (10. ** 
+                                          float(gcmt.moment_tensor.exponent))
+                exponent = gcmt.moment_tensor.exponent + 7.
+                if add_text:
+                    print("%9.4f %9.4f %9.4f %6.1f %6.1f %6.1f %6.1f "
+                          "%6.1f %6.1f %7.2f %5.1f %9.4f %9.4f %s" % (
+                              gcmt.centroid.longitude,
+                              gcmt.centroid.latitude,
+                              gcmt.centroid.depth,
+                              gcmt.nodal_planes.nodal_plane_1['strike'],
+                              gcmt.nodal_planes.nodal_plane_1['dip'],
+                              gcmt.nodal_planes.nodal_plane_1['rake'],
+                              gcmt.nodal_planes.nodal_plane_2['strike'],
+                              gcmt.nodal_planes.nodal_plane_2['dip'],
+                              gcmt.nodal_planes.nodal_plane_2['rake'],
+                              mantissa, exponent, gcmt.centroid.longitude,
+                              gcmt.centroid.latitude, gcmt.identifier.strip()),
+                          file=fid)
+                else:
+                    print("%9.4f %9.4f %9.4f %6.1f %6.1f %6.1f %6.1f"
+                          "%6.1f %6.1f %7.2f %5.1f %9.4f %9.4f" % (
+                              gcmt.centroid.longitude,
+                              gcmt.centroid.latitude,
+                              gcmt.centroid.depth,
+                              gcmt.nodal_planes.nodal_plane_1['strike'],
+                              gcmt.nodal_planes.nodal_plane_1['dip'],
+                              gcmt.nodal_planes.nodal_plane_1['rake'],
+                              gcmt.nodal_planes.nodal_plane_2['strike'],
+                              gcmt.nodal_planes.nodal_plane_2['dip'],
+                              gcmt.nodal_planes.nodal_plane_2['rake'],
+                              mantissa, exponent, gcmt.centroid.longitude,
+                              gcmt.centroid.latitude), file=fid)
 
     def write_to_geojson(self, filename):
         """
@@ -759,7 +741,7 @@ class GCMTCatalogue(object):
                 attrs["P_Plunge"] = gcmt.principal_axes.p_axis["plunge"]
                 attrs["P_Azimuth"] = gcmt.principal_axes.p_axis["azimuth"]
             else:
-                attrs["T_Length"] = "" 
+                attrs["T_Length"] = ""
                 attrs["T_Plunge"] = ""
                 attrs["T_Azimuth"] = ""
                 attrs["N_Length"] = ""
