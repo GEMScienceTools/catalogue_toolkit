@@ -113,7 +113,7 @@ class GCMTCentroid(object):
         """
         source_time = datetime.datetime.combine(self.date, self.time)
         second_diff = floor(fabs(time_diff))
-        microsecond_diff = int(1000. * (time_diff - second_diff))
+        microsecond_diff = int(1.0E6 * (time_diff - second_diff))
         if time_diff < 0.:
             source_time = source_time - datetime.timedelta(
                 seconds=int(second_diff), microseconds=microsecond_diff)
@@ -445,14 +445,15 @@ class GCMTCatalogue(object):
     :param int number_gcmts:
         Number of moment tensors in catalogue
     """
-    def __init__(self, start_year=None, end_year=None):
+    def __init__(self, start_year=None, end_year=None, gcmts=[]):
         """
         Instantiate catalogue class
         """
-        self.gcmts = []
-        self.number_gcmts = None
+        self.gcmts = gcmts
+        self.number_gcmts = len(gcmts)
         self.start_year = start_year
         self.end_year = end_year
+        self.ids = [gcmt.identifier for gcmt in self.gcmts]
 
     def number_events(self):
         '''
@@ -465,6 +466,22 @@ class GCMTCatalogue(object):
         Returns number of CMTs
         """
         return len(self.gcmts)
+
+    def __getitem__(self, key):
+        """
+        Returns a specific event by event ID
+        """
+        if key in self.ids:
+            return self.gcmts[self.ids.index(key)]
+        else:
+            raise KeyError("Event %s not found" % key)
+
+    def __iter__(self):
+        """
+        Iterates over the GCMTs
+        """
+        for gcmt in self.gcmts:
+            yield gcmt
 
    
     def gcmt_to_simple_array(self, centroid_location=True):

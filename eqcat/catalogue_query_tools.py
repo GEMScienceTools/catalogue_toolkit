@@ -26,6 +26,8 @@ from copy import copy, deepcopy
 from datetime import datetime, date, time
 from collections import OrderedDict
 import matplotlib
+import matplotlib.dates as mdates
+import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize, LogNorm
 import eqcat.utils as utils
@@ -216,27 +218,19 @@ class CatalogueSelector(object):
         :param idx:
             Pandas Series object indicating the truth of an array
         """
-        if select_type == "any":
-            valid_origins = self.catalogue.origins.eventID[idx]
-            event_list = valid_origins.unique()
-
-        elif select_type == "all":
-            self.catalogue.origins["idx"] = idx
-            origin_cat = pd.DataFrame({
-                "eventID": self.catalogue.origins.eventID[idx],
-                "idx": idx[idx]})
-            grps = origin_cat.groupby("eventID")
-            original_grps = self.catalogue.origins.groupby("eventID")
-            event_list = []
-            for key in list(grps.groups.keys()):
-                if np.all(original_grps.get_group(key)["idx"].values):
-                    event_list.append(key)
-            event_list = np.array(event_list)
-            del self.catalogue.origins["idx"]
-        else:
+        if select_type == "all":
+            output_catalogue = CatalogueDB()
+            output_catalogue.origins = self.catalogue.origins[idx]
+            output_catalogue.magnitudes = self.catalogue.magnitudes[
+                self.catalogue.magnitudes["eventID"].isin(
+                output_catalogue.origins["eventID"].unique())]
+            return output_catalogue
+        if not select_type == "any":
             raise ValueError(
                 "Selection Type must correspond to 'any' or 'all'")
         
+        valid_origins = self.catalogue.origins.eventID[idx]
+        event_list = valid_origins.unique()
         select_idx1 = self.catalogue.origins.eventID.isin(event_list)
         select_idx2 = self.catalogue.magnitudes.eventID.isin(event_list)
         if self.copycat:
@@ -257,25 +251,19 @@ class CatalogueSelector(object):
         :param idx:
             Pandas Series object indicating the truth of an array
         """
-        if select_type == "any":
-            valid_mags = self.catalogue.magnitudes.eventID[idx]
-            event_list = valid_mags.unique()
-        elif select_type == "all":
-            self.catalogue.magnitudes["idx"] = idx
-            mag_cat = pd.DataFrame({
-                "eventID": self.catalogue.origins.eventID[idx],
-                "idx": idx[idx]})
-            grps = mag_cat.groupby("eventID")
-            mag_grps = self.catalogue.magnitudes.groupby("eventID")
-            event_list = []
-            for key in list(grps.groups.keys()):
-                if np.all(mag_grps.get_group(key)["idx"].values):
-                    event_list.append(key)
-            event_list = np.array(event_list)
-            del self.catalogue.magnitudes["idx"]
-        else:
+        if select_type == "all":
+            output_catalogue = CatalogueDB()
+            output_catalogue.magnitudes = self.catalogue.magnitudes[idx]
+            output_catalogue.origins = self.catalogue.origins[
+                self.catalogue.origins["eventID"].isin(
+                output_catalogue.magnitudes["eventID"].unique())]
+            return output_catalogue
+
+        if not select_type == "any":
             raise ValueError(
                 "Selection Type must correspond to 'any' or 'all'")
+        valid_mags = self.catalogue.magnitudes.eventID[idx]
+        event_list = valid_mags.unique()
             
         select_idx1 = self.catalogue.magnitudes.eventID.isin(event_list)
         select_idx2 = self.catalogue.origins.eventID.isin(event_list)
@@ -543,12 +531,20 @@ def get_agency_magnitude_pairs(catalogue, pair1, pair2, no_case=False):
     sigma1 = []
     mag2 = []
     sigma2 = []
-    for row in list(common_catalogue.iterrows()):
-        #print row
-        mag2.append(row[1].value)
-        sigma2.append(row[1].sigma)
-        event1 = cat1_groups.get_group(row[1].eventID)
+    for i, grp in common_catalogue.groupby("eventID"):
+        if len(grp) > 1:
+            # Find the event with the largest magnitude - some truncation
+            # may be occurring
+            mloc = np.argmax(grp["value"].values)
+            event0 = grp.iloc[mloc]
+        else:
+            event0 = grp.iloc[0]
+        mag2.append(event0.value)
+        sigma2.append(event0.sigma)
+  
+        event1 = cat1_groups.get_group(event0.eventID)
         if len(event1) > 1:
+            # Also find the event with the largest magnitude
             event1 = event1.iloc[np.argmax(event1["originID"].values)]
             mag1.append(event1.value.tolist())
             sigma1.append(event1.sigma.tolist())
@@ -569,6 +565,7 @@ def get_agency_magnitude_pairs(catalogue, pair1, pair2, no_case=False):
         (pair_1_key + " Sigma", np.array(sigma1)),                   
         (pair_2_key, np.array(mag2)),
         (pair_2_key + " Sigma", np.array(sigma2))]), output_catalogue
+
 
 def mine_agency_magnitude_combinations(catalogue, agency_mag_data, threshold,
         no_case=False):
@@ -657,7 +654,8 @@ def mine_agency_magnitude_combinations_to_file(output_file, catalogue,
                     else:
                         print("----> No pairs found!")
     fle.close()
-    
+
+
 def join_query_results(data1, data2):
     """
     Joins the results of two magnitude-agency queries
@@ -771,14 +769,14 @@ def sample_agency_magnitude_pairs(data, xbins, ybins, number_samples=1):
             counter += np.histogram2d(data_x, data_y, bins=[xbins, ybins])[0]
         
         return counter / float(number_samples)
-             
 
 
 def plot_agency_magnitude_density(data, overlay=False, number_samples=0,
         xlim=[], ylim=[], figure_size=(7, 8), lognorm=True,
         filetype="png", resolution=300, filename=None):
     """
-
+    Creates a density plot of the earthquakes corresponding to an
+    agency-magnitude combination
     """
     keys = list(data.keys())
     if not data:
@@ -844,6 +842,7 @@ DEFAULT_SIGMA = {"minimum": lambda x : np.nanmin(x),
                  "maximum": lambda x : np.nanmax(x),
                  "mean": lambda x : np.nanmean(x)}
 
+
 def extract_scale_agency(key):
     """
     Extract the magnitude scale and the agency from within the parenthesis
@@ -880,6 +879,7 @@ def extract_scale_agency(key):
     else:
         raise ValueError("Badly formatted key %s" % key)
 
+
 class CatalogueRegressor(object):
     """
     Class to perform an orthodonal distance regression on a pair of magnitude
@@ -907,13 +907,8 @@ class CatalogueRegressor(object):
         self.common_catalogue = common_catalogue
         self.keys = list(self.data.keys())
         # Retrieve the scale and agency information from keys
-
-        #self.x_scale, self.x_agency = self.keys[0].split("(")
         self.x_scale, self.x_agency = extract_scale_agency(self.keys[0])
-        #self.x_agency = self.x_agency.rstrip(")")
-        #self.y_scale, self.y_agency = self.keys[2].split("(")
         self.y_scale, self.y_agency = extract_scale_agency(self.keys[2])
-        #self.y_agency = self.y_agency.rstrip(")")
         self.model = None
         self.regression_data = None
         self.results = None
@@ -1054,7 +1049,6 @@ class CatalogueRegressor(object):
         plt.plot(model_x, model_y, line_color,
                  linewidth=2.0,
                  label=title_string)
-        #plt.title(r"{:s}".format(title_string), fontsize=14)
         plt.legend(loc=2, frameon=False)
         if filename:
             utils._save_image(filename, filetype, resolution)
@@ -1178,22 +1172,13 @@ class CatalogueRegressor(object):
         rule = self.get_magnitude_conversion_model()
         # Group magnitudes and origins by event ID
         mag_grps = catalogue.magnitudes.groupby("eventID")
-        orig_grps = catalogue.origins.groupby("originID")
+        orig_grps = catalogue.origins.groupby("eventID")
         output = []
         for event_id, event in mag_grps:
-            input_x = None
-            observed_y = None
-            for _, row in event.iterrows():
-                if row.magAgency == self.x_agency and\
-                    row.magType.lower() == self.x_scale.lower():
-                    input_x = row.value
-                    input_x_row = deepcopy(row)
-                    input_x_origin = orig_grps.get_group(row.originID)
-                if row.magAgency == self.y_agency and\
-                    row.magType.lower() == self.y_scale.lower():
-                    observed_y = row.value
-                    observed_y_origin = orig_grps.get_group(row.originID)
-                    observed_y_row = deepcopy(row)
+            input_x, observed_y, input_x_origin, observed_y_origin,\
+                input_x_row, observed_y_row, event_datetime =\
+                    self._extract_event_data(event,
+                                             orig_grps.get_group(event_id))
             if input_x and observed_y:
                 residual, expected_y, sigma = rule.get_residual(input_x,
                                                                 observed_y)
@@ -1206,12 +1191,256 @@ class CatalogueRegressor(object):
                     "x_mag_data": input_x_row,
                     "x_orig_data": input_x_origin,
                     "y_mag_data": observed_y_row,
-                    "y_orig_data": observed_y_origin}   
-                #output.append((residual, input_x, observed_y, expected_y,
-                #               sigma,  input_x_row, input_x_origin,
-                #               observed_y_row, observed_y_origin))
+                    "y_orig_data": observed_y_origin,
+                    "datetime": event_datetime}
                 output.append(event_data)
         return output
+
+    def _extract_event_data(self, event, orig_grp):
+        """
+        Residual plots with time need to assign a single date/time to the
+        event. There can be cases, however, where the selected magnitude
+        is associated to an origin not present in the origins (due to
+        agency filtering). This selects (by preference) the y-origin and if
+        not available then the x-origin
+        """
+
+        input_x = None
+        observed_y = None
+        input_x_origin = None
+        observed_y_origin = None
+        input_x_row = None
+        observed_y_row = None
+        orig_grps = orig_grp.groupby("originID")
+        for _, row in event.iterrows():
+            if row.magAgency == self.y_agency and\
+                row.magType.lower() == self.y_scale.lower():
+                observed_y = row.value
+                observed_y_row = deepcopy(row)
+                if row.originID in orig_grps.groups:
+                    observed_y_origin = orig_grps.get_group(row.originID)
+
+            if row.magAgency == self.x_agency and\
+                row.magType.lower() == self.x_scale.lower():
+                input_x = row.value
+                input_x_row = deepcopy(row)
+                if row.originID in orig_grps.groups:
+                    input_x_origin = orig_grps.get_group(row.originID)
+
+        if observed_y_origin is not None:
+            event_sec = observed_y_origin.second
+            event_microsec = int((event_sec - np.floor(event_sec)) * 1E6)
+            event_sec = int(event_sec)
+            event_datetime = datetime(observed_y_origin.year,
+                                      observed_y_origin.month,
+                                      observed_y_origin.day,
+                                      observed_y_origin.hour,
+                                      observed_y_origin.minute,
+                                      event_sec, event_microsec)
+        elif input_x_origin is not None:
+            event_sec = input_x_origin.second
+            event_microsec = int((event_sec - np.floor(event_sec)) * 1E6)
+            event_sec = int(event_sec)
+            event_datetime = datetime(input_x_origin.year,
+                                      input_x_origin.month,
+                                      input_x_origin.day,
+                                      input_x_origin.hour,
+                                      input_x_origin.minute,
+                                      event_sec, event_microsec)
+        else:
+            row = orig_grp.iloc[0]
+            # Take from the last location
+            event_sec = row.second
+            event_microsec = int((event_sec - np.floor(event_sec)) * 1E6)
+            event_sec = int(event_sec)
+            event_datetime = datetime(row.year,
+                                      row.month,
+                                      row.day,
+                                      row.hour,
+                                      row.minute,
+                                      event_sec, event_microsec)
+            
+        return input_x, observed_y, input_x_origin, observed_y_origin,\
+            input_x_row, observed_y_row, event_datetime
+
+    def plot_residuals_magnitude(self, residuals=None, catalogue=None,
+                                 normalised=True, xlim=[], ylim=None,
+                                 figure_size=(8, 8), filename=None,
+                                 filetype="png", dpi=300):
+        """
+        Plots the residuals with respect to magnitude
+        """
+        if not residuals:
+            residuals = self.get_catalogue_residuals(catalogue)
+        yvals = []
+        xvals = []
+        for residual in residuals:
+            if normalised:
+                yvals.append(residual["residual"])
+            else:
+                yvals.append(residual["y_obs"] - residual["y_model"])
+            xvals.append(residual["x_mag"])
+        fig = plt.figure(figsize=figure_size)
+        ax = fig.add_subplot(111)
+        ax.scatter(xvals, yvals, s=40, c="b", marker="o", edgecolors="w")
+        if len(xlim) == 2:
+            lb, ub = xlim
+        else:
+            lb = np.floor(np.min(xvals))
+            ub = np.ceil(np.max(xvals))
+        ax.set_xlim(lb, ub)
+        if not ylim:
+            ylim = np.ceil(np.max(np.abs(yvals)))
+        ax.set_ylim(-ylim, ylim)
+        ax.grid(True)
+        ax.set_xlabel("%s (%s)" % (self.x_scale, self.x_agency), fontsize=18)
+        if normalised:
+            ax.set_ylabel(r"$\varepsilon$", fontsize=18)
+        else:
+            ax.set_ylabel("%s (%s) - %s (%s) " % (self.y_scale, self.y_agency,
+                                                  self.x_scale, self.x_agency),
+                         fontsize=18)
+        if filename:
+            plt.savefig(filename, format=filetype, dpi=dpi,
+                        bbox_inches="tight")
+
+    def plot_residuals_time(self, residuals=None, catalogue=None,
+                            normalised=True, ylim=None, figure_size=(9, 6),
+                            filename=None, filetype="png", dpi=300):
+        """
+        Produces a plot of the residuals with respect to time, color scaled
+        by magnitude
+        """
+        if not residuals:
+            residuals = self.get_catalogue_residuals(catalogue)
+
+        yvals = []
+        xvals = []
+        xmags = []
+        for residual in residuals:
+            if normalised:
+                yvals.append(residual["residual"])
+            else:
+                yvals.append(residual["y_obs"] - residual["y_model"])
+            xvals.append(residual["datetime"])
+            xmags.append(residual["x_mag"])
+
+        fig = plt.figure(figsize=figure_size)
+        ax = fig.add_subplot(111)
+        cb = ax.scatter(xvals, yvals, s=40, marker="o", c=xmags,
+                        edgecolors="w", cmap=plt.cm.get_cmap("plasma"))
+        fig.colorbar(cb)
+        ax.grid(True)
+        ax.fmt_xdata = mdates.DateFormatter("%Y")
+        if not ylim:
+            ylim = np.ceil(np.max(np.abs(yvals)))
+        ax.set_ylim(-ylim, ylim)
+        ax.set_xlabel("Date", fontsize=18)
+        if normalised:
+            ax.set_ylabel(r"$\varepsilon$", fontsize=18)
+        else:
+            ax.set_ylabel("%s (%s) - %s (%s) " % (self.y_scale, self.y_agency,
+                                                  self.x_scale, self.x_agency),
+                         fontsize=18)
+        for tick in ax.get_xticklabels():
+            tick.set_rotation(45)
+
+        if filename:
+            plt.savefig(filename, format=filetype, dpi=dpi,
+                        bbox_inches="tight")
+    
+    def plot_model_residuals(self, residuals=None, catalogue=None,
+                             normalised=True, lims=[], ylim=None,
+                             figure_size=(7, 8), filename=None,
+                             filetype="png", dpi=300):
+        """
+        Produces a full breakdown of model and residuals
+        """
+        if not residuals:
+            residuals = self.get_catalogue_residuals(catalogue)
+
+        yvals = []
+        xvals = []
+        xmags = []
+        ymags = []
+        for residual in residuals:
+            if normalised:
+                yvals.append(residual["residual"])
+            else:
+                yvals.append(residual["y_obs"] - residual["y_model"])
+            xvals.append(residual["datetime"])
+            xmags.append(residual["x_mag"])
+            ymags.append(residual["y_obs"])
+        # Plot the main model
+        fig = plt.figure(figsize=(12, 7))
+        gs = gridspec.GridSpec(2, 2)
+        ax1 = fig.add_subplot(gs[:, 0])
+        ax1.plot(xmags, ymags, "bo", markeredgecolor="w")
+        if lims:
+            lb, ub = lims
+        else:
+            lb = min(np.floor(np.min(xmags)),
+                     np.floor(np.min(xmags)))
+            ub = max(np.ceil(np.max(ymags)),
+                     np.ceil(np.max(ymags)))
+        ax1.plot([lb, ub], [lb, ub], "--", color=[0.5, 0.5, 0.5])
+        ax1.set_xlim(lb, ub)
+        ax1.set_ylim(lb, ub)
+        model_x = np.arange(lb, ub + 0.01, 0.01)
+        rule = self.get_magnitude_conversion_model()
+        model_y = np.array([rule.convert_value(x, 0.0)[0] for x in model_x])
+        ax1.plot(model_x, model_y, "r-", lw=2.)
+        ax1.set_xlabel(r"%s (%s)" % (self.x_scale, self.x_agency),
+                       fontsize=18)
+        ax1.set_ylabel(r"%s (%s)" % (self.y_scale, self.y_agency),
+                       fontsize=18)
+        ax1.set_title(self.model_type.get_string(self.keys[2], self.keys[0]),
+                      fontsize=16)
+        ax1.grid(True)
+        # Plot the residuals with time
+        ax2 = fig.add_subplot(gs[1, 1])
+        cb = ax2.scatter(xvals, yvals, s=40, c=ymags, edgecolors="w",
+                         cmap=plt.cm.get_cmap("plasma"))
+        fig.colorbar(cb)
+        ax2.grid(True)
+        ax2.fmt_xdata = mdates.DateFormatter("%Y")
+        if not ylim:
+            iylim = np.ceil(np.max(np.abs(yvals)))
+            ax2.set_ylim(-iylim, iylim)
+        else:
+            ax2.set_ylim(-ylim, ylim)
+        ax2.set_xlabel("Date", fontsize=18)
+        if normalised:
+            ax2.set_ylabel(r"$\varepsilon$", fontsize=18)
+        else:
+            ax2.set_ylabel(
+                "%s (%s) - %s (%s) " % (self.y_scale, self.y_agency,
+                                        self.x_scale, self.x_agency),
+                fontsize=18)
+        for tick in ax2.get_xticklabels():
+            tick.set_rotation(45)
+        # Plot residuals with magnitude
+        ax3 = fig.add_subplot(gs[0, 1])
+        ax3.scatter(xmags, yvals, s=40, c="b", edgecolors="w")
+        ax3.set_xlim(lb, ub)
+        ax3.grid(True)
+        if not ylim:
+            iylim = np.ceil(np.max(np.abs(yvals)))
+            ax3.set_ylim(-iylim, iylim)
+        else:
+            ax3.set_ylim(-ylim, ylim)
+        if normalised:
+            ax3.set_ylabel(r"$\varepsilon$", fontsize=18)
+        else:
+            ax3.set_ylabel(
+                "%s (%s) - %s (%s) " % (self.y_scale, self.y_agency,
+                                        self.x_scale, self.x_agency),
+                fontsize=18)
+        # Cleanup and save file if needed
+        plt.tight_layout()
+        if filename:
+            plt.savefig(filename, format=filetype, dpi=dpi,
+                        bbox_inches="tight")
 
 
 def plot_catalogue_map(config, catalogue, magnitude_scale=False,
