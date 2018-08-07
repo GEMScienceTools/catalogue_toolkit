@@ -466,6 +466,7 @@ class ISFCatalogue(object):
             self.events = events
         else:
             self.events = []
+        self.ids = [event.id for event in self.events]
 
 
     def __iter__(self):
@@ -481,12 +482,22 @@ class ISFCatalogue(object):
         """
         return self.get_number_events()
 
+    def __getitem__(self, key):
+        """
+        Returns the event corresponding to the specific key
+        """
+        if not len(self.ids):
+            self.ids = [event.id for event in self.events]
+        if key in self.ids:
+            return self.events[self.ids.index(key)]
+        else:
+            raise KeyError("Event %s not found" % key)
+
     def get_number_events(self):
         """
         Return number of events
         """
         return len(self.events)
-
 
     def get_event_key_list(self):
         """
@@ -496,7 +507,6 @@ class ISFCatalogue(object):
             return []
         else:
             return [eq.id for eq in self.events]
-
 
     def merge_second_catalogue(self, catalogue):
         '''

@@ -107,7 +107,6 @@ class ParseNDKtoGCMT(object):
             Name of the catalogue file in ndk format
         '''
         self.filename = filename
-        self.data = GCMTCatalogue()
 
     def read_file(self, start_year=None, end_year=None):
         '''
@@ -118,23 +117,22 @@ class ParseNDKtoGCMT(object):
         if ((float(num_lines) / 5.) - float(num_lines // 5)) > 1E-9:
             raise IOError('GCMT represented by 5 lines - number in file not'
                           ' a multiple of 5!')
-        self.data.number_gcmts = num_lines // 5
+        number_gcmts = num_lines // 5
         # Pre-allocates list
-        self.data.gcmts = [None for i in range(self.data.number_gcmts)]
+        data_gcmts = [None for i in range(number_gcmts)]
         id0 = 0
         print('Parsing catalogue ...')
-        for iloc in range(0, self.data.number_gcmts):
-            self.data.gcmts[iloc] = self.read_ndk_event(raw_data, id0)
+        for iloc in range(number_gcmts):
+            data_gcmts[iloc] = self.read_ndk_event(raw_data, id0)
             id0 += 5
-        print('complete. Contains %s moment tensors'
-            % self.data.number_events())
+        print('complete. Contains %s moment tensors' % len(data_gcmts))
         if not start_year:
-            self.data.start_year = self.data.gcmts[1].centroid.date.year
+            start_year = data_gcmts[0].centroid.date.year
 
         if not end_year:
-            self.data.end_year = self.data.gcmts[-1].centroid.date.year
-
-        return self.data
+            end_year = data_gcmts[-1].centroid.date.year
+        
+        return GCMTCatalogue(start_year, end_year, data_gcmts)
 
     def read_ndk_event(self, raw_data, id0):
         '''
@@ -193,7 +191,7 @@ class ParseNDKtoGCMT(object):
             hypo.m_b = magnitudes[0]
         if magnitudes[1] > 0.:
             hypo.m_s = magnitudes[1]
-        hypo.location = linestring[56:]
+        hypo.location = linestring[56:].strip()
         return hypo
 
 
@@ -201,7 +199,7 @@ class ParseNDKtoGCMT(object):
         '''
         Reads the GCMT metadata from line 2 of the ndk batch
         '''
-        gcmt.identifier = ndk_string[:16]
+        gcmt.identifier = ndk_string[:16].strip()
         inversion_data = re.split('[A-Z:]+', ndk_string[17:61])
         gcmt.metadata['BODY'] = list(map(float, inversion_data[1].split()))
         gcmt.metadata['SURFACE'] = list(map(float, inversion_data[2].split()))
@@ -239,7 +237,7 @@ class ParseNDKtoGCMT(object):
         centroid.depth = data[6]
         centroid.depth_error = data[7]
         centroid.depth_type = ndk_string[59:63]
-        centroid.centroid_id = ndk_string[64:]
+        centroid.centroid_id = ndk_string[64:].strip()
         return centroid
 
     def _get_moment_tensor_from_ndk_string(self, ndk_string):
