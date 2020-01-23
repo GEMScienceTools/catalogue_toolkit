@@ -586,7 +586,6 @@ class ISFCatalogue(object):
             if len(obj):
                 dtime_a = dt.datetime.combine(event.origins[0].date,
                                               event.origins[0].time)
-
                 for i in obj:
                     #
                     # Selecting the origin of the event found in the catalogue
