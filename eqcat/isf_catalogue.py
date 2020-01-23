@@ -575,11 +575,9 @@ class ISFCatalogue(object):
             new_datetime = dt.datetime.combine(event.origins[0].date,
                                                event.origins[0].time,
                                                tzinfo=utc_time_zone)
-            print(event.origins[0].date, event.origins[0].time)
             new_datetime = new_datetime.astimezone(self.timezone)
             event.origins[0].date = new_datetime.date()
             event.origins[0].time = new_datetime.time()
-            print(event.origins[0].date, event.origins[0].time)
             #
             # If true there is at least one event to check
             if len(obj):
