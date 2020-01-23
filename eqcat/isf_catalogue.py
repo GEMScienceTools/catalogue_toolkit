@@ -597,7 +597,8 @@ class ISFCatalogue(object):
                     # Check if time difference is within the threshold value
                     if abs((dtime_a - dtime_b).total_seconds()) < threshold:
                         found = True
-                        self.events[i_eve].merge_secondary_origin(event.origins)
+                        tmp = event.origins
+                        self.events[i_eve].merge_secondary_origin(tmp)
                         id_common_events.append(iloc)
                         continue
                 if not found:
