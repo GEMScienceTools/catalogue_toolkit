@@ -1,5 +1,4 @@
 import os
-import pytz
 import unittest
 import datetime as dt
 
@@ -28,7 +27,9 @@ class MergeGenericCatalogueTest(unittest.TestCase):
         delta = dt.timedelta(seconds=10)
         #
         # Merging the catalogue
-        timezone = dt.timezone(dt.timedelta(hours=8))
-        catisf.add_external_idf_formatted_catalogue(catcsv, ll_delta=0.05,
-                                                    time_delta=delta,
-                                                    utc_time_zone=timezone)
+        tz = dt.timezone(dt.timedelta(hours=8))
+        out = catisf.add_external_idf_formatted_catalogue(catcsv,
+                                                          ll_delta=0.05,
+                                                          time_delta=delta,
+                                                          utc_time_zone=tz)
+        assert len(out) == 1

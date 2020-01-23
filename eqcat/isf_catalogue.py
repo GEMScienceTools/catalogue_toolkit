@@ -463,7 +463,8 @@ class ISFCatalogue(object):
     '''
     Instance of an earthquake catalogue
     '''
-    def __init__(self, identifier, name, events=None):
+    def __init__(self, identifier, name, events=None,
+                 timezone=dt.timezone(dt.timedelta(hours=0))):
         """
         Instantiate the catalogue with a name and identifier
         """
@@ -473,6 +474,9 @@ class ISFCatalogue(object):
             self.events = events
         else:
             self.events = []
+        # NOTE we assume that all the origins within a ISFCatalogue instance
+        # refer to the same timezone
+        self.timezone = timezone
         self.ids = [event.id for event in self.events]
 
     def __iter__(self):
@@ -551,76 +555,53 @@ class ISFCatalogue(object):
         :return:
             Null
         """
-        cntt = 0
         assert 'sidx' in self.__dict__
         threshold = time_delta.total_seconds()
         id_common_events = []
-
         for iloc, event in enumerate(cat.events):
+            #
+            # Create selection window
             minlo = event.origins[0].location.longitude - ll_delta
             minla = event.origins[0].location.latitude - ll_delta
             maxlo = event.origins[0].location.longitude + ll_delta
             maxla = event.origins[0].location.latitude + ll_delta
-            res = list(self.sidx.intersection((minlo, minla, maxlo, maxla)))
+            #
+            # Querying the spatial index
             obj = [n.object for n in self.sidx.intersection((minlo, minla,
                                                              maxlo, maxla),
                                                             objects=True)]
-            # Create the new origin
-            origin_identifier = str(delta_id + iloc)
-            date = event.origins[0].date
-            time = event.origins[0].time
-            location = Location(origin_identifier,
-                                event.origins[0].location.longitude,
-                                event.origins[0].location.latitude,
-                                event.origins[0].location.depth)
-            new_origin = Origin(origin_identifier, date, time, location,
-                                agency)
-
+            #
+            # Updating time of the origin to the new timezone
+            new_datetime = dt.datetime.combine(event.origins[0].date,
+                                               event.origins[0].time,
+                                               tzinfo=utc_time_zone)
+            print(event.origins[0].date, event.origins[0].time)
+            new_datetime = new_datetime.astimezone(self.timezone)
+            event.origins[0].date = new_datetime.date()
+            event.origins[0].time = new_datetime.time()
+            print(event.origins[0].date, event.origins[0].time)
+            #
             # If true there is at least one event to check
             if len(obj):
                 dtime_a = dt.datetime.combine(event.origins[0].date,
-                                              event.origins[0].time,
-                                              tzinfo=utc_time_zone)
-
+                                              event.origins[0].time)
                 found = False
                 for i in obj:
+                    #
                     # Selecting the origin of the event found in the catalogue
                     i_eve = i[0]
                     i_ori = i[1]
                     orig = self.events[i_eve].origins[i_ori]
-                    # NOTE Assuming that reference ISF catalogue uses UTC=0
-                    timezone = dt.timezone(dt.timedelta(hours=0))
-                    dtime_b = dt.datetime.combine(orig.date, orig.time,
-                                                  tzinfo=timezone)
+                    dtime_b = dt.datetime.combine(orig.date, orig.time)
+                    #
                     # Check if time difference is within the threshold value
-                    # set
                     if abs((dtime_a - dtime_b).total_seconds()) < threshold:
                         found = True
-                        print('----------------')
-                        print((dtime_a - dtime_b).total_seconds())
-                        print(dtime_b, dtime_a)
-                        print(event.origins[0].location.longitude,
-                              event.origins[0].location.latitude,
-                              len(list(res)))
-                        cntt += 1
-                        #
-                        # Create the new magnitude
-                        event_identifier = self.events[i_eve].id
-                        tmp_mag = event.magnitudes[0].value
-                        new_magnitude = Magnitude(event_id=event_identifier,
-                                                  origin_id=origin_identifier,
-                                                  value=tmp_mag,
-                                                  author=agency,
-                                                  scale=magnitude_key)
-                        #
-                        # Updating the catalogue
-                        self.events[i_eve].origins.append(new_origin)
-                        self.events[i_eve].magnitudes.append(new_magnitude)
-
+                        self.events[i_eve].merge_secondary_origin(event.origins)
                         id_common_events.append(iloc)
                         continue
                 if not found:
-                    pass
+                    self.events.append(event)
         return id_common_events
 
     def get_number_events(self):
