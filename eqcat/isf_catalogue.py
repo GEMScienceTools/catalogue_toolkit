@@ -1,3 +1,4 @@
+#!/usr/bin/env/python
 # -*- coding: utf-8 -*-
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
@@ -6,37 +7,43 @@
 #
 # Copyright (c) 2015 GEM Foundation
 #
-# The Catalogue Toolkit is free software: you can redistribute 
-# it and/or modify it under the terms of the GNU Affero General Public 
-# License as published by the Free Software Foundation, either version 
-# 3 of the License, or (at your option) any later version.
+# The Catalogue Toolkit is free software: you can redistribute
+# it and/or modify it under the terms of the GNU Affero General Public
+# License as published by the Free Software Foundation, either version
+# 3 of the License, or (at your option) any later version.
 #
 # You should have received a copy of the GNU Affero General Public License
 # with this download. If not, see <http://www.gnu.org/licenses/>
-
-#!/usr/bin/env/python
 
 """
 General class for an earthquame catalogue in ISC (ISF) format
 """
 from __future__ import print_function
-import datetime
 import numpy as np
-import h5py
 import pandas as pd
+import datetime as dt
+from rtree import index
 from math import fabs
 from eqcat.utils import decimal_time
 
 
-DATAMAP = [("eventID", "U20"), ("originID", "U20"), ("Agency", "U14"), 
-    ("year", "i2"), ("month", "i2"), ("day", "i2"), ("hour", "i2"),
-    ("minute", "i2"), ("second", "f2"), ("time_error", "f4"),
-    ("longitude", "f4"), ("latitude", "f4"), ("depth", "f4"),
-    ("depthSolution", "U1"), ("semimajor90", "f4"), ("semiminor90", "f4"),
-    ("error_strike", "f2"), ("depth_error", "f4"), ("prime", "i1")]
+DATAMAP = [("eventID", "U20"), ("originID", "U20"), ("Agency", "U14"),
+           ("year", "i2"), ("month", "i2"), ("day", "i2"), ("hour", "i2"),
+           ("minute", "i2"), ("second", "f2"), ("time_error", "f4"),
+           ("longitude", "f4"), ("latitude", "f4"), ("depth", "f4"),
+           ("depthSolution", "U1"), ("semimajor90", "f4"),
+           ("semiminor90", "f4"), ("error_strike", "f2"),
+           ("depth_error", "f4"), ("prime", "i1")]
 
-MAGDATAMAP = [("eventID", "U20"), ("originID", "U20"), ("magnitudeID", "U40"), 
-    ("value", "f4"), ("sigma", "f4"), ("magType", "U6"), ("magAgency", "U14")]
+MAGDATAMAP = [("eventID", "U20"), ("originID", "U20"), ("magnitudeID", "U40"),
+              ("value", "f4"), ("sigma", "f4"), ("magType", "U6"),
+              ("magAgency", "U14")]
+
+
+def _generator_function(data):
+    for i, tmp in enumerate(data):
+        yield (i, (tmp[0], tmp[1], tmp[0], tmp[1]), (tmp[2], tmp[3]))
+
 
 def datetime_to_decimal_time(date, time):
     '''
@@ -46,17 +53,20 @@ def datetime_to_decimal_time(date, time):
     seconds = np.array(float(time.second))
     microseconds = np.array(float(time.microsecond))
     seconds = seconds + (microseconds / 1.0E6)
-    return decimal_time(np.array([date.year]), 
-                        np.array([date.month]), 
-                        np.array([date.day]), 
+    return decimal_time(np.array([date.year]),
+                        np.array([date.month]),
+                        np.array([date.day]),
                         np.array([time.hour]),
-                        np.array([time.minute]), 
+                        np.array([time.minute]),
                         np.array([seconds]))
+
 
 class Magnitude(object):
     '''
     Stores an instance of a magnitude
-    :param int identifier:
+    :param str event_id:
+        Identifier as Event ID
+    :param str origin_id:
         Identifier as Origin ID
     :param float value:
         Magnitude value
@@ -90,28 +100,28 @@ class Magnitude(object):
                                           self.author,
                                           "{:.6e}".format(self.value),
                                           self.scale])
-        else: 
+        else:
             self.magnitude_id = "|".join(["{:s}".format(self.origin_id),
                                           self.author,
                                           "{:.2f}".format(self.value),
                                           self.scale])
-    
+
     def compare_magnitude(self, magnitude, tol=1E-3):
         '''
         Compares if a second instance of a magnitude class is the same as the
         current magnitude
         '''
-        if (magnitude.origin_id == self.origin_id) and\
-            (magnitude.author == self.author) and\
-            (magnitude.scale == self.scale):
+        if ((magnitude.origin_id == self.origin_id) and
+                (magnitude.author == self.author) and
+                (magnitude.scale == self.scale)):
             if fabs(magnitude.value - self.value) > 0.001:
-                print("%s != %s" %(self.__str__(), str(magnitude)))
+                print("%s != %s" % (self.__str__(), str(magnitude)))
                 raise ValueError('Two magnitudes with same metadata contain '
                                  'different values!')
             return True
         else:
             return False
-    
+
     def __repr__(self):
         """
         Returns the magnitude identifier
@@ -142,9 +152,9 @@ class Location(object):
         Latitude (decimal degrees)
     :param float depth:
         Depth (decimal degrees)
-        :param str DepthSolution:
-        depthSolution (flag) fixed flag (f = fixed depth station, 
-                                         d = depth phases, 
+    :param str DepthSolution:
+        depthSolution (flag) fixed flag (f = fixed depth station,
+                                         d = depth phases,
                                          blank if not a fixed depth)
     :param float semimajor90:
         Semimajor axis of 90 % error ellipse (km)
@@ -153,7 +163,7 @@ class Location(object):
     :param float error_strike:
         Strike of the semimajor axis of the error ellipse
     :param float depth_error:
-        1 s.d. Error on the depth value (km) 
+        1 s.d. Error on the depth value (km)
     '''
     def __init__(self, origin_id, longitude, latitude, depth,
                  depthSolution=None, semimajor90=None, semiminor90=None,
@@ -163,8 +173,8 @@ class Location(object):
         self.identifier = origin_id
         self.longitude = longitude
         self.latitude = latitude
-        self.depth=depth
-        self.depthSolution=depthSolution
+        self.depth = depth
+        self.depthSolution = depthSolution
         self.semimajor90 = semimajor90
         self.semiminor90 = semiminor90
         self.error_strike = error_strike
@@ -192,7 +202,7 @@ class Location(object):
             (fabs(loc.latitude - self.latitude) < tol) and\
             (fabs(loc.depth - self.depth) < tol)
         return loc_check
-           
+
 
 class Origin(object):
     """
@@ -212,22 +222,22 @@ class Origin(object):
     :param float time_rms:
         Time root-mean-square error (s)
     :param dict metadata:
-        Metadata of dictionary including - 
+        Metadata of dictionary including -
         - 'Nphases' - Number of defining phases
         - 'Nstations' - Number of recording stations
         - 'AzimuthGap' - Azimuth Gap of recodring stations
         - 'minDist' - Minimum distance to closest station (degrees)
         - 'maxDist' - Maximum distance to furthest station (degrees)
         - 'FixedTime' - Fixed solution (str)
-        - 'DepthSolution' - 
+        - 'DepthSolution' -
         - 'AnalysisType' - Analysis type
         - 'LocationMethod' - Location Method
         - 'EventType' - Event type
-    
+
     """
-    def __init__(self, identifier, date, time, location, author, 
-        is_prime=False, is_centroid=False, time_error=None, time_rms=None, 
-        metadata=None):
+    def __init__(self, identifier, date, time, location, author,
+                 is_prime=False, is_centroid=False, time_error=None,
+                 time_rms=None, metadata=None):
         """
         Instantiates origin
         """
@@ -235,8 +245,8 @@ class Origin(object):
         self.date = date
         self.time = time
         self.location = location
-        self.author=author
-        self.metadata=metadata
+        self.author = author
+        self.metadata = metadata
         self.magnitudes = []
         self.is_prime = is_prime
         self.is_centroid = is_centroid
@@ -269,7 +279,6 @@ class Origin(object):
         else:
             return [mag.value for mag in self.magnitudes]
 
-
     def get_magnitude_tuple(self):
         """
         Returns a list of tuples of (Value, Type) for all magnitudes
@@ -283,7 +292,7 @@ class Origin(object):
     def merge_secondary_magnitudes(self, magnitudes, event_id):
         """
         Merge magnitudes as instances of isf_catalogue.Magnitude into origin
-        list. 
+        list.
         """
         if self.get_number_magnitudes() == 0:
             # As no magnitudes currently exist then add all input magnitudes
@@ -309,7 +318,7 @@ class Origin(object):
                     new_magnitudes.append(magnitude1)
                     self.magnitudes.append(magnitude1)
             return new_magnitudes
-    
+
     def __str__(self):
         """
         Returns an string providing information regarding the origin (namely
@@ -382,8 +391,6 @@ class Event(object):
         for origin in self.origins:
             for mag in origin.magnitudes:
                 mag_list.append(str(mag))
-                #mag_list.extend([str(mag.value), str(mag.sigma), mag.scale,
-                #                 mag.author])
         return delimiter.join(mag_list)
 
     def assign_magnitudes_to_origins(self):
@@ -401,8 +408,8 @@ class Event(object):
 
     def merge_secondary_origin(self, origin2set):
         '''
-        Merges an instance of an isf_catalogue.Origin class into the set 
-        of origins. 
+        Merges an instance of an isf_catalogue.Origin class into the set
+        of origins.
         '''
         current_id_list = self.get_origin_id_list()
         for origin2 in origin2set:
@@ -468,7 +475,6 @@ class ISFCatalogue(object):
             self.events = []
         self.ids = [event.id for event in self.events]
 
-
     def __iter__(self):
         """
         If iterable, returns list of events
@@ -493,6 +499,130 @@ class ISFCatalogue(object):
         else:
             raise KeyError("Event %s not found" % key)
 
+    def _create_spatial_index(self):
+        """
+        :return:
+            A :class:`rtree.index.Index` instance
+        """
+        p = index.Property()
+        p.dimension = 2
+        #
+        # Preparing data that will be included in the index
+        data = []
+        for iloc, event in enumerate(self.events):
+            for iori, origin in enumerate(event.origins):
+                if not origin.is_prime and len(event.origins) > 1:
+                    # Skipping because we have more than one origin and prime
+                    # is not defined
+                    continue
+                else:
+                    # Skipping because there is no magnitude defined
+                    if len(origin.magnitudes) == 0:
+                        continue
+                # Saving information regarding the prime origin
+                data.append((origin.location.longitude,
+                             origin.location.latitude, iloc, iori))
+        #
+        # Creating the index
+        sidx = index.Index(_generator_function(data), properties=p)
+        self.sidx = sidx
+        self.data = np.array(data)
+
+    # TODO - this does not cope yet with catalogues crossing the international
+    # dateline
+    def add_external_idf_formatted_catalogue(self, cat, ll_delta=0.01,
+                                             time_delta=5,
+                                             utc_time_zone=dt.timedelta(0),
+                                             agency="Anonymous",
+                                             magnitude_key="UK",
+                                             delta_id=1e8):
+        """
+        This merges an external catalogue formatted in the ISF format e.g. a
+        catalogue coming form an external agency. Because of this we assume
+        that each event has a single origin.
+
+        :param cat:
+            An instance of :class:`ISFCatalogue`
+        :param ll_delta:
+            A float defining the tolerance in decimal degrees used when looking
+            for colocated events
+        :param time_delta:
+            Tolerance used to find for colocated events
+        :return:
+            Null
+        """
+        cntt = 0
+        assert 'sidx' in self.__dict__
+        threshold = time_delta.total_seconds()
+        id_common_events = []
+
+        for iloc, event in enumerate(cat.events):
+            minlo = event.origins[0].location.longitude - ll_delta
+            minla = event.origins[0].location.latitude - ll_delta
+            maxlo = event.origins[0].location.longitude + ll_delta
+            maxla = event.origins[0].location.latitude + ll_delta
+            res = list(self.sidx.intersection((minlo, minla, maxlo, maxla)))
+            obj = [n.object for n in self.sidx.intersection((minlo, minla,
+                                                             maxlo, maxla),
+                                                            objects=True)]
+            # Create the new origin
+            origin_identifier = str(delta_id + iloc)
+            date = event.origins[0].date
+            time = event.origins[0].time
+            location = Location(origin_identifier,
+                                event.origins[0].location.longitude,
+                                event.origins[0].location.latitude,
+                                event.origins[0].location.depth)
+            new_origin = Origin(origin_identifier, date, time, location,
+                                agency)
+
+            # If true there is at least one event to check
+            if len(obj):
+                dtime_a = dt.datetime.combine(event.origins[0].date,
+                                              event.origins[0].time,
+                                              tzinfo=utc_time_zone)
+
+                found = False
+                for i in obj:
+                    # Selecting the origin of the event found in the catalogue
+                    i_eve = i[0]
+                    i_ori = i[1]
+                    orig = self.events[i_eve].origins[i_ori]
+                    # NOTE Assuming that reference ISF catalogue uses UTC=0
+                    timezone = dt.timezone(dt.timedelta(hours=0))
+                    dtime_b = dt.datetime.combine(orig.date, orig.time,
+                                                  tzinfo=timezone)
+                    # Check if time difference is within the threshold value
+                    # set
+                    if abs((dtime_a - dtime_b).total_seconds()) < threshold:
+                        found = True
+                        print('----------------')
+                        print((dtime_a - dtime_b).total_seconds())
+                        print(dtime_b, dtime_a)
+                        print(event.origins[0].location.longitude,
+                              event.origins[0].location.latitude,
+                              len(list(res)))
+                        cntt += 1
+                        #
+                        # Create the new magnitude
+                        event_identifier = self.events[i_eve].id
+                        tmp_mag = event.magnitudes[0].value
+                        new_magnitude = Magnitude(event_id=event_identifier,
+                                                  origin_id=origin_identifier,
+                                                  value=tmp_mag,
+                                                  author=agency,
+                                                  scale=magnitude_key)
+                        #
+                        # Updating the catalogue
+                        self.events[i_eve].origins.append(new_origin)
+                        self.events[i_eve].magnitudes.append(new_magnitude)
+
+                        id_common_events.append(iloc)
+                        continue
+                if not found:
+                    pass
+        return id_common_events
+
     def get_number_events(self):
         """
         Return number of events
@@ -510,7 +640,7 @@ class ISFCatalogue(object):
 
     def merge_second_catalogue(self, catalogue):
         '''
-        Merge in a second catalogue of the format ISF Catalogue and link via 
+        Merge in a second catalogue of the format ISF Catalogue and link via
         Event Keys
         '''
         if not isinstance(catalogue, ISFCatalogue):
@@ -527,6 +657,25 @@ class ISFCatalogue(object):
                 event = self.events[location]
                 event.merge_secondary_origin(catalogue.events[iloc].origins)
                 self.events[location] = event
+
+    def find_events_without_prime(self):
+        """
+        This method returns the indexes of the events with more than one
+        origin and without the prime origin defined
+        :returns:
+            A list of integers corresponding to the events identified.
+        """
+        idxs = []
+        for iloc, event in enumerate(self.events):
+            found = False
+            for origin in event.origins:
+                if not origin.is_prime:
+                    continue
+                else:
+                    found = True
+            if not found and len(event.origins) > 1:
+                idxs.append(iloc)
+        return idxs
 
     def get_decimal_dates(self):
         """
@@ -563,32 +712,32 @@ class ISFCatalogue(object):
                 second[iloc] = float(event.origins[0].time.second) + \
                     (float(event.origins[0].time.microsecond) / 1.0E6)
         return decimal_time(year, month, day, hour, minute, second)
-                    
 
     def render_to_simple_numpy_array(self):
-        '''
+        """
         Render to a simple array using preferred origin time and magnitude
-        '''
+        :return:
+            A :class:`numpy.ndarray` instance
+        """
         decimal_time = self.get_decimal_dates()
         decimal_time = decimal_time.tolist()
         simple_array = []
         for iloc, event in enumerate(self.events):
             for origin in event.origins:
-                if not origin.is_prime:
+                if not origin.is_prime and len(event.origins) > 1:
                     continue
                 else:
                     if len(origin.magnitudes) == 0:
                         continue
 
-                    simple_array.append([event.id, 
-                                         origin.id, 
+                    simple_array.append([event.id,
+                                         origin.id,
                                          decimal_time[iloc],
-                                         origin.location.latitude, 
+                                         origin.location.latitude,
                                          origin.location.longitude,
-                                         origin.location.depth, 
+                                         origin.location.depth,
                                          origin.magnitudes[0].value])
         return np.array(simple_array)
-
 
     def get_origin_mag_tables(self):
         """
@@ -596,7 +745,7 @@ class ISFCatalogue(object):
         containing only the origins, the second containing the
         magnitudes
         """
-        #Find out size of tables
+        # Find out size of tables
         n_origins = 0
         n_mags = 0
         for eq in self.events:
@@ -615,7 +764,7 @@ class ISFCatalogue(object):
                 # Optional defaults
                 if orig.time_error:
                     time_error = orig.time_error
-                else:    
+                else:
                     time_error = 0.0
                 if orig.location.semimajor90:
                     semimajor90 = orig.location.semimajor90
@@ -628,26 +777,28 @@ class ISFCatalogue(object):
 
                 if orig.location.depth_error:
                     depth_error = orig.location.depth_error
-                else: 
+                else:
                     depth_error = 0.0
-                
+
                 if orig.location.depthSolution:
                     depthSolution = orig.location.depthSolution
-                else: 
-                    depthSolution = ""               
+                else:
+                    depthSolution = ""
 
-                
                 if orig.is_prime:
                     prime = 1
                 else:
                     prime = 0
                 origin_data[o_counter] = (eq.id, orig.id, orig.author,
-                    orig.date.year, orig.date.month, orig.date.day,
-                    orig.time.hour, orig.time.minute, seconds, time_error,
-                    orig.location.longitude, orig.location.latitude, 
-                    orig.location.depth, orig.location.depthSolution,
-                    semimajor90, semiminor90, 
-                    error_strike, depth_error, prime)
+                                          orig.date.year, orig.date.month,
+                                          orig.date.day, orig.time.hour,
+                                          orig.time.minute, seconds,
+                                          time_error, orig.location.longitude,
+                                          orig.location.latitude,
+                                          orig.location.depth,
+                                          orig.location.depthSolution,
+                                          semimajor90, semiminor90,
+                                          error_strike, depth_error, prime)
                 o_counter += 1
 
             for mag in eq.magnitudes:
@@ -655,13 +806,12 @@ class ISFCatalogue(object):
                     sigma = mag.sigma
                 else:
                     sigma = 0.0
-                mag_data[m_counter] = (mag.event_id, mag.origin_id, 
-                    mag.magnitude_id, mag.value, sigma, mag.scale, mag.author)
+                mag_data[m_counter] = (mag.event_id, mag.origin_id,
+                                       mag.magnitude_id, mag.value,
+                                       sigma, mag.scale, mag.author)
                 m_counter += 1
         return origin_data, mag_data
-    
-    
-    
+
     def build_dataframe(self, hdf5_file=None):
         """
         Renders the catalogue into two Pandas Dataframe objects, one
@@ -692,11 +842,11 @@ class ISFCatalogue(object):
         '''
         # Get numpy array
         print('Creating array ...')
-        #cat_array = self.render_to_simple_numpy_array('Mw')
         cat_array = self.render_to_simple_numpy_array()
         cat_array = cat_array[:, [4, 3, 5, 6]]
         print('Writing to file ...')
-        np.savetxt(filename, cat_array, fmt=frmt)
+        df = pd.DataFrame(cat_array)
+        df.to_csv(filename, index=False, header=False)
         print('done!')
 
     def quick_export(self, filename, delimiter=","):
@@ -704,15 +854,14 @@ class ISFCatalogue(object):
         Rapidly exports the catalogue to an ascii format
         """
         with open(filename, "w") as f:
-            print("eventID,Description,originID,year,month,day,hour,"\
-                  "minute,second,longitude,latitude,depth,magOriginID,"\
+            print("eventID,Description,originID,year,month,day,hour,"
+                  "minute,second,longitude,latitude,depth,magOriginID,"
                   "magAgency,magnitude,magScale", file=f)
             for event in self.events:
                 base_str = str(event)
                 for origin in event.origins:
                     output_strings = [base_str, str(origin)]
-                    output_strings.extend([str(mag) for mag in origin.magnitudes])
+                    output_strings.extend([str(m) for m in origin.magnitudes])
                     output_str = "|".join(output_strings)
                     print(output_str.replace("|", delimiter), file=f)
             print("Exported to %s" % filename)
-

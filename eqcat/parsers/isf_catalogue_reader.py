@@ -5,27 +5,24 @@
 #
 # Copyright (c) 2015 GEM Foundation
 #
-# The Catalogue Toolkit is free software: you can redistribute 
-# it and/or modify it under the terms of the GNU Affero General Public 
-# License as published by the Free Software Foundation, either version 
-# 3 of the License, or (at your option) any later version.
+# The Catalogue Toolkit is free software: you can redistribute
+# it and/or modify it under the terms of the GNU Affero General Public
+# License as published by the Free Software Foundation, either version
+# 3 of the License, or (at your option) any later version.
 #
 # You should have received a copy of the GNU Affero General Public License
 # with this download. If not, see <http://www.gnu.org/licenses/>
 
-#!/usr/bin/env/python
-
-'''
+"""
 Reader for the catalogue in a reduced ISF Format considering only
 headers
-'''
-#import pdb
-import os
+"""
+
 import re
 import datetime
 import numpy as np
 from io import open
-from math import floor, ceil, fabs
+from math import floor
 from eqcat.parsers.base import (BaseCatalogueDatabaseReader,
                                 _to_int, _to_str, _to_float)
 from eqcat.isf_catalogue import (Magnitude,
@@ -55,6 +52,7 @@ def get_event_header_row(row):
     return Event(header_dat[1], origins=[], magnitudes=[],
                  description=" ".join(header_dat[2:]))
 
+
 def get_time_from_str(row):
     """
     Parses the time data from the origin line and returns an instance of the
@@ -62,7 +60,6 @@ def get_time_from_str(row):
     """
     # Get time hh:mm:ss.ss
     hms = row[11:22].split(':')
-    #print "hh:mm:ss:", hms
     hours = int(hms[0])
     minutes = int(hms[1])
     secs = float(hms[2])
@@ -73,6 +70,7 @@ def get_time_from_str(row):
     time_rms = _to_float(row[30:35])
     return datetime.time(hours, minutes, seconds, microseconds), time_error, \
         time_rms
+
 
 def get_origin_metadata(row):
     """
@@ -91,6 +89,7 @@ def get_origin_metadata(row):
         'EventType': _to_str(row[115:117])}
     return metadata
 
+
 def get_event_origin_row(row, selected_agencies=[]):
     '''
     Parses the Origin row from ISF format to an instance of an
@@ -99,12 +98,11 @@ def get_event_origin_row(row, selected_agencies=[]):
     '''
     origin_id = _to_str(row[128:])
     author = _to_str(row[118:127])
-    if len(selected_agencies) and not author in selected_agencies:
+    if len(selected_agencies) and author not in selected_agencies:
         # Origin not an instance of (or authored by) a selected agency
         return None
     # Get date yyyy/mm/dd
     ymd = list(map(int, row[:10].split('/')))
-    #print "YMD",ymd
     date = datetime.date(ymd[0], ymd[1], ymd[2])
     # Get time
     time, time_error, time_rms = get_time_from_str(row)
@@ -116,24 +114,20 @@ def get_event_origin_row(row, selected_agencies=[]):
     semiminor90 = _to_float(row[61:66])
     error_strike = _to_float(row[67:70])
     # Get depths
-    #depth = _to_float(row[71:75])
     depth = _to_float(row[71:75])
     depthSolution = _to_str(row[76:78])
-    #if depthSolution == "f":
-    #    print "depth= ", depth, "DepthSolution =", depthSolution
     depth_error = _to_float(row[78:82])
     # Create location class
-    location = Location(origin_id, longitude, latitude, depth,depthSolution, 
-                        semimajor90,semiminor90, error_strike, depth_error)
+    location = Location(origin_id, longitude, latitude, depth, depthSolution,
+                        semimajor90, semiminor90, error_strike, depth_error)
     # Get the metadata
     metadata = get_origin_metadata(row)
-    return Origin(origin_id, date, time, location, author, 
+    return Origin(origin_id, date, time, location, author,
                   time_error=time_error, time_rms=time_rms,
                   metadata=metadata)
 
-def get_event_magnitude(row, event_id, 
-                        selected_agencies=[]):
-                        #,selected_types=[]):
+
+def get_event_magnitude(row, event_id, selected_agencies=[]):
     """
     Creates an instance of an isf_catalogue.Magnitude object from the row
     string, or returns None if the author is not one of the selected agencies
@@ -141,14 +135,14 @@ def get_event_magnitude(row, event_id,
     """
     origin_id = _to_str(row[30:])
     author = row[20:29].strip(' ')
-    scale=row[:5].strip(' ')
-    if (len(selected_agencies) and not author in selected_agencies):
+    scale = row[:5].strip(' ')
+    if (len(selected_agencies) and author not in selected_agencies):
         # Magnitude does not correspond to a selected agency - ignore
         return None
     sigma = _to_float(row[11:14])
     nstations = _to_int(row[15:19])
-    return Magnitude(event_id, origin_id, _to_float(row[6:10]), author, 
-                     scale=scale, sigma=sigma, stations=nstations) 
+    return Magnitude(event_id, origin_id, _to_float(row[6:10]), author,
+                     scale=scale, sigma=sigma, stations=nstations)
 
 
 class ISFReader(BaseCatalogueDatabaseReader):
@@ -164,11 +158,11 @@ class ISFReader(BaseCatalogueDatabaseReader):
                  selected_magnitude_agencies=[], rejection_keywords=[],
                  bbox=[], lower_magnitude=None, upper_magnitude=None,
                  store_all_comments=False):
-        
-        super(ISFReader, self).__init__(filename, 
+
+        super(ISFReader, self).__init__(filename,
                                         selected_origin_agencies,
                                         selected_magnitude_agencies)
-        
+
         self.rejected_catalogue = []
         self.rejection_keywords = rejection_keywords
         self.store_comments = store_all_comments
@@ -228,13 +222,13 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 continue
             else:
                 pass
-                
+
             if '(#PRIME)' in row:
                 # Previous origin block was the prime origin
                 if len(origins) > 0:
                     origins[-1].is_prime = True
                 continue
-                
+
             if '(#CENTROID)' in row:
                 # Previous origin block is a centroid
                 if len(origins) > 0:
@@ -252,7 +246,7 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 # Is an event header row
                 if counter > 0:
                     self._build_event(event, origins, magnitudes, comment_str)
-                
+
                 # Get a new event
                 event = get_event_header_row(row)
                 comment_str = ""
@@ -270,7 +264,7 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 continue
             else:
                 pass
-            
+
             if is_magnitude and len(row) == 38:
                 # Is a magnitude row
                 mag = get_event_magnitude(row,
@@ -285,7 +279,6 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 # Is an origin row
                 orig = get_event_origin_row(row,
                                             self.selected_origin_agencies)
-                #pdb.set_trace()
                 if orig:
                     origins.append(orig)
         if event is not None:
@@ -309,13 +302,10 @@ class ISFReader(BaseCatalogueDatabaseReader):
         if len(event.origins) and len(event.magnitudes):
             event.assign_magnitudes_to_origins()
             event.comment = comment_str
-            #print "%s - %s" % (Event.id, Event.description)
-            #print Event.comment
             if self._acceptance(event):
                 if not self.store_comments:
                     event.comment = ""
                 self.catalogue.events.append(event)
-
 
     def _acceptance(self, event):
         """
@@ -353,5 +343,3 @@ class ISFReader(BaseCatalogueDatabaseReader):
                 self.rejected_catalogue.append(event)
                 return False
         return True
-
-
