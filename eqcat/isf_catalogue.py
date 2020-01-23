@@ -582,10 +582,11 @@ class ISFCatalogue(object):
             event.origins[0].time = new_datetime.time()
             #
             # If true there is at least one event to check
+            found = False
             if len(obj):
                 dtime_a = dt.datetime.combine(event.origins[0].date,
                                               event.origins[0].time)
-                found = False
+
                 for i in obj:
                     #
                     # Selecting the origin of the event found in the catalogue
@@ -601,8 +602,8 @@ class ISFCatalogue(object):
                         self.events[i_eve].merge_secondary_origin(tmp)
                         id_common_events.append(iloc)
                         continue
-                if not found:
-                    self.events.append(event)
+            if not found:
+                self.events.append(event)
         return id_common_events
 
     def get_number_events(self):
