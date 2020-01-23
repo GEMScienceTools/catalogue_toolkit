@@ -535,14 +535,10 @@ class ISFCatalogue(object):
     # TODO - this does not cope yet with catalogues crossing the international
     # dateline
     def add_external_idf_formatted_catalogue(self, cat, ll_delta=0.01,
-                                             time_delta=5,
-                                             utc_time_zone=dt.timedelta(0),
-                                             agency="Anonymous",
-                                             magnitude_key="UK",
-                                             delta_id=1e8):
+            time_delta=5, utc_time_zone=dt.timezone(dt.timedelta(hours=0))):
         """
         This merges an external catalogue formatted in the ISF format e.g. a
-        catalogue coming form an external agency. Because of this we assume
+        catalogue coming form an external agency. Because of this, we assume
         that each event has a single origin.
 
         :param cat:
@@ -551,9 +547,14 @@ class ISFCatalogue(object):
             A float defining the tolerance in decimal degrees used when looking
             for colocated events
         :param time_delta:
-            Tolerance used to find for colocated events
+            Tolerance used to find colocated events. It's an instance of
+            :class:`datetime.timedelta`
+        :param utc_time_zone:
+            A :class:`datetime.timezone` instance describing the reference
+            timezone for the new catalogue.
         :return:
-            Null
+            A list with the indexes of the events in common. The index refers
+            to the envent in the catalogue added.
         """
         assert 'sidx' in self.__dict__
         threshold = time_delta.total_seconds()
