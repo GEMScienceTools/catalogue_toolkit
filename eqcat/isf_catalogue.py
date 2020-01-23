@@ -535,7 +535,8 @@ class ISFCatalogue(object):
     # TODO - this does not cope yet with catalogues crossing the international
     # dateline
     def add_external_idf_formatted_catalogue(self, cat, ll_delta=0.01,
-            time_delta=5, utc_time_zone=dt.timezone(dt.timedelta(hours=0))):
+            time_delta=dt.timedelta(seconds=30),
+            utc_time_zone=dt.timezone(dt.timedelta(hours=0))):
         """
         This merges an external catalogue formatted in the ISF format e.g. a
         catalogue coming form an external agency. Because of this, we assume
